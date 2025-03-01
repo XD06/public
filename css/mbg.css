@@ -1,0 +1,359 @@
+/* 网页背景样式 */
+#web_bg {
+    width: 100vw;    /* 视口宽度 */
+    height: 100vh;   /* 视口高度 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -999;
+    background-size: cover;  /* 关键：保持图片比例并覆盖容器 */
+    background-position: center;
+}
+
+/* 适配暗黑模式下的网页背景 */
+[data-theme='dark'] #web_bg {
+    background: #1a1a1a!important;
+}
+
+/* 预加载字体样式 */
+link[rel="preload"][href="/fonts/"] {
+    font-display: swap;
+}
+
+/* 自定义字体定义 */
+@font-face {
+    font-family: 'Hei';
+    src: url('/fonts/Hei.ttf')  format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Kaiti';
+    src: url('/fonts/kaiti.ttf')  format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'FangSong';
+    src: url('/fonts/FangSong.ttf')  format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ZiHunBaiGeTianXing';
+    src: url('/fonts/ZiHunBaiGeTianXing.ttf')  format('truetype');
+    font-display: swap;
+}
+
+/* Winbox 容器样式 */
+body.winbox  {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Winbox 全屏按钮隐藏 */
+.wb-full {
+    display: none;
+}
+
+/* Winbox 最小化按钮背景位置 */
+.wb-min {
+    background-position: center;
+}
+
+/* 暗黑模式下 Winbox 主体和背景切换框样式 */
+[data-theme='dark'].wb-body,
+[data-theme='dark'] #changeBgBox {
+    background: #333!important;
+}
+
+/* 背景选择框样式 */
+.bgbox {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    padding: 15px 0;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 图片框和通用框样式 */
+.pimgbox,
+.imgbox,
+.box {
+    width: 100%;
+    height: auto;
+    background-size: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+/* 图片框样式 */
+.pimgbox,
+.imgbox {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* 特定图片框样式 */
+.pimgbox {
+    aspect-ratio: 9 / 16;
+    margin: 0 5px 10px;
+}
+
+/* 图片框和通用框悬停遮罩效果 */
+.pimgbox::after,
+.imgbox::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none; /* 修复点击事件问题 */
+    transition: opacity 0.3s;
+}
+
+/* 图片框和通用框悬停效果 */
+.pimgbox:hover::after,
+.imgbox:hover::after {
+    opacity: 1;
+}
+
+.pimgbox:hover,
+.imgbox:hover,
+.box:hover {
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+/* 移动端适配样式 */
+@media screen and (max-width: 768px) {
+   .pimgbox,
+   .imgbox,
+   .box {
+        height: 73px;
+        width: 135px;
+    }
+
+   .pimgbox {
+        height: 205px;
+    }
+
+    #changeBgBox.wb-body::-webkit-scrollbar  {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+   .bgbox {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+/* 图片框背景样式 */
+.imgbox {
+    background-size: cover;
+    background-position: center;
+}
+
+/* 通用框背景动画样式 */
+.box {
+    background-size: 200% 200%;
+    transition: background-size 0.6s ease;
+}
+
+.box:hover {
+    background-size: 150% 150%;
+}
+
+/* 样式选择框样式 */
+.stylebox {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px var(--card-shadow);
+}
+
+/* 移动端样式选择框布局调整 */
+@media (max-width: 768px) {
+   .stylebox {
+        flex-direction: column;
+    }
+}
+
+/* 样式选择框内表单元素样式 */
+.stylebox select,
+.stylebox input[type="color"],
+.stylebox input[type="range"] {
+    padding: 10px;
+    border: 2px solid var(--btn-border-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.stylebox select {
+    color: var(--text-color);
+}
+
+/* 样式选择框内表单元素悬停效果 */
+.stylebox select:hover,
+.stylebox input[type="color"]:hover,
+.stylebox input[type="range"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--card-shadow);
+    display: flex;            /* 启用flex布局 */
+    justify-content: center;  /* 水平居中 */     /* 垂直居中 */
+    gap: 20px;                /* 元素间距 */
+
+}
+
+/* 字体控制容器样式 */
+.font-control {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+/* 颜色选择器样式 */
+.color-picker {
+    min-width: 100px;
+    display: flex; /* 水平居中 */
+    margin: 15px 0;
+    gap: 10px;
+}
+
+/* 移动端字体控制容器布局调整 */
+@media (max-width: 768px) {
+   .font-control {
+        flex-direction: column;
+    }
+}
+
+/* 全局字体变量定义 */
+:root {
+    --global-font: "";
+}
+
+/* 页面字体样式 */
+body {
+    font-family: var(--global-font), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Microsoft YaHei", sans-serif!important;
+}
+
+/* 颜色选择器输入框样式 */
+.color-picker input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: 2px solid var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 背景选择网格容器样式 */
+.bg-grid {
+    margin: 20px 0;
+}
+
+/* 背景选择网格标题样式 */
+.bg-grid h2 {
+    color: #2c3e50;
+    font-size: 1.2em;
+    margin: 15px 0 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* 背景选择项容器样式 */
+.bgbox {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 每行4列 */
+    gap: 15px; /* 项间距 */
+    margin-bottom: 25px;
+}
+
+/* 通用背景选择项样式 */
+.imgbox,
+.box {
+    display: block;
+    width: 100%;
+    height: 100px; /* 固定高度 */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* 图片背景选择项样式 */
+.imgbox {
+    background-size: cover!important;
+    background-position: center!important;
+}
+
+/* 背景选择项悬停效果 */
+.imgbox:hover,
+.box:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 背景选择项标题提示样式 */
+.imgbox::after,
+.box::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.imgbox:hover::after,
+.box:hover::after {
+    opacity: 1;
+}
+
+/* 移动端背景选择项布局调整 */
+@media (max-width: 768px) {
+   .bgbox {
+        grid-template-columns: repeat(2, 1fr); /* 小屏幕显示2列 */
+    }
+
+   .imgbox,
+   .box {
+        height: 100px;
+    }
+}
+
+/* 文章容器样式 */
+.article-container {
+    width: 100%;
+    height: 100%;
+}
+/* 在文件顶部添加CSS变量 */
+:root {
+    --theme-main: #49b1f5;
+    --theme-dark-main: #1a1a1a;
+}
+
+/* 修改所有需要应用主题色的元素，例如：*/
+.winbox {
+    background: var(--theme-main) !important;
+}
+a:hover {
+    color: var(--theme-main);
+}
