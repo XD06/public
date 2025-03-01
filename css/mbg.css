@@ -203,7 +203,7 @@ body.winbox  {
 }
 
 /* 样式选择框内表单元素悬停效果 */
-.stylebox select:hover,
+
 .stylebox input[type="color"]:hover,
 .stylebox input[type="range"]:hover {
     transform: translateY(-2px);
@@ -346,7 +346,7 @@ body {
 }
 /* 在文件顶部添加CSS变量 */
 :root {
-    --theme-main: #49b1f5;
+    --theme-main: black;
     --theme-dark-main: #1a1a1a;
 }
 
