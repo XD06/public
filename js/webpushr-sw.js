@@ -1,1 +1,1 @@
-importScripts('https://cdn.webpushr.com/sw-server.min.js');
+importScripts('https://pictureapi.dskblog.top/js/sw-server.min.js');
