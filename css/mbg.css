@@ -23,25 +23,25 @@ link[rel="preload"][href="/fonts/"] {
 /* 自定义字体定义 */
 @font-face {
     font-family: 'Hei';
-    src: url('/fonts/Hei.ttf')  format('truetype');
+    src: url('/fonts/Hei.woff')  format('truetype');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Kaiti';
-    src: url('/fonts/kaiti.ttf')  format('truetype');
+    src: url('/fonts/kaiti.woff')  format('truetype');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'FangSong';
-    src: url('/fonts/FangSong.ttf')  format('truetype');
+    src: url('/fonts/FangSong.woff')  format('truetype');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'ZiHunBaiGeTianXing';
-    src: url('/fonts/ZiHunBaiGeTianXing.ttf')  format('truetype');
+    src: url('/fonts/ZiHunBaiGeTianXing.woff')  format('truetype');
     font-display: swap;
 }
 
