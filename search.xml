@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>【每日早报】-2025-03-08 - 星期六</title>
+      <link href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-08%20-%20%E6%98%9F%E6%9C%9F%E5%85%AD.html"/>
+      <url>/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-08%20-%20%E6%98%9F%E6%9C%9F%E5%85%AD.html</url>
+      
+        <content type="html"><![CDATA[<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>每日早报</title></head><body>    <div style="text-align: center;"> <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://file.alapi.cn/60s/202503081741367702.png"            alt="每日早报" width="100%"> </div></body></html>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日早报 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 每日早报 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>【每日早报】-2025-03-07 - 星期五</title>
       <link href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-07%20-%20%E6%98%9F%E6%9C%9F%E4%BA%94.html"/>
       <url>/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-07%20-%20%E6%98%9F%E6%9C%9F%E4%BA%94.html</url>
@@ -83,7 +108,7 @@
       <link href="/webhook.html"/>
       <url>/webhook.html</url>
       
-        <content type="html"><![CDATA[<div class="note orange icon-padding flat"><i class="note-icon fa-circle-exclamation"></i><p>提示：你可以点击右下角设置，选择合适的背景和字体方便阅读。</p></div><div class="note pink icon-padding flat"><i class="note-icon fa-circle-exclamation"></i><p>注意：这是一个测试，测试webhook是否成功执行。</p></div>]]></content>
+        <content type="html"><![CDATA[<div class="note orange icon-padding flat"><i class="note-icon fas fa-bullhorn"></i><p>注意：你可以点击右下角设置，选择合适的背景和字体方便阅读.<br></p></div><div class="note pink icon-padding flat"><i class="note-icon fas fa-bullhorn"></i><p>注意：这是一个测试，测试webhook是否成功执行。</p></div>]]></content>
       
       
       
