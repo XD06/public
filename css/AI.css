@@ -1,0 +1,437 @@
+/* ai-chat.css */
+/* 修改容器选择器以匹配WinBox结构 */
+#ai-chat-container {
+    height: 100%;
+    position: relative;
+    background: var(--card-bg);
+}
+
+/* 消息历史区域 */
+#ai-chat-history {
+    height: calc(100% - 70px) !important; /* 兼容WinBox布局 */
+    padding: 15px;
+    overflow-y: auto;
+    background: var(--body-bg);
+}
+
+/* 调整消息气泡样式 */
+.ai-message {
+    background: rgba(240, 240, 240, 0.9);
+    backdrop-filter: blur(3px);
+    border-radius: 12px 12px 0 12px;
+}
+
+.user-message {
+    background: rgba(227, 242, 253, 0.9);
+    backdrop-filter: blur(3px);
+}
+
+/* 输入区域适配浮动布局 */
+.ai-input-group {
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
+    background: linear-gradient(to top, var(--card-bg) 85%, transparent);
+}
+
+#ai-user-input {
+    background: var(--input-bg);
+    border: 1px solid var(--btn-border-color) !important;
+    color: var(--text-color);
+}
+
+/* 新增WinBox专属样式 */
+.wb-title {
+    font-weight: 600 !important;
+    color: var(--text-color) !important;
+}
+
+.wb-control {
+    filter: invert(var(--icon-filter)) !important;
+}
+
+/* 思考过程样式适配 */
+.reasoning-container {
+    margin: 12px 0;
+    background: rgba(255, 243, 224, 0.15);
+    border: 1px solid var(--warning-border);
+}
+
+/* 流式回答动画 */
+@keyframes streaming-pulse {
+    0% { border-left-color: #007bff; }
+    50% { border-left-color: #80bdff; }
+    100% { border-left-color: #007bff; }
+}
+
+.streaming-answer {
+    animation: streaming-pulse 1.5s infinite;
+}
+
+/* 上下文按钮适配 */
+#ai-context-toggle { /* 修正选择器 */
+    min-width: 85px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    #ai-chat-history {
+        padding: 10px;
+    }
+    
+    .message {
+        max-width: 92%;
+        padding: 10px;
+    }
+}
+/* 思考容器 - 区别于普通消息 */
+.reasoning-container {
+    background: rgba(245, 235, 255, 0.95);
+    border: 2px solid #e0d0ff;
+    border-radius: 12px;
+    margin: 15px 0;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(128, 0, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* 动态左侧装饰条 */
+.reasoning-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #8a2be2 0%, #4b0082 100%);
+    animation: reasoning-glow 2s infinite alternate;
+}
+
+/* 思考头部 */
+.reasoning-header {
+    color: #6a1b9a;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 脑图图标 */
+.reasoning-header::before {
+    content: '🧠';
+    font-size: 1.2em;
+    filter: drop-shadow(0 2px 2px rgba(106, 27, 154, 0.2));
+}
+
+/* 思考内容区域 */
+.reasoning-content {
+    color: #4b2c5e;
+    font-size: 0.88em;
+    line-height: 1.5;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    white-space: pre-wrap;
+    border: 1px solid rgba(234, 224, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 加载状态特效 */
+.reasoning-content.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: reasoning-loading 1.5s infinite;
+}
+
+/* 动态渐变光效 */
+@keyframes reasoning-glow {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* 加载流光动画 */
+@keyframes reasoning-loading {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* 思考内容文字特效 */
+.reasoning-content span {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.2s;
+}
+
+.reasoning-content span:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 2px 4px rgba(106, 27, 154, 0.1);
+}
+/* 移动端适配 */
+@media (max-width: 768px) {
+    #ai-chat-container {
+        border-radius: 0;
+        height: 100vh !important;
+    }
+
+    #ai-chat-history {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    .message {
+        max-width: 90%;
+        padding: 10px;
+    }
+
+    .reasoning-container {
+        margin: 8px 0;
+        padding: 10px;
+    }
+
+    /* 触控优化 */
+    button {
+        padding: 12px 20px;
+        min-width: 60px;
+    }
+
+    #ai-user-input {
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+}
+
+
+/* 增加滚动优化 */
+#ai-chat-history {
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+}
+
+/* 防止加载抖动 */
+.reasoning-container {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+}
+
+/* ========== 全局容器 ========== */
+#ai-chat-container {
+    --primary-accent: #6366f1;  /* 主色调 */
+    --glass-bg: rgba(255,255,255,0.92);
+    --text-primary: #1e1b4b;
+    --text-secondary: #4f46e5;
+    
+    height: 100%;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+}
+
+/* ========== 正式回答消息 ========== */
+.ai-message {
+    background: var(--glass-bg);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: 16px;
+    box-shadow: 
+        0 4px 6px -1px rgba(79, 70, 229, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.02);
+    margin: 12px 0;
+    padding: 1.5rem;
+    position: relative;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 悬浮交互效果 */
+.ai-message:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px -1px rgba(79, 70, 229, 0.08),
+        0 3px 6px rgba(0, 0, 0, 0.03);
+}
+
+/* ===== 排版系统 ===== */
+.ai-content {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.67;
+    font-size: 0.9375rem;
+}
+
+/* 标题层级 */
+.ai-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--primary-accent);
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+.ai-content h4 {
+    font-size: 1rem;
+    color: #4338ca;
+    margin: 1.2rem 0 0.8rem;
+}
+
+/* 段落优化 */
+.ai-content p {
+    margin: 0.85rem 0;
+    hyphens: auto;
+    text-align: justify;
+}
+
+/* 列表系统 */
+.ai-content ul, 
+.ai-content ol {
+    padding-left: 1.8rem;
+    margin: 0.8rem 0;
+    position: relative;
+}
+
+.ai-content li {
+    margin: 0.6rem 0;
+    padding-left: 0.6rem;
+}
+
+.ai-content ul li::before {
+    content: "•";
+    color: var(--primary-accent);
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+/* ===== 代码块系统 ===== */
+.ai-content pre {
+    background: rgba(239, 240, 255, 0.85);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin: 1.2rem 0;
+    overflow-x: auto;
+    backdrop-filter: blur(4px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.ai-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875em;
+    background: rgba(175, 184, 255, 0.15);
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
+    color: #4338ca;
+}
+
+/* 代码块标题 */
+.code-title {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8em;
+    color: #4f46e5;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px dashed rgba(79, 70, 229, 0.2);
+}
+
+/* ===== 表格系统 ===== */
+.ai-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: var(--glass-bg);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ai-content th {
+    background: rgba(99, 102, 241, 0.08);
+    color: #4338ca;
+    padding: 0.8rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+.ai-content td {
+    padding: 0.7rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.05);
+}
+
+/* ===== 引用块 ===== */
+.ai-content blockquote {
+    border-left: 3px solid var(--primary-accent);
+    margin: 1.2rem 0;
+    padding: 1rem 1.5rem;
+    background: rgba(239, 240, 255, 0.4);
+    border-radius: 0 8px 8px 0;
+    position: relative;
+}
+
+.ai-content blockquote::before {
+    content: "“";
+    position: absolute;
+    left: -0.8rem;
+    top: -0.8rem;
+    font-size: 2.5em;
+    color: rgba(99, 102, 241, 0.15);
+    font-family: serif;
+}
+
+/* ===== 流式指示器 ===== */
+.streaming-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9em;
+    color: #4f46e5;
+    margin-left: 0.8rem;
+}
+
+.streaming-dot {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: streaming-pulse 1.2s infinite;
+}
+
+@keyframes streaming-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* ===== 移动端优化 ===== */
+@media (max-width: 768px) {
+    .ai-message {
+        padding: 1.2rem;
+        margin: 10px 0;
+        border-radius: 12px;
+    }
+    
+    .ai-content pre {
+        padding: 1rem;
+        font-size: 0.85em;
+    }
+    
+    .ai-content table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .streaming-indicator {
+        font-size: 0.85em;
+    }
+}
