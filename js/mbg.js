@@ -123,9 +123,9 @@ function createWinbox() {
     <div class="stylebox">
       <div class="font-control">
         <select id="fontSelector" onchange="updateFont(this.value)">
+	 <option value="Hei">微软雅黑</option>
    	  <option value="ZiHunBaiGeTianXing">字魂白鸽天行体</option>
           <option value="inherit">默认字体</option>
-          <option value="Hei">微软雅黑</option>
           <option value="FangSong">仿宋</option>
           <option value="Kaiti">楷体</option>
         </select>
