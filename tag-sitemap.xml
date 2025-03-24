@@ -4,7 +4,14 @@
 
     <url>
         <loc>https://dskblog.top/tags/%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5/</loc>
-        <lastmod>2025-03-20T17:37:57.386Z</lastmod>
+        <lastmod>2025-03-24T20:14:45.944Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://dskblog.top/tags/%E7%AC%AC%E4%B8%80%E7%AF%87/</loc>
+        <lastmod>2025-03-24T18:23:38.698Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -19,13 +26,6 @@
     <url>
         <loc>https://dskblog.top/tags/%E5%85%BB%E7%9C%BC/</loc>
         <lastmod>2025-03-01T06:18:51.151Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://dskblog.top/tags/%E7%AC%AC%E4%B8%80%E7%AF%87/</loc>
-        <lastmod>2025-03-01T06:18:21.650Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

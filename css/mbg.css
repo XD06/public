@@ -23,25 +23,25 @@ link[rel="preload"][href="/fonts/"] {
 /* 自定义字体定义 */
 @font-face {
     font-family: 'Hei';
-    src: url('/fonts/Hei.woff2')  format('truetype');
+    src: url('/fonts/Hei.woff2')  format('woff2');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Kaiti';
-    src: url('/fonts/kaiti.woff2')  format('truetype');
+    src: url('/fonts/kaiti.woff2')  format('woff2');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'FangSong';
-    src: url('/fonts/FangSong.woff2')  format('truetype');
+    src: url('/fonts/FangSong.woff2')  format('woff2');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'ZiHunBaiGeTianXing';
-    src: url('/fonts/ZiHunBaiGeTianXing.woff2')  format('truetype');
+    src: url('/fonts/ZiHunBaiGeTianXing.woff2')  format('woff2');
     font-display: swap;
 }
 
@@ -356,4 +356,24 @@ body {
 }
 a:hover {
     color: var(--theme-main);
+}
+/* 原按钮组容器定位 */
+
+
+/* 悬浮微调动画 */
+.appbuilder-bubbleItem:hover {
+  transform: translateY(-3px);
+  transition: transform 0.2s ease;
+}
+@media (max-width: 768px) {
+  /* 移动端缩小间距 */
+  .appbuilder-bubbleItem {
+    bottom: calc(40px - 40px) !important; 
+    width: 38px;
+    height: 35px;
+  }
+.appbuilder-bubbleItem:hover {
+  transform: translateY(-3px);
+  transition: transform 0.2s ease;
+}
 }

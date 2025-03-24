@@ -5,18 +5,18 @@
 <meta property="og:site_name" content="离患小站">
 <meta property="og:description" content="注意：你可以点击右下角设置，选择合适的背景和字体方便阅读.  以太网的发展   100BASE-T以太网是指在双绞线上传输的基带信号的速率为100Mb&#x2F;s的以太网，也称为快速以太网。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pictureapi.dskblog.top/img/wopaper/picture/blog0105top.png">
+<meta property="og:image" content="https://pictureapi.dskblog.top/img/wopaper/picture/blog0020top.png">
 <meta property="article:published_time" content="2022-09-05T14:22:00.000Z">
 <meta property="article:modified_time" content="2025-03-01T02:03:42.555Z">
 <meta property="article:author" content="dsk">
 <meta property="article:tag" content="网络">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://pictureapi.dskblog.top/img/wopaper/picture/blog0105top.png"><script type="application/ld+json">{
+<meta name="twitter:image" content="https://pictureapi.dskblog.top/img/wopaper/picture/blog0020top.png"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "计算机网络-数据链路层(七)9-5",
   "url": "https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html",
-  "image": "https://pictureapi.dskblog.top/img/wopaper/picture/blog0105top.png",
+  "image": "https://pictureapi.dskblog.top/img/wopaper/picture/blog0020top.png",
   "datePublished": "2022-09-05T14:22:00.000Z",
   "dateModified": "2025-03-01T02:03:42.555Z",
   "author": [
@@ -26,7 +26,7 @@
       "url": "https://dskblog.top/"
     }
   ]
-}</script><link rel="shortcut icon" href="/"><link rel="canonical" href="https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.3.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+}</script><link rel="shortcut icon" href="/"><link rel="canonical" href="https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//www.clarity.ms"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="baidu-site-verification" content="codeva-cwyza0ZFJb"/><link rel="stylesheet" href="/css/index.css?v=5.3.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
     (() => {
       
     const saveToLocal = {
@@ -116,7 +116,31 @@
     detectApple()
   
     })()
-  </script><script>const GLOBAL_CONFIG = {
+  </script><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-1646422017226947',
+  enable_page_level_ads: 'true'
+});</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4aae78d7a91192371287704ce1bd49c2";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-WHNLE6NM5G"></script><script>window.dataLayer = window.dataLayer || []
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date())
+gtag('config', 'G-WHNLE6NM5G')
+btf.addGlobalFn('pjaxComplete', () => {
+  gtag('config', 'G-WHNLE6NM5G', {'page_path': window.location.pathname})
+}, 'google_analytics')
+</script><script>(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "qtcd2mv8bv");</script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
@@ -159,7 +183,7 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/mbg.css"><link rel="stylesheet" href="/css/footer_style.css"><link rel="stylesheet" href="/css/time.css"><link rel="stylesheet" href="/css/AI.css"><meta name="generator" content="Hexo 7.3.0"></head><body><script>window.paceOptions = {
+}</script><link rel="stylesheet" href="/css/mbg.css"><link rel="stylesheet" href="/css/footer_style.css"><link rel="stylesheet" href="/css/time.css"><link rel="stylesheet" href="/css/AI.css"><link rel="preload" href="/fonts/Hei.woff2" as="font" type="font/woff2" crossorigin="anonymous"><meta name="generator" content="Hexo 7.3.0"></head><body><script>window.paceOptions = {
   restartOnPushState: false
 }
 
@@ -167,7 +191,7 @@ btf.addGlobalFn('pjaxSend', () => {
   Pace.restart()
 }, 'pace_restart')
 
-</script><link rel="stylesheet" href="https://tc.qdqqd.com/GzZ3XQ.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/author.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">42</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 视频</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://pictureapi.dskblog.top/img/wopaper/picture/blog0105top.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/author.png" alt="Logo"><span class="site-name">离患小站</span></a><a class="nav-page-title" href="/"><span class="site-name">计算机网络-数据链路层(七)9-5</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 视频</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">计算机网络-数据链路层(七)9-5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-09-05T14:22:00.000Z" title="发表于 2022-09-05 22:22:00">2022-09-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%BA%E7%BD%91/">机网</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;已经过了&quot;,&quot;messageNext&quot;:&quot;天自上次更新，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2025-03-01 10:03:42&quot;}" hidden></div><div class="note orange icon-padding flat"><i class="note-icon fas fa-bullhorn"></i><p>注意：你可以点击右下角设置，选择合适的背景和字体方便阅读.<br></p>
+</script><link rel="stylesheet" href="https://tc.qdqqd.com/GzZ3XQ.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/author.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">44</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 视频</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://pictureapi.dskblog.top/img/wopaper/picture/blog0020top.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/author.png" alt="Logo"><span class="site-name">离患小站</span></a><a class="nav-page-title" href="/"><span class="site-name">计算机网络-数据链路层(七)9-5</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 视频</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">计算机网络-数据链路层(七)9-5<a class="post-edit-link" href="null_posts/计算机网络-数据链路层(七)9-5.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-09-05T14:22:00.000Z" title="发表于 2022-09-05 22:22:00">2022-09-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%BA%E7%BD%91/">机网</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:120,&quot;messagePrev&quot;:&quot;已经过了&quot;,&quot;messageNext&quot;:&quot;天自上次更新，文章内容可能已经过时。&quot;,&quot;postUpdate&quot;:&quot;2025-03-01 10:03:42&quot;}" hidden></div><div class="note orange icon-padding flat"><i class="note-icon fas fa-bullhorn"></i><p>注意：你可以点击右下角设置，选择合适的背景和字体方便阅读.<br></p>
 </div>
 <h2 id="以太网的发展">以太网的发展</h2>
 
@@ -275,7 +299,7 @@ btf.addGlobalFn('pjaxSend', () => {
 <p><a target="_blank" rel="noopener" href="https://kdocs.cn/l/cl60fYfO1qZe">第3章 数据链路层  习题（第1部分）</a></p>
 <p><a target="_blank" rel="noopener" href="https://kdocs.cn/l/cenjHDfYLe95">第3章 数据链路层  习题（第2部分）</a></p>
 <h2 id="注：（以上内容来自中国MOOC慕课湖南科技大学计算机网络">注：（以上内容来自<a target="_blank" rel="noopener" href="https://www.icourse163.org/learn/HNKJ-1461816178?tid=1468294445#/learn/announce">中国MOOC慕课湖南科技大学计算机网络</a>)</h2>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://dskblog.top">dsk</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html">https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dskblog.top" target="_blank">离患小站</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C/">网络</a></div><div class="post-share"><div class="social-share" data-image="https://pictureapi.dskblog.top/img/wopaper/picture/blog0105top.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82(%E4%B8%80)9-6.html" title="计算机网络-网络层(一)9-6"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0018top.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">计算机网络-网络层(一)9-6</div></div></div></a><a class="pagination-related  no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E5%85%AD).html" title="计算机网络-数据层(六)9-4"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0107top.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">计算机网络-数据层(六)9-4</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82(%E4%B8%80)9-6.html" title="计算机网络-网络层(一)9-6"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0018top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-06</div><div class="info-item-2">计算机网络-网络层(一)9-6</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E5%85%AD).html" title="计算机网络-数据层(六)9-4"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0107top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-04</div><div class="info-item-2">计算机网络-数据层(六)9-4</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E4%BA%94).html" title="计算机网络-数据链路(五)9-3"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0106top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-03</div><div class="info-item-2">计算机网络-数据链路(五)9-3</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E5%9B%9B).html" title="计算机网络-数据链路(四)9-2"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0108top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-02</div><div class="info-item-2">计算机网络-数据链路(四)9-2</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E4%B8%89).html" title="计算机网络-数据链路(三)9-1"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0100top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-01</div><div class="info-item-2">计算机网络-数据链路(三)9-1</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E4%BA%8C)8-31.html" title="计算机网络-数据链路(二)8-31"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0107top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-31</div><div class="info-item-2">计算机网络-数据链路(二)8-31</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/author.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">dsk</div><div class="author-info-description">个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">42</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xd06"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/xd06" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="/2383032306@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E7%9A%84%E5%8F%91%E5%B1%95"><span class="toc-number">1.</span> <span class="toc-text">以太网的发展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">2.</span> <span class="toc-text">802.11无线局域网的组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84%E7%89%A9%E7%90%86%E5%B1%82"><span class="toc-number">3.</span> <span class="toc-text">802.11无线局域网的物理层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E4%BD%BF%E7%94%A8CSMA-CA%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">4.</span> <span class="toc-text">802.11无线局域网使用CSMA&#x2F;CA协议的原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSMA-CA%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">CSMA&#x2F;CA协议的基本工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84MAC%E5%B8%A7"><span class="toc-number">6.</span> <span class="toc-text">802.11无线局域网的MAC帧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%EF%BC%9A%EF%BC%88%E4%BB%A5%E4%B8%8A%E5%86%85%E5%AE%B9%E6%9D%A5%E8%87%AA%E4%B8%AD%E5%9B%BDMOOC%E6%85%95%E8%AF%BE%E6%B9%96%E5%8D%97%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">7.</span> <span class="toc-text">注：（以上内容来自中国MOOC慕课湖南科技大学计算机网络)</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-20%20-%20%E6%98%9F%E6%9C%9F%E5%9B%9B.html" title="【每日早报】-2025-03-20 - 星期四"><img src="https://file.alapi.cn/60s/202503201742410801_head.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【每日早报】-2025-03-20 - 星期四"/></a><div class="content"><a class="title" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-20%20-%20%E6%98%9F%E6%9C%9F%E5%9B%9B.html" title="【每日早报】-2025-03-20 - 星期四">【每日早报】-2025-03-20 - 星期四</a><time datetime="2025-03-19T16:00:00.000Z" title="发表于 2025-03-20 00:00:00">2025-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-16%20-%20%E6%98%9F%E6%9C%9F%E6%97%A5.html" title="【每日早报】-2025-03-16 - 星期日"><img src="https://file.alapi.cn/60s/202503161742063401_head.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【每日早报】-2025-03-16 - 星期日"/></a><div class="content"><a class="title" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-16%20-%20%E6%98%9F%E6%9C%9F%E6%97%A5.html" title="【每日早报】-2025-03-16 - 星期日">【每日早报】-2025-03-16 - 星期日</a><time datetime="2025-03-15T16:00:00.000Z" title="发表于 2025-03-16 00:00:00">2025-03-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-14%20-%20%E6%98%9F%E6%9C%9F%E4%BA%94.html" title="【每日早报】-2025-03-14 - 星期五"><img src="https://file.alapi.cn/60s/202503141741887002_head.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【每日早报】-2025-03-14 - 星期五"/></a><div class="content"><a class="title" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-14%20-%20%E6%98%9F%E6%9C%9F%E4%BA%94.html" title="【每日早报】-2025-03-14 - 星期五">【每日早报】-2025-03-14 - 星期五</a><time datetime="2025-03-13T16:00:00.000Z" title="发表于 2025-03-14 00:00:00">2025-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-12%20-%20%E6%98%9F%E6%9C%9F%E4%B8%89.html" title="【每日早报】-2025-03-12 - 星期三"><img src="https://file.alapi.cn/60s/202503121741713305_head.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【每日早报】-2025-03-12 - 星期三"/></a><div class="content"><a class="title" href="/%E3%80%90%E6%AF%8F%E6%97%A5%E6%97%A9%E6%8A%A5%E3%80%91-2025-03-12%20-%20%E6%98%9F%E6%9C%9F%E4%B8%89.html" title="【每日早报】-2025-03-12 - 星期三">【每日早报】-2025-03-12 - 星期三</a><time datetime="2025-03-11T16:00:00.000Z" title="发表于 2025-03-12 00:00:00">2025-03-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/deepseek.html" title="deepseek"><img src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0100top.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="deepseek"/></a><div class="content"><a class="title" href="/deepseek.html" title="deepseek">deepseek</a><time datetime="2025-03-11T14:20:42.000Z" title="发表于 2025-03-11 22:20:42">2025-03-11</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2025 By dsk</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.3</a></div><div class="footer_custom_text"><div class="footer-svg-div">
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://dskblog.top">dsk</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html">https://dskblog.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82(%E4%B8%83)9-5.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dskblog.top" target="_blank">离患小站</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C/">网络</a></div><div class="post-share"><div class="social-share" data-image="https://pictureapi.dskblog.top/img/wopaper/picture/blog0020top.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82(%E4%B8%80)9-6.html" title="计算机网络-网络层(一)9-6"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0101top.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">计算机网络-网络层(一)9-6</div></div></div></a><a class="pagination-related  no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E5%85%AD).html" title="计算机网络-数据层(六)9-4"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0107top.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">计算机网络-数据层(六)9-4</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82(%E4%B8%80)9-6.html" title="计算机网络-网络层(一)9-6"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0101top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-06</div><div class="info-item-2">计算机网络-网络层(一)9-6</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E5%85%AD).html" title="计算机网络-数据层(六)9-4"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0107top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-04</div><div class="info-item-2">计算机网络-数据层(六)9-4</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E4%BA%94).html" title="计算机网络-数据链路(五)9-3"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0021top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-03</div><div class="info-item-2">计算机网络-数据链路(五)9-3</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E5%9B%9B).html" title="计算机网络-数据链路(四)9-2"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0102top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-02</div><div class="info-item-2">计算机网络-数据链路(四)9-2</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E4%B8%89).html" title="计算机网络-数据链路(三)9-1"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0103top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-01</div><div class="info-item-2">计算机网络-数据链路(三)9-1</div></div></div></a><a class="pagination-related no-desc" href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF(%E4%BA%8C)8-31.html" title="计算机网络-数据链路(二)8-31"><img class="cover" src="https://pictureapi.dskblog.top/img/wopaper/picture/blog0020top.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-31</div><div class="info-item-2">计算机网络-数据链路(二)8-31</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E7%9A%84%E5%8F%91%E5%B1%95"><span class="toc-number">1.</span> <span class="toc-text">以太网的发展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">2.</span> <span class="toc-text">802.11无线局域网的组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84%E7%89%A9%E7%90%86%E5%B1%82"><span class="toc-number">3.</span> <span class="toc-text">802.11无线局域网的物理层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E4%BD%BF%E7%94%A8CSMA-CA%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">4.</span> <span class="toc-text">802.11无线局域网使用CSMA&#x2F;CA协议的原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSMA-CA%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">CSMA&#x2F;CA协议的基本工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#802-11%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84MAC%E5%B8%A7"><span class="toc-number">6.</span> <span class="toc-text">802.11无线局域网的MAC帧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%EF%BC%9A%EF%BC%88%E4%BB%A5%E4%B8%8A%E5%86%85%E5%AE%B9%E6%9D%A5%E8%87%AA%E4%B8%AD%E5%9B%BDMOOC%E6%85%95%E8%AF%BE%E6%B9%96%E5%8D%97%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">7.</span> <span class="toc-text">注：（以上内容来自中国MOOC慕课湖南科技大学计算机网络)</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background: transparent;"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2025 By dsk</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.3</a></div><div class="footer_custom_text"><div class="footer-svg-div">
   <svg class="footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
   <path class="footer-wave-path" d="M851.8,100c125,0,288.3-45,348.2-64V0H0v44c3.7-1,7.3-1.9,11-2.9C80.7,22,151.7,10.8,223.5,6.3C276.7,2.9,330,4,383,9.8 c52.2,5.7,103.3,16.2,153.4,32.8C623.9,71.3,726.8,100,851.8,100z"></path>
   </svg>    
@@ -393,7 +417,7 @@ btf.addGlobalFn('pjaxSend', () => {
       </div>
     </div>
   </div>
-</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button type="button" title="切换背景" onclick="toggleWinbox()"><i class="fas fa-gears"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.3.3"></script><script src="/js/main.js?v=5.3.3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
+</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button type="button" title="切换背景" onclick="toggleWinbox()"><i class="fas fa-gears"></i></button><button id="chat-btn" type="button" title="聊天" style="display:none"><i class="fas fa-message"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.3.3"></script><script src="/js/main.js?v=5.3.3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.min.js"></script><script src="https://pictureapi.dskblog.top/js/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(async () => {
   const showKatex = () => {
     document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
   }
@@ -422,11 +446,200 @@ btf.addGlobalFn('pjaxSend', () => {
 
   window.pjax ? abcjsInit() : window.addEventListener('load', abcjsInit)
   btf.addGlobalFn('encrypt', abcjsInit, 'abcjs')
-})()</script></div><script src="https://agi-dev-platform-web.bj.bcebos.com/ai_apaas/embed/output/embedLiteSDK.js?responseExpires=0"></script><script>new EmbedLiteSDK({appId:'c1563944-e551-44cf-95aa-fd0f77640124',code:'embedkjjYxmUk3XrWO7Lk2Dqr'});</script><script defer data-pjax src="/js/mbg.js"></script><script defer data-pjax src="/js/AI.js"></script><script src="/js/time.js?v=2"></script><script src="/js/webpushr-sw.js"></script><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.3/purify.min.js"></script><script>（function（w，d， s， id） {if（typeof（w.webpushr）！=='undefined'） return;w.webpushr=w.webpushr||function（）{（w.webpushr.q=w.webpushr.q||[]）.push（参数）};var js， fjs = d.getElementsByTagName（s）[0];js = d.createElement（s）;js.id = id;js.async=1;js.src = “https://pictureapi.dskblog.top/js/app.min.js”;} fjs.parentNode.appendChild（js）;（window，document， 'script'， 'webpushr-jssdk'））;webpushr（'设置'，{'key'：'BJNGWXPB2ZzwJMvqv_rNqMl-Prl6AMj93NePtdH4sb5nNfw_wM5nD46cQyxC1QIdSSuUG1YnwRLnK4IbmFF7VP4' }）;</script><script src="https://pictureapi.dskblog.top/js/winbox.bundle.min.js"></script><div class="aplayer no-destroy" data-id="13408270526" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true"> </div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://comments-blog.netlify.app/.netlify/functions/twikoo',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://comments-blog.netlify.app/.netlify/functions/twikoo',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script>window.newestComments = {
+  changeContent: content => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<code>.*?<\/code>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g, "") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0, 150) + '...'
+    }
+    return content
+  },
+
+  generateHtml: (array, ele) => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class="aside-list-item">'
+
+        if (true && array[i].avatar) {
+          const imgAttr = 'data-lazy-src'
+          const lazyloadNative = ''
+          result += `<a href="${array[i].url}" class="thumbnail"><img ${imgAttr}="${array[i].avatar}" alt="${array[i].nick}" ${lazyloadNative}></a>`
+        }
+
+        result += `<div class="content">
+        <a class="comment" href="${array[i].url}" title="${array[i].content}">${array[i].content}</a>
+        <div class="name"><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '暂无评论'
+    }
+
+    ele.innerHTML = result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh(ele)
+  },
+
+  newestCommentInit: (name, getComment) => {
+    const $dom = document.querySelector('#card-newest-comments .aside-list')
+    if ($dom) {
+      const data = btf.saveToLocal.get(name)
+      if (data) {
+        newestComments.generateHtml(JSON.parse(data), $dom)
+      } else {
+        getComment($dom)
+      }
+    }
+  },
+
+  run: (name, getComment) => {
+    newestComments.newestCommentInit(name, getComment)
+    btf.addGlobalFn('pjaxComplete', () => newestComments.newestCommentInit(name, getComment), name)
+  }
+}</script><script>window.addEventListener('load', () => {
+  const keyName = 'twikoo-newest-comments'
+  const { changeContent, generateHtml, run } = window.newestComments
+
+  const getComment = ele => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://comments-blog.netlify.app/.netlify/functions/twikoo',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(res => {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        btf.saveToLocal.set(keyName, JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray, ele)
+      }).catch(err => {
+        console.error(err)
+        ele.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.41/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  run(keyName, getComment)
+})</script><script defer data-pjax src="/js/mbg.js"></script><script defer data-pjax src="/js/AI.js"></script><script src="/js/time.js?v=2"></script><script src="/js/webpushr-sw.js"></script><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.3/purify.min.js"></script><script>（function（w，d， s， id） {if（typeof（w.webpushr）！=='undefined'） return;w.webpushr=w.webpushr||function（）{（w.webpushr.q=w.webpushr.q||[]）.push（参数）};var js， fjs = d.getElementsByTagName（s）[0];js = d.createElement（s）;js.id = id;js.async=1;js.src = “https://pictureapi.dskblog.top/js/app.min.js”;} fjs.parentNode.appendChild（js）;（window，document， 'script'， 'webpushr-jssdk'））;webpushr（'设置'，{'key'：'BJNGWXPB2ZzwJMvqv_rNqMl-Prl6AMj93NePtdH4sb5nNfw_wM5nD46cQyxC1QIdSSuUG1YnwRLnK4IbmFF7VP4' }）;</script><script src="https://pictureapi.dskblog.top/js/winbox.bundle.min.js"></script><script src="https://picture.dskblog.top/api/public/dl/7NkgynSE/js/embedLiteSDK.js?responseExpires=0"></script><script>new EmbedLiteSDK({appId:'c1563944-e551-44cf-95aa-fd0f77640124',code:'embedkjjYxmUk3XrWO7Lk2Dqr'});</script><div class="aplayer no-destroy" data-id="13408270526" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false"> </div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
 POWERMODE.shake = true;
 POWERMODE.mobile = true;
 document.body.addEventListener('input', POWERMODE);
-</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/metingjs/dist/Meting.min.js"></script><script>(() => {
+</script><script>(() => {
+  window.ChatraID = 'jdWXMYEasSHWphsq5'
+  window.Chatra = window.Chatra || function() {
+    (window.Chatra.q = window.Chatra.q || []).push(arguments)
+  }
+
+  btf.getScript('https://call.chatra.io/chatra.js').then(() => {
+    const isChatBtn = true
+    const isChatHideShow = true
+
+    if (isChatBtn) {
+      const close = () => {
+        Chatra('minimizeWidget')
+        Chatra('hide')
+      }
+
+      const open = () => {
+        Chatra('openChat', true)
+        Chatra('show')
+      }
+
+      window.ChatraSetup = { startHidden: true }
+    
+      window.chatBtnFn = () => document.getElementById('chatra').classList.contains('chatra--expanded') ? close() : open()
+
+      document.getElementById('chat-btn').style.display = 'block'
+    } else if (isChatHideShow) {
+      window.chatBtn = {
+        hide: () => Chatra('hide'),
+        show: () => Chatra('show')
+      }
+    }
+  })
+})()</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/metingjs/dist/Meting.min.js"></script><script>(() => {
   const destroyAplayer = () => {
     if (window.aplayers) {
       for (let i = 0; i < window.aplayers.length; i++) {
@@ -450,7 +663,7 @@ document.body.addEventListener('input', POWERMODE);
     elements: 'a:not([target="_blank"])',
     selectors: pjaxSelectors,
     cacheBust: false,
-    analytics: false,
+    analytics: true,
     scrollRestoration: false
   })
 

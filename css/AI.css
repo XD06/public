@@ -203,10 +203,6 @@
     }
 
     /* 触控优化 */
-    button {
-        padding: 12px 20px;
-        min-width: 60px;
-    }
 
     #ai-user-input {
         font-size: 16px; /* 防止iOS缩放 */
