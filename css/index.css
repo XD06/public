@@ -3947,7 +3947,7 @@ figure.highlight pre .javascript .function {
   width: 100%;
   height: 100%;
   position: fixed;
-  background: #000;
+  background: #fff;
   z-index: 1001;
   opacity: 1;
   -ms-filter: none;
