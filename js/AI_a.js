@@ -116,7 +116,7 @@ function GM_xmlhttpRequest(options) {
             border: 1px solid #ddd;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: none;
+            //display: none;
             flex-direction: column;
             overflow: hidden;
             opacity: 0;
@@ -133,7 +133,7 @@ function GM_xmlhttpRequest(options) {
 
         /* 对话框激活时的样式 */
         .ds-chat-window.active {
-            display: flex !important;
+            //display: flex !important;
             opacity: 1 !important;
         }
 
@@ -235,7 +235,7 @@ function GM_xmlhttpRequest(options) {
             background-color: #FFFFFF;
             line-height: 1.2; /* 调整行高 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            padding: 5px 8px;
+            padding: 5px 1px;
             text-align: left;
         }
         .ds-chat-input-area {
@@ -334,7 +334,7 @@ function GM_xmlhttpRequest(options) {
         }
 
         .ds-message-content:not(:empty)::after {
-            display: none;
+            //display: none;
         }
 
         /* 增强代码块高亮效果 */
@@ -503,9 +503,11 @@ function GM_xmlhttpRequest(options) {
                 document.body.appendChild(icon);
 
                 // 确保图标位置固定在右下角5px处
+		const savedRight = GM_getValue('iconRight', 5);
+		const savedBottom = GM_getValue('iconBottom', 5);
+		icon.style.right = `${savedRight}px`;
+		icon.style.bottom = `${savedBottom}px`;
                 icon.style.position = 'fixed';
-                icon.style.bottom = '5px';
-                icon.style.right = '5px';
                 icon.style.zIndex = '2147483647';
                 icon.style.display = 'flex';
                 icon.style.cursor = 'move'; // 鼠标悬停时显示拖动光标
@@ -516,14 +518,11 @@ function GM_xmlhttpRequest(options) {
 
                 // 拖动相关变量
                 let isDragging = false;
-                let signals = false;
-                let signals1 = false;
                 let startX, startY, initialRight, initialBottom;
                 let hasMoved = false; // 记录是否发生了移动
 
                 // 鼠标按下事件
                 icon.addEventListener('mousedown', (e) => {
-			signals = true;
                     isDragging = true;
                     hasMoved = false; // <<<--- 每次按下鼠标时，重置移动标志
                     startX = e.clientX;
@@ -549,7 +548,6 @@ function GM_xmlhttpRequest(options) {
 
                         // 如果确实移动了，才更新图标位置
                         if (hasMoved) {
-				signals = false;
                             const newRight = initialRight - deltaX;
                             const newBottom = initialBottom - deltaY;
                             const maxRight = window.innerWidth - icon.offsetWidth;
@@ -567,8 +565,9 @@ function GM_xmlhttpRequest(options) {
                     
                     if (isDragging) {
                         isDragging = false;
-			signals1 = false;
-
+			const styles = window.getComputedStyle(icon);
+			GM_setValue('iconRight', parseFloat(styles.right));
+			GM_setValue('iconBottom', parseFloat(styles.bottom));
                         // 注意：hasMoved 的状态在这里保持不变，它记录了 mousedown 和 mouseup 之间是否发生过移动
                     }
                 });
@@ -595,7 +594,8 @@ function GM_xmlhttpRequest(options) {
                             // 2. 使用 requestAnimationFrame 将定位操作推迟到下一帧
                     
 			   chatWindow.classList.add('active');
-                            icon.style.display = 'none';
+			   chatWindow.style.display = 'flex';
+                           icon.style.display = 'none';
                             console.log("窗口已激活，准备请求下一帧定位");
                                 requestAnimationFrame(() => {
                                     try { // 最好加上 try...catch 以防 positionChatWindow 内部出错
@@ -610,12 +610,14 @@ function GM_xmlhttpRequest(options) {
 
                         } else {
                             // 关闭窗口的逻辑保持不变
-                            chatWindow.classList.remove('active');
+				chatWindow.classList.remove('active');
+                             chatWindow.style.display = 'none';
                             icon.style.display = 'flex';
                             console.log("窗口已关闭");
                         }
                     } else {
                         console.log("检测到拖拽，忽略点击。");
+	
                     }
 
                 });
@@ -626,7 +628,7 @@ function GM_xmlhttpRequest(options) {
 
                 const chatTitle = document.createElement('div');
                 chatTitle.className = 'ds-chat-title';
-                chatTitle.innerText = '🤖 AI assistant';
+                chatTitle.innerText = '🤖 Ai Assistant';
                 chatHeader.appendChild(chatTitle);
 
                 const headerButtons = document.createElement('div');
@@ -665,10 +667,13 @@ function GM_xmlhttpRequest(options) {
                 contextToggle.appendChild(contextCheckbox);
 
                 const contextLabel = document.createElement('label');
-                contextLabel.htmlFor = 'ds-context-checkbox';
-                contextLabel.innerText = '🕸️';
-                contextLabel.title = '网页上下文'; // 添加提示
-                contextToggle.appendChild(contextLabel);
+		contextLabel.htmlFor = 'ds-context-checkbox';
+		contextLabel.innerText = '🕸️';
+		contextLabel.title = '网页上下文';
+		contextLabel.style.color = '#000000';       // 黑色（或深色）
+		contextLabel.style.fontWeight = 'bold';     // 加粗
+		contextLabel.style.fontSize = '1.3em';      // 可选：调大字号
+		contextToggle.appendChild(contextLabel);
 
                 const inputBox = document.createElement('textarea');
                 inputBox.className = 'ds-chat-input';
@@ -692,6 +697,23 @@ function GM_xmlhttpRequest(options) {
                 clearBtn.innerText = '🎨';
                 clearBtn.title = '清空聊天历史'; // 添加提示
                 settingsArea.appendChild(clearBtn);
+		// ... existing code ...
+
+
+settingsArea.className = 'ds-chat-settings';
+inputArea.appendChild(settingsArea);
+
+// 新增总结网页按钮
+const summarizeBtn = document.createElement('span');
+summarizeBtn.className = 'ds-chat-settings-btn';
+summarizeBtn.innerText = '📄';
+summarizeBtn.title = '一键总结当前网页';
+summarizeBtn.style.marginRight = '10px';
+settingsArea.appendChild(summarizeBtn);
+
+// 添加总结网页按钮点击事件
+
+// ... rest of the existing code ...
 
                 // 显示历史消息
                 function displayHistory() {
@@ -709,17 +731,15 @@ function GM_xmlhttpRequest(options) {
                 }
                 displayHistory();
 
-                // 事件监听
-                icon.addEventListener('click', () => {
-                    chatWindow.classList.toggle('active');
-                    icon.style.display = 'none';
-                });
+                // 事件监听,关闭弹窗
 
-                closeBtn.addEventListener('click', () => {
-                    chatWindow.classList.remove('active');
-                    icon.style.display = 'flex';
-                });
 
+        closeBtn.addEventListener('click', () => {
+	chatWindow.classList.remove('active');
+            chatWindow.style.display = 'none';
+            icon.style.display = 'flex';
+        });
+                
                 fullscreenBtn.addEventListener('click', () => {
                     chatWindow.classList.toggle('fullscreen');
                     if (chatWindow.classList.contains('fullscreen')) {
@@ -1110,18 +1130,10 @@ function findContentByTextDensity() {
                         positionChatWindow();
 
                         chatWindow.classList.toggle('active');
-                        if (chatWindow.classList.contains('active')) {
-                            icon.style.display = 'none';
-                        } else {
-                            icon.style.display = 'flex';
-                        }
+			
+                       
                     }
                 });
-                // 流式响应处理
-                // ... 已有代码 ...
-
-                // 流式响应处理
-                // ... 已有代码 ...
 
                 // 流式响应处理
                 function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv) {
@@ -1293,153 +1305,158 @@ function findContentByTextDensity() {
                 }
 
                 // 发送消息函数
-                // 发送消息函数
-                async function sendMessage(message, retryCount = 0) {
-                    if (!message.trim()) return;
 
-                    if (!config.apiKey) {
-                        alert('请先设置 API 密钥！');
-                        settingsBtn.click();
-                        return;
-                    }
 
-                    if (!navigator.onLine) {
-                        const errorMsgDiv = document.createElement('div');
-                        errorMsgDiv.className = 'ds-chat-message ds-error';
-                        errorMsgDiv.innerText = '错误: 网络连接已断开,请检查网络后重试';
-                        chatContent.appendChild(errorMsgDiv);
-                        chatContent.scrollTop = chatContent.scrollHeight;
-                        return;
-                    }
+// 发送消息函数
+async function sendMessage(message, retryCount = 0, hideMessage = false) {
+    if (!message.trim()) return;
 
-                    const userMsg = { role: 'user', content: message };
-                    config.chatHistory.push(userMsg);
-                    GM_setValue('chatHistory', config.chatHistory);
+    if (!config.apiKey) {
+        alert('请先设置 API 密钥！');
+        settingsBtn.click();
+        return;
+    }
 
-                    const userMsgDiv = document.createElement('div');
-                    userMsgDiv.className = 'ds-chat-message ds-user-message';
-                    userMsgDiv.innerHTML = marked.parse(`${message}`);
-                    addCopyButtonsToCodeBlocks(userMsgDiv);
-                    chatContent.appendChild(userMsgDiv);
+    if (!navigator.onLine) {
+        const errorMsgDiv = document.createElement('div');
+        errorMsgDiv.className = 'ds-chat-message ds-error';
+        errorMsgDiv.innerText = '错误: 网络连接已断开,请检查网络后重试';
+        chatContent.appendChild(errorMsgDiv);
+        chatContent.scrollTop = chatContent.scrollHeight;
+        return;
+    }
 
-                    const thinkingMsgDiv = document.createElement('div');
-                    thinkingMsgDiv.className = 'ds-reasoning-title';
-                    thinkingMsgDiv.innerText = '思考中...';
-                    chatContent.appendChild(thinkingMsgDiv);
+    const userMsg = { role: 'user', content: message };
+    config.chatHistory.push(userMsg);
+    GM_setValue('chatHistory', config.chatHistory);
 
-                    const aiMsgDiv = document.createElement('div');
-                    aiMsgDiv.className = 'ds-chat-message ds-ai-message';
-                    chatContent.appendChild(aiMsgDiv);
+    if (!hideMessage) {
+        const userMsgDiv = document.createElement('div');
+        userMsgDiv.className = 'ds-chat-message ds-user-message';
+        userMsgDiv.innerHTML = marked.parse(`${message}`);
+        addCopyButtonsToCodeBlocks(userMsgDiv);
+        chatContent.appendChild(userMsgDiv);
+    }
 
-                    chatContent.scrollTop = chatContent.scrollHeight;
+    const thinkingMsgDiv = document.createElement('div');
+    thinkingMsgDiv.className = 'ds-reasoning-title';
+    thinkingMsgDiv.innerText = '思考中...';
+    chatContent.appendChild(thinkingMsgDiv);
 
-                    const requestData = {
-                        model: config.model,
-                        messages: [
-                            { role: 'system', content: config.personalityPrompt },
-                            ...truncateContext(config.chatHistory, config.maxContextTokens)
-                        ],
-                        temperature: config.temperature,
-                        max_tokens: config.maxTokens,
-                        stream: true,
-                    };
+    const aiMsgDiv = document.createElement('div');
+    aiMsgDiv.className = 'ds-chat-message ds-ai-message';
+    chatContent.appendChild(aiMsgDiv);
 
-                    if (config.usePageContext) {
-                        const pageContent = getPageContent();
-                        requestData.messages.splice(1, 0, {
-                            role: 'system',
-                            content: `[当前网页信息]
+    chatContent.scrollTop = chatContent.scrollHeight;
+
+    const requestData = {
+        model: config.model,
+        messages: [
+            { role: 'system', content: config.personalityPrompt },
+            ...truncateContext(config.chatHistory, config.maxContextTokens)
+        ],
+        temperature: config.temperature,
+        max_tokens: config.maxTokens,
+        stream: true,
+    };
+
+    if (config.usePageContext) {
+        const pageContent = getPageContent();
+        requestData.messages.splice(1, 0, {
+            role: 'system',
+            content: `[当前网页信息]
 标题: ${pageContent.title}
 URL: ${pageContent.url}
 正文内容: ${pageContent.content}
 注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
-                        });
-console.log(`[当前网页信息]
+        });
+        console.log(`[当前网页信息]
 标题: ${pageContent.title}
 URL: ${pageContent.url}
 内容摘要: ${pageContent.content}
 基于以上网页内容，请回答以下问题，如果问题不相关则仅作为上下文参考`
-);
-                    }
-console.log('发送的请求数据:', requestData); // 添加
+        );
+    }
+    console.log('发送的请求数据:', requestData); // 添加
 
+    try {
+        return new Promise((resolve, reject) => {
+            let timeoutId = setTimeout(() => {
+                reject(new Error('请求超时'));
+            }, 30000);
+
+            GM_xmlhttpRequest({
+                method: 'POST',
+                url: config.apiUrl,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${config.apiKey}`,
+                    'Accept': 'text/event-stream'
+                },
+                responseType: 'stream',
+                data: JSON.stringify(requestData),
+                onloadstart: (responseInfo) => {
                     try {
-                        return new Promise((resolve, reject) => {
-                            let timeoutId = setTimeout(() => {
-                                reject(new Error('请求超时'));
-                            }, 30000);
-
-                            GM_xmlhttpRequest({
-                                method: 'POST',
-                                url: config.apiUrl,
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${config.apiKey}`,
-                                    'Accept': 'text/event-stream'
-                                },
-                                responseType: 'stream',
-                                data: JSON.stringify(requestData),
-                                onloadstart: (responseInfo) => {
-                                    try {
-                                        // 传递实际的响应对象
-                                        handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv)
-                                            .then(resolve)
-                                            .catch(reject);
-                                    } catch (error) {
-                                        reject(error);
-                                    }
-                                },
-                                onerror: (error) => {
-                                    clearTimeout(timeoutId);
-                                    chatContent.removeChild(thinkingMsgDiv);
-                                    reject(new Error('请求失败: ' + error.statusText));
-                                },
-                                ontimeout: () => {
-                                    clearTimeout(timeoutId);
-                                    chatContent.removeChild(thinkingMsgDiv);
-                                    reject(new Error('请求超时'));
-                                }
-                            });
-                        });
+                        // 传递实际的响应对象
+                        handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv)
+                            .then(resolve)
+                            .catch(reject);
                     } catch (error) {
-                        if (thinkingMsgDiv.parentNode) {
-                            chatContent.removeChild(thinkingMsgDiv);
-                        }
-
-                        let errorMessage = '发生未知错误';
-                        if (error.message.includes('timeout')) {
-                            errorMessage = '请求超时,请检查网络连接';
-                        } else if (error.message.includes('Failed to fetch') || error.message.includes('请求失败')) {
-                            errorMessage = '无法连接到服务器,请检查:\n1. 网络连接\n2. API地址是否正确\n3. 是否开启了代理/VPN';
-                        } else if (error.message.includes('401')) {
-                            errorMessage = 'API密钥无效或已过期,请重新设置';
-                        } else if (error.message.includes('429')) {
-                            errorMessage = '请求过于频繁,请稍后再试';
-                        } else {
-                            errorMessage = `错误: ${error.message}`;
-                        }
-
-                        const errorMsgDiv = document.createElement('div');
-                        errorMsgDiv.className = 'ds-chat-message ds-error';
-                        errorMsgDiv.innerText = errorMessage;
-                        chatContent.appendChild(errorMsgDiv);
-                        chatContent.scrollTop = chatContent.scrollHeight;
-
-                        if ((error.message.includes('Failed to fetch') || error.message.includes('请求失败') || error.message.includes('timeout')) && retryCount < 3) {
-                            const retryMsgDiv = document.createElement('div');
-                            retryMsgDiv.className = 'ds-chat-message ds-thinking';
-                            retryMsgDiv.innerText = `连接失败,正在第${retryCount + 1}次重试...`;
-                            chatContent.appendChild(retryMsgDiv);
-
-                            setTimeout(() => {
-                                chatContent.removeChild(retryMsgDiv);
-                                return sendMessage(message, retryCount + 1);
-                            }, 2000);
-                        }
+                        reject(error);
                     }
+                },
+                onerror: (error) => {
+                    clearTimeout(timeoutId);
+                    chatContent.removeChild(thinkingMsgDiv);
+                    reject(new Error('请求失败: ' + error.statusText));
+                },
+                ontimeout: () => {
+                    clearTimeout(timeoutId);
+                    chatContent.removeChild(thinkingMsgDiv);
+                    reject(new Error('请求超时'));
                 }
+            });
+        });
+    } catch (error) {
+        if (thinkingMsgDiv.parentNode) {
+            chatContent.removeChild(thinkingMsgDiv);
+        }
+
+        let errorMessage = '发生未知错误';
+        if (error.message.includes('timeout')) {
+            errorMessage = '请求超时,请检查网络连接';
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('请求失败')) {
+            errorMessage = '无法连接到服务器,请检查:\n1. 网络连接\n2. API地址是否正确\n3. 是否开启了代理/VPN';
+        } else if (error.message.includes('401')) {
+            errorMessage = 'API密钥无效或已过期,请重新设置';
+        } else if (error.message.includes('429')) {
+            errorMessage = '请求过于频繁,请稍后再试';
+        } else {
+            errorMessage = `错误: ${error.message}`;
+        }
+
+        const errorMsgDiv = document.createElement('div');
+        errorMsgDiv.className = 'ds-chat-message ds-error';
+        errorMsgDiv.innerText = errorMessage;
+        chatContent.appendChild(errorMsgDiv);
+        chatContent.scrollTop = chatContent.scrollHeight;
+
+        if ((error.message.includes('Failed to fetch') || error.message.includes('请求失败') || error.message.includes('timeout')) && retryCount < 3) {
+            const retryMsgDiv = document.createElement('div');
+            retryMsgDiv.className = 'ds-chat-message ds-thinking';
+            retryMsgDiv.innerText = `连接失败,正在第${retryCount + 1}次重试...`;
+            chatContent.appendChild(retryMsgDiv);
+
+            setTimeout(() => {
+                chatContent.removeChild(retryMsgDiv);
+                return sendMessage(message, retryCount + 1, hideMessage);
+            }, 2000);
+        }
+    }
+}
 
 
+// ... rest of the existing code ...
                 // 为代码块添加复制按钮
                 function addCopyButtonsToCodeBlocks(container) {
                     // 遍历所有 pre 元素（不仅仅是已高亮的）
@@ -1498,6 +1515,38 @@ console.log('发送的请求数据:', requestData); // 添加
                         hljs.highlightElement(pre.querySelector('code'));
                     });
                 }
+//一键总结网页内容事件
+
+// 添加总结网页按钮点击事件
+summarizeBtn.addEventListener('click', async () => {
+    if (!config.apiKey) {
+        alert('请先设置 API 密钥！');
+        settingsBtn.click();
+        return;
+    }
+
+    // 在对话框显示用户正在总结网页的消息
+    const userSummaryMsgDiv = document.createElement('div');
+    userSummaryMsgDiv.className = 'ds-chat-message ds-user-message';
+    userSummaryMsgDiv.innerText = '正在总结当前网页...';
+    chatContent.appendChild(userSummaryMsgDiv);
+    chatContent.scrollTop = chatContent.scrollHeight;
+
+    const pageContent = getPageContent();
+    const summaryPrompt = `你是一个长文本内容总结专家，总结当前网页，不能漏掉任何一点，要求突出重点和关键信息(重点需要标记)：
+    网页标题: ${pageContent.title}
+    URL: ${pageContent.url}
+    网页内容:
+    ${pageContent.content.substring(0, 10000)}...`;
+
+    try {
+        await sendMessage(summaryPrompt,0,true);
+    } catch (error) {
+        console.error('总结网页时出错:', error);
+    }
+});
+
+// ... rest of the existing code ...
                 // 输入框事件
                 inputBox.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
