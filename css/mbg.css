@@ -9,6 +9,9 @@
     background-size: cover;  /* 关键：保持图片比例并覆盖容器 */
     background-position: center;
 }
+button{
+background: black !important;
+}
 
 /* 适配暗黑模式下的网页背景 */
 [data-theme='dark'] #web_bg {
@@ -346,7 +349,7 @@ body {
 }
 /* 在文件顶部添加CSS变量 */
 :root {
-    --theme-main: black;
+    --theme-main: #b9c2c770 !important;
     --theme-dark-main: #1a1a1a;
 }
 
