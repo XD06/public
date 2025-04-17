@@ -150,7 +150,7 @@ function GM_xmlhttpRequest(options) {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             display: none;
             flex-direction: column;
-            overflow: hidden;
+           // overflow: hidden;
             opacity: 0;
            /*transform: translateY(20px);*/
             z-index: 2147483646;
@@ -591,7 +591,7 @@ function GM_xmlhttpRequest(options) {
     width: 20px; /* 圆形直径 */
     height: 20px;
     border-radius: 50%; /* 圆形 */
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: white;
     border: none;
     cursor: pointer;
     z-index: 2147483645;
@@ -599,13 +599,13 @@ function GM_xmlhttpRequest(options) {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ff4444;
+    color: white;
     transition: all 0.2s;
-    overflow: hidden; /* 隐藏内部动画溢出部分 */
+   overflow: hidden; /* 隐藏内部动画溢出部分 */
 }
 
 .ds-stop-button:hover {
-    //background-color: #ffebee;
+    background-color: #ffebee;
     transform: scale(1.05);
 }
 
@@ -616,7 +616,7 @@ function GM_xmlhttpRequest(options) {
     width: 100%;
     height: 100%;
     border: 1.5px solid transparent;
-    border-top-color: black;
+    border-top-color: white;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     box-sizing: border-box;
@@ -634,7 +634,7 @@ function GM_xmlhttpRequest(options) {
 .ds-stop-img{
     width: 100%;
     height: 100%;
-    fill: currentColor;
+    fill: white;
     animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -653,7 +653,7 @@ function GM_xmlhttpRequest(options) {
 /* 点击后停止动画的样式 */
 .ds-stop-button.stopped::before {
     animation: none;
-    border: 2px solid #ff4444;
+   border: 2px solid #ff4444;
 }
 
 .ds-stop-button.stopped .ds-stop-icon svg {
@@ -963,7 +963,7 @@ contextToggle.appendChild(exportBtn);
 // ... rest of the existing code ...
 
                 // 显示历史消息
- function displayHistory() {
+        function displayHistory() {
     chatContent.innerHTML = '';
     config.chatHistory.forEach(msg => {
         const msgDiv = document.createElement('div');
@@ -986,6 +986,7 @@ if (isNearBottom) {
                 displayHistory();
 
                 // 事件监听,关闭弹窗
+        // 在创建chatHeader后添加以下代码
 chatHeader.style.cursor = 'move'; // 设置鼠标样式为可拖动
 let isDraggingWindow = false;
 let startXWindow, startYWindow, initialLeftWindow, initialTopWindow;
@@ -1057,76 +1058,87 @@ document.addEventListener('mouseleave', () => {
             }
         });
 
-
-
         closeBtn.addEventListener('click', () => {
-	chatWindow.classList.remove('active');
+            chatWindow.classList.remove('active');
             chatWindow.style.display = 'none';
             icon.style.display = 'flex';
         });
-                
-                fullscreenBtn.addEventListener('click', () => {
-                    chatWindow.classList.toggle('fullscreen');
-                    if (chatWindow.classList.contains('fullscreen')) {
-                        fullscreenBtn.innerText = '🗖';
-                    } else {
-                        fullscreenBtn.innerText = '🗖';
-                    }
-                });
 
-                contextCheckbox.addEventListener('change', () => {
-                    config.usePageContext = contextCheckbox.checked;
-                    GM_setValue('usePageContext', config.usePageContext);
-                });
+        fullscreenBtn.addEventListener('click', () => {
+            chatWindow.classList.toggle('fullscreen');
+            if (chatWindow.classList.contains('fullscreen')) {
+                fullscreenBtn.innerText = '🗖';
+                // 全屏时禁用拖动
+                chatHeader.style.cursor = 'default';
+            } else {
+                fullscreenBtn.innerText = '🗖';
+                // 退出全屏时恢复拖动
+                chatHeader.style.cursor = 'move';
+            }
+        });
 
-                settingsBtn.addEventListener('click', () => {
-                    const newApiUrl = prompt('API地址(默认:https://api.deepseek.com/v1/chat/completions):', config.apiUrl);
-                    if (newApiUrl !== null) {
-                        config.apiUrl = newApiUrl;
-                        GM_setValue('apiUrl', config.apiUrl);
-                    }
-                    const newApiKey = prompt('API密钥:', config.apiKey);
-                    if (newApiKey !== null) {
-                        config.apiKey = newApiKey;
-                        GM_setValue('apiKey', config.apiKey);
-                    }
+        contextCheckbox.addEventListener('change', () => {
+            config.usePageContext = contextCheckbox.checked;
+            GM_setValue('usePageContext', config.usePageContext);
+        });
 
-                    const newModel = prompt('模型默认(deepseek-chat):', config.model);
-                    if (newModel !== null) {
-                        config.model = newModel;
-                        GM_setValue('model', config.model);
-                    }
+        settingsBtn.addEventListener('click', () => {
+           /* const newCustomSelectors = prompt('自定义抓取规则(CSS选择器，多个用逗号分隔，留空使用默认):', config.customSelectors);
+    if (newCustomSelectors !== null) {
+        config.customSelectors = newCustomSelectors;
+        GM_setValue('customSelectors', config.customSelectors);
+    }*/
+            const newApiUrl = prompt('API地址(默认:https://api.deepseek.com/v1/chat/completions):', config.apiUrl);
+            if (newApiUrl !== null) {
+                config.apiUrl = newApiUrl;
+                GM_setValue('apiUrl', config.apiUrl);
+            }
+            const newApiKey = prompt('API密钥:', config.apiKey);
+            if (newApiKey !== null) {
+                config.apiKey = newApiKey;
+                GM_setValue('apiKey', config.apiKey);
+            }
 
-                    const newTemp = parseFloat(prompt('Temperature (0-2建议0.5-0.8)', config.temperature));
-                    if (!isNaN(newTemp) && newTemp >= 0 && newTemp <= 2) {
-                        config.temperature = newTemp;
-                        GM_setValue('temperature', config.temperature);
-                    }
+            const newModel = prompt('模型默认(deepseek-chat):', config.model);
+            if (newModel !== null) {
+                config.model = newModel;
+                GM_setValue('model', config.model);
+            }
 
-                    const newMaxTokens = parseInt(prompt('输出Token限制最大不能超过8192默认4096(输出文本):', config.maxTokens));
-                    if (!isNaN(newMaxTokens) && newMaxTokens > 0 && newMaxTokens <= 8192) {
-                        config.maxTokens = newMaxTokens;
-                        GM_setValue('maxTokens', config.maxTokens);
-                    }
+            const newTemp = parseFloat(prompt('Temperature (0-2建议0.5-0.8)', config.temperature));
+            if (!isNaN(newTemp) && newTemp >= 0 && newTemp <= 2) {
+                config.temperature = newTemp;
+                GM_setValue('temperature', config.temperature);
+            }
 
-                    const newMaxContextTokens = parseInt(prompt('最大上下文限制128k默认32k(越大记忆越好):', config.maxContextTokens));
-                    if (!isNaN(newMaxContextTokens) && newMaxContextTokens > 0 && newMaxContextTokens <= 128000) {
-                        config.maxContextTokens = newMaxContextTokens;
-                        GM_setValue('maxContextTokens', config.maxContextTokens);
-                    }
+            const newMaxTokens = parseInt(prompt('输出Token限制最大不能超过8192默认4096(输出文本):', config.maxTokens));
+            if (!isNaN(newMaxTokens) && newMaxTokens > 0 && newMaxTokens <= 8192) {
+                config.maxTokens = newMaxTokens;
+                GM_setValue('maxTokens', config.maxTokens);
+            }
 
-                    const newPersonalityPrompt = prompt('自定义人格提示词:(AI助手)', config.personalityPrompt);
-                    if (newPersonalityPrompt !== null) {
-                        config.personalityPrompt = newPersonalityPrompt;
-                        GM_setValue('personalityPrompt', config.personalityPrompt);
-                    }
-                });
+            const newMaxContextTokens = parseInt(prompt('最大上下文限制128k默认32k(越大记忆越好):', config.maxContextTokens));
+            if (!isNaN(newMaxContextTokens) && newMaxContextTokens > 0 && newMaxContextTokens <= 128000) {
+                config.maxContextTokens = newMaxContextTokens;
+                GM_setValue('maxContextTokens', config.maxContextTokens);
+            }
 
-                clearBtn.addEventListener('click', () => {
-                    config.chatHistory = [];
-                    GM_setValue('chatHistory', config.chatHistory);
-                    chatContent.innerHTML = '';
-                });
+            const newPersonalityPrompt = prompt('自定义人格提示词:(AI助手)', config.personalityPrompt);
+            if (newPersonalityPrompt !== null) {
+                config.personalityPrompt = newPersonalityPrompt;
+                GM_setValue('personalityPrompt', config.personalityPrompt);
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+    if (confirm('确定要清空所有对话记录吗？这将同时清空当前对话和完整历史记录。')) {
+        config.chatHistory = [];
+        config.fullConversation = [];
+        GM_setValue('chatHistory', config.chatHistory);
+        GM_setValue('fullConversation', config.fullConversation);
+        chatContent.innerHTML = '';
+    }
+});
 
                  /**
  * 获取网页主要内容
@@ -1287,218 +1299,204 @@ function findContentByTextDensity() {
     return bestElement || document.body;
 }
 
-                /**
-                 * 根据当前图标位置智能计算并设置聊天窗口的位置 (使用 top/left)
-                 * [版本：方案A - 基于style计算iconRect + 详细日志]
-                 */
-                /**
-                 * 根据当前图标位置智能计算并设置聊天窗口的位置 (使用 top/left)
-                 * [版本：方案A改进 + 边界优先 + 详细日志]
-                 */
-                function positionChatWindow() {
-                    // --- 1. 检查是否全屏 ---
-                    if (chatWindow.classList.contains('fullscreen')) {
-                        console.log("positionChatWindow: 处于全屏模式，跳过定位计算。");
-                        return;
-                    }
-                    console.log("positionChatWindow: 开始计算位置 (方案A改进)...");
+function positionChatWindow() {
+    // --- 1. 检查是否全屏 ---
+    if (chatWindow.classList.contains('fullscreen')) {
+        console.log("positionChatWindow: 处于全屏模式，跳过定位计算。");
+        return;
+    }
+    console.log("positionChatWindow: 开始计算位置 (方案A改进)...");
 
-                    // --- 2. 获取图标样式并推算 iconRect (增加健壮性) ---
-                    let iconRect;
-                    let errorOccurred = false;
-                    try {
-                        const iconStyles = window.getComputedStyle(icon);
-                        const iconWidth = icon.offsetWidth;
-                        const iconHeight = icon.offsetHeight;
-                        const viewportWidth = window.innerWidth;
-                        const viewportHeight = window.innerHeight;
+    // --- 2. 获取图标样式并推算 iconRect (增加健壮性) ---
+    let iconRect;
+    let errorOccurred = false;
+    try {
+        const iconStyles = window.getComputedStyle(icon);
+        const iconWidth = icon.offsetWidth;
+        const iconHeight = icon.offsetHeight;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
 
-                        // 优先尝试读取 right/bottom，如果无效或为 auto，则尝试 left/top
-                        let validIconRight = parseFloat(iconStyles.right);
-                        let validIconBottom = parseFloat(iconStyles.bottom);
-                        let validIconLeft = parseFloat(iconStyles.left);
-                        let validIconTop = parseFloat(iconStyles.top);
+        // 优先尝试读取 right/bottom，如果无效或为 auto，则尝试 left/top
+        let validIconRight = parseFloat(iconStyles.right);
+        let validIconBottom = parseFloat(iconStyles.bottom);
+        let validIconLeft = parseFloat(iconStyles.left);
+        let validIconTop = parseFloat(iconStyles.top);
 
-                        // 如果 right/bottom 无效，尝试用 left/top 计算
-                        if (isNaN(validIconRight) || isNaN(validIconBottom)) {
-                            console.warn("无法从 right/bottom 获取有效位置, 尝试 left/top...");
-                            if (!isNaN(validIconLeft) && !isNaN(validIconTop)) {
-                                iconRect = {
-                                    left: validIconLeft,
-                                    top: validIconTop,
-                                    right: validIconLeft + iconWidth,
-                                    bottom: validIconTop + iconHeight,
-                                    width: iconWidth,
-                                    height: iconHeight
-                                };
-                                console.log("使用 left/top 推算 iconRect");
-                            } else {
-                                // 如果 left/top 也无效，则使用getBoundingClientRect 作为最后手段
-                                console.warn("left/top 也无效, 回退到 getBoundingClientRect()...");
-                                iconRect = icon.getBoundingClientRect();
-                                // 检查 getBoundingClientRect 的结果是否合理 (不为 0,0)
-                                if (iconRect.left === 0 && iconRect.top === 0 && iconRect.width > 0) {
-                                    console.warn("getBoundingClientRect() 返回了 (0,0) 或附近，可能不准确!");
-                                    // 在这里可以强制使用一个默认安全位置，如果 BBox 不可靠
-                                    // iconRect = { left: 10, top: viewportHeight - 60, right: 60, bottom: viewportHeight - 10, width: 50, height: 50 };
-                                }
-                            }
-                        } else {
-                            // 使用 right/bottom 计算
-                            iconRect = {
-                                right: viewportWidth - validIconRight,
-                                bottom: viewportHeight - validIconBottom,
-                                left: viewportWidth - validIconRight - iconWidth,
-                                top: viewportHeight - validIconBottom - iconHeight,
-                                width: iconWidth,
-                                height: iconHeight
-                            };
-                            console.log("使用 right/bottom 推算 iconRect");
-                        }
+        // 如果 right/bottom 无效，尝试用 left/top 计算
+        if (isNaN(validIconRight) || isNaN(validIconBottom)) {
+             console.warn("无法从 right/bottom 获取有效位置, 尝试 left/top...");
+             if (!isNaN(validIconLeft) && !isNaN(validIconTop)) {
+                 iconRect = {
+                     left: validIconLeft,
+                     top: validIconTop,
+                     right: validIconLeft + iconWidth,
+                     bottom: validIconTop + iconHeight,
+                     width: iconWidth,
+                     height: iconHeight
+                 };
+                  console.log("使用 left/top 推算 iconRect");
+             } else {
+                 // 如果 left/top 也无效，则使用getBoundingClientRect 作为最后手段
+                 console.warn("left/top 也无效, 回退到 getBoundingClientRect()...");
+                 iconRect = icon.getBoundingClientRect();
+                 // 检查 getBoundingClientRect 的结果是否合理 (不为 0,0)
+                 if (iconRect.left === 0 && iconRect.top === 0 && iconRect.width > 0) {
+                     console.warn("getBoundingClientRect() 返回了 (0,0) 或附近，可能不准确!");
+                     // 在这里可以强制使用一个默认安全位置，如果 BBox 不可靠
+                     // iconRect = { left: 10, top: viewportHeight - 60, right: 60, bottom: viewportHeight - 10, width: 50, height: 50 };
+                 }
+             }
+        } else {
+            // 使用 right/bottom 计算
+            iconRect = {
+                right: viewportWidth - validIconRight,
+                bottom: viewportHeight - validIconBottom,
+                left: viewportWidth - validIconRight - iconWidth,
+                top: viewportHeight - validIconBottom - iconHeight,
+                width: iconWidth,
+                height: iconHeight
+            };
+             console.log("使用 right/bottom 推算 iconRect");
+        }
 
-                        // 添加 toJSON 方法以便安全地打印
-                        if (iconRect && typeof iconRect === 'object') {
-                            iconRect.toJSON = () => ({
-                                left: iconRect.left,
-                                top: iconRect.top,
-                                right: iconRect.right,
-                                bottom: iconRect.bottom,
-                                width: iconRect.width,
-                                height: iconRect.height
-                            });
-                        } else {
-                            throw new Error("未能成功创建 iconRect 对象"); // 抛出错误以便 catch 捕获
-                        }
+        // 添加 toJSON 方法以便安全地打印
+        if (iconRect && typeof iconRect === 'object') {
+             iconRect.toJSON = () => ({
+                left: iconRect.left, top: iconRect.top, right: iconRect.right, bottom: iconRect.bottom, width: iconRect.width, height: iconRect.height
+             });
+        } else {
+             throw new Error("未能成功创建 iconRect 对象"); // 抛出错误以便 catch 捕获
+        }
 
-                    } catch (e) {
-                        console.error("获取/计算图标位置或尺寸时出错:", e);
-                        errorOccurred = true;
-                        // 如果出错，提供一个默认的安全 Rect 对象
-                        const defaultTop = window.innerHeight - 60;
-                        const defaultLeft = 10;
-                        iconRect = { left: defaultLeft, top: defaultTop, right: defaultLeft + 50, bottom: defaultTop + 50, width: 50, height: 50, toJSON: () => ({ left: defaultLeft, top: defaultTop, right: defaultLeft + 50, bottom: defaultTop + 50, width: 50, height: 50 }) };
-                        console.warn("使用了默认的 iconRect:", iconRect.toJSON());
-                    }
+    } catch (e) {
+        console.error("获取/计算图标位置或尺寸时出错:", e);
+        errorOccurred = true;
+        // 如果出错，提供一个默认的安全 Rect 对象
+        const defaultTop = window.innerHeight - 60;
+        const defaultLeft = 10;
+        iconRect = { left: defaultLeft, top: defaultTop, right: defaultLeft + 50, bottom: defaultTop + 50, width: 50, height: 50, toJSON: () => ({left:defaultLeft, top:defaultTop, right:defaultLeft+50, bottom:defaultTop+50, width:50, height:50}) };
+        console.warn("使用了默认的 iconRect:", iconRect.toJSON());
+    }
 
-                    // --- 3. 获取其他输入值并打印 ---
-                    const winWidth = 340;
-                    const viewportWidth = window.innerWidth;
-                    const viewportHeight = window.innerHeight;
-                    // 使用 70vh 计算最大高度 (用于边界检查)
-                    const maxWinHeight = viewportHeight * 0.7;
-                    const margin = 10;
+    // --- 3. 获取其他输入值并打印 ---
+    const winWidth = 340;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    // 使用 70vh 计算最大高度 (用于边界检查)
+    const maxWinHeight = viewportHeight * 0.7;
+    const margin = 10;
 
-                    console.log('positionChatWindow 输入值:', {
-                        iconRect: iconRect.toJSON(),
-                        winWidth,
-                        maxWinHeight, // 使用 maxWinHeight 进行检查
-                        margin,
-                        viewportWidth,
-                        viewportHeight,
-                        errorOccurred // 记录是否在获取位置时出错
-                    });
+    console.log('positionChatWindow 输入值:', {
+        iconRect: iconRect.toJSON(),
+        winWidth,
+        maxWinHeight, // 使用 maxWinHeight 进行检查
+        margin,
+        viewportWidth,
+        viewportHeight,
+        errorOccurred // 记录是否在获取位置时出错
+    });
 
-                    // --- 4. 计算理想位置并直接进行边界限制 ---
-                    let idealLeft, idealTop;
+    // --- 4. 计算理想位置并直接进行边界限制 ---
+    let idealLeft, idealTop;
 
-                    // 优先尝试放在右边
-                    const spaceRight = viewportWidth - iconRect.right - margin;
-                    const spaceLeft = iconRect.left - margin;
+    // 优先尝试放在右边
+    const spaceRight = viewportWidth - iconRect.right - margin;
+    const spaceLeft = iconRect.left - margin;
 
-                    if (spaceRight >= winWidth || spaceRight >= spaceLeft) { // 如果右边空间够，或者右边空间比左边大
-                        idealLeft = iconRect.right + margin;
-                        console.log("优先尝试放置在右侧");
-                    } else { // 否则放在左边
-                        idealLeft = iconRect.left - winWidth - margin;
-                        console.log("空间不足，尝试放置在左侧");
-                    }
+    if (spaceRight >= winWidth || spaceRight >= spaceLeft) { // 如果右边空间够，或者右边空间比左边大
+        idealLeft = iconRect.right + margin;
+        console.log("优先尝试放置在右侧");
+    } else { // 否则放在左边
+        idealLeft = iconRect.left - winWidth - margin;
+        console.log("空间不足，尝试放置在左侧");
+    }
 
-                    // 决定垂直位置：优先尝试与图标顶部对齐，如果底部空间不足再考虑向上移动
-                    const spaceBelow = viewportHeight - iconRect.top - margin; // 从图标顶部开始算下方空间
-                    const spaceAbove = iconRect.bottom - margin; // 从图标底部开始算上方空间 (这里改用 bottom)
+    // 决定垂直位置：优先尝试与图标顶部对齐，如果底部空间不足再考虑向上移动
+    const spaceBelow = viewportHeight - iconRect.top - margin; // 从图标顶部开始算下方空间
+    const spaceAbove = iconRect.bottom - margin; // 从图标底部开始算上方空间 (这里改用 bottom)
 
-                    if (spaceBelow >= maxWinHeight) { // 如果从图标顶部往下放足够放下最大高度
-                        idealTop = iconRect.top; // 尝试与图标顶部对齐
-                        console.log("垂直方向：尝试与图标顶部对齐");
-                    } else if (spaceAbove >= maxWinHeight) { // 如果从图标底部往上放足够
-                        idealTop = iconRect.bottom - maxWinHeight; // 放置窗口底部与图标底部对齐
-                        console.log("垂直方向：空间不足，尝试底部对齐图标底部");
-                    } else { // 上下空间都不够放最大高度，优先贴近图标顶部放置
-                        idealTop = iconRect.top;
-                        console.log("垂直方向：上下空间均不足，优先贴近图标顶部");
-                    }
+    if (spaceBelow >= maxWinHeight) { // 如果从图标顶部往下放足够放下最大高度
+        idealTop = iconRect.top; // 尝试与图标顶部对齐
+         console.log("垂直方向：尝试与图标顶部对齐");
+    } else if (spaceAbove >= maxWinHeight) { // 如果从图标底部往上放足够
+        idealTop = iconRect.bottom - maxWinHeight; // 放置窗口底部与图标底部对齐
+        console.log("垂直方向：空间不足，尝试底部对齐图标底部");
+    } else { // 上下空间都不够放最大高度，优先贴近图标顶部放置
+        idealTop = iconRect.top;
+        console.log("垂直方向：上下空间均不足，优先贴近图标顶部");
+    }
 
 
-                    // --- 5. 对计算出的 idealLeft, idealTop 进行最终边界限制 ---
-                    let finalLeft = idealLeft;
-                    let finalTop = idealTop;
-                    console.log(`计算出的理想位置: L:${Math.round(idealLeft)}, T:${Math.round(idealTop)}`);
+    // --- 5. 对计算出的 idealLeft, idealTop 进行最终边界限制 ---
+    let finalLeft = idealLeft;
+    let finalTop = idealTop;
+    console.log(`计算出的理想位置: L:${Math.round(idealLeft)}, T:${Math.round(idealTop)}`);
 
-                    // 限制左边界
-                    if (finalLeft < margin) {
-                        console.log(`  调整: 左侧超出 (${Math.round(finalLeft)} < ${margin}), 修正为 ${margin}`);
-                        finalLeft = margin;
-                    }
-                    // 限制右边界
-                    if (finalLeft + winWidth > viewportWidth - margin) {
-                        console.log(`  调整: 右侧超出 (${Math.round(finalLeft + winWidth)} > ${viewportWidth - margin}), 修正为 ${viewportWidth - winWidth - margin}`);
-                        finalLeft = viewportWidth - winWidth - margin;
-                        // 如果调整后又导致左边出界（屏幕太窄），再次修正
-                        if (finalLeft < margin) { finalLeft = margin; }
-                    }
+    // 限制左边界
+    if (finalLeft < margin) {
+        console.log(`  调整: 左侧超出 (${Math.round(finalLeft)} < ${margin}), 修正为 ${margin}`);
+        finalLeft = margin;
+    }
+    // 限制右边界
+    if (finalLeft + winWidth > viewportWidth - margin) {
+        console.log(`  调整: 右侧超出 (${Math.round(finalLeft + winWidth)} > ${viewportWidth - margin}), 修正为 ${viewportWidth - winWidth - margin}`);
+        finalLeft = viewportWidth - winWidth - margin;
+        // 如果调整后又导致左边出界（屏幕太窄），再次修正
+        if (finalLeft < margin) { finalLeft = margin; }
+    }
 
-                    // 限制上边界
-                    if (finalTop < margin) {
-                        console.log(`  调整: 顶部超出 (${Math.round(finalTop)} < ${margin}), 修正为 ${margin}`);
-                        finalTop = margin;
-                    }
-                    // 限制下边界 (使用 maxWinHeight)
-                    if (finalTop + maxWinHeight > viewportHeight - margin) {
-                        console.log(`  调整: 底部超出 (${Math.round(finalTop + maxWinHeight)} > ${viewportHeight - margin}), 修正为 ${viewportHeight - maxWinHeight - margin}`);
-                        finalTop = viewportHeight - maxWinHeight - margin;
-                        // 如果调整后又导致顶部出界（屏幕太矮），再次修正
-                        if (finalTop < margin) { finalTop = margin; }
-                    }
+    // 限制上边界
+    if (finalTop < margin) {
+        console.log(`  调整: 顶部超出 (${Math.round(finalTop)} < ${margin}), 修正为 ${margin}`);
+        finalTop = margin;
+    }
+    // 限制下边界 (使用 maxWinHeight)
+    if (finalTop + maxWinHeight > viewportHeight - margin) {
+         console.log(`  调整: 底部超出 (${Math.round(finalTop + maxWinHeight)} > ${viewportHeight - margin}), 修正为 ${viewportHeight - maxWinHeight - margin}`);
+        finalTop = viewportHeight - maxWinHeight - margin;
+         // 如果调整后又导致顶部出界（屏幕太矮），再次修正
+        if (finalTop < margin) { finalTop = margin; }
+    }
 
-                    // --- 6. 应用最终位置 ---
-                    const finalPosition = { left: finalLeft, top: finalTop };
-                    console.log('最终将应用的定位:', { left: Math.round(finalPosition.left), top: Math.round(finalPosition.top) });
+    // --- 6. 应用最终位置 ---
+    const finalPosition = { left: finalLeft, top: finalTop };
+    console.log('最终将应用的定位:', {left: Math.round(finalPosition.left), top: Math.round(finalPosition.top)});
 
-                    if (typeof finalPosition.left === 'number' && typeof finalPosition.top === 'number') {
-                        chatWindow.style.left = `${finalPosition.left}px`;
-                        chatWindow.style.top = `${finalPosition.top}px`;
-                        chatWindow.style.right = 'auto';
-                        chatWindow.style.bottom = 'auto';
-                        console.log("样式已应用到 chatWindow");
-                    } else {
-                        console.error("计算出的 finalPosition 无效!", finalPosition);
-                        chatWindow.style.bottom = '10px';
-                        chatWindow.style.right = '10px';
-                        chatWindow.style.top = 'auto';
-                        chatWindow.style.left = 'auto';
-                        console.warn("应用了安全回退位置 (10px, 10px)");
-                    }
-                    console.log("positionChatWindow: 定位计算结束 (方案A改进)。");
-                }
-                // 确保在 icon 的 click 事件监听器中调用 positionChatWindow()
-                // (参考上面问题1的 click 事件代码，调用位置已包含)
+    if (typeof finalPosition.left === 'number' && typeof finalPosition.top === 'number') {
+        chatWindow.style.left = `${finalPosition.left}px`;
+        chatWindow.style.top = `${finalPosition.top}px`;
+        chatWindow.style.right = 'auto';
+        chatWindow.style.bottom = 'auto';
+        console.log("样式已应用到 chatWindow");
+    } else {
+        console.error("计算出的 finalPosition 无效!", finalPosition);
+        chatWindow.style.bottom = '10px';
+        chatWindow.style.right = '10px';
+        chatWindow.style.top = 'auto';
+        chatWindow.style.left = 'auto';
+        console.warn("应用了安全回退位置 (10px, 10px)");
+    }
+    console.log("positionChatWindow: 定位计算结束 (方案A改进)。");
+}
+// 确保在 icon 的 click 事件监听器中调用 positionChatWindow()
+// (参考上面问题1的 click 事件代码，调用位置已包含)
 
-                // 然后，在上面修改过的 icon 的 'click' 事件监听器中，
-                // 在 chatWindow.classList.toggle('active') 之前调用 positionChatWindow();
-                // 如：
-                icon.addEventListener('click', (e) => {
-                    if (!hasMoved) {
-                        // --->>> 在这里调用定位函数 <<<---
-                        positionChatWindow();
+// 然后，在上面修改过的 icon 的 'click' 事件监听器中，
+// 在 chatWindow.classList.toggle('active') 之前调用 positionChatWindow();
+// 如：
+icon.addEventListener('click', (e) => {
+    if (!hasMoved) {
+        // --->>> 在这里调用定位函数 <<<---
+        positionChatWindow();
 
-                        chatWindow.classList.toggle('active');
-			
-                       
-                    }
-                });
+        chatWindow.classList.toggle('active');
+
+    }
+});
 
                 // 流式响应处理
-                function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv) {
+                function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =false) {
                     return new Promise((resolve, reject) => {
                         let aiMessage = '🤖：';
                         let reasoningMessage = '';
@@ -1519,7 +1517,12 @@ reasoningDiv.style.display = 'none'; // 初始隐藏
 
         const stopButton = document.createElement('button');
         stopButton.className = 'ds-stop-button';
-            stopButton.innerHTML = `<img class= "ds-stop-img" src="https://tc.qdqqd.com/D4ZXR9.svg" style="width: 20px; height: 20px; border-radius: 50%;">`;
+           stopButton.innerHTML = `
+    <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect x="7" y="7" width="3" height="10" rx="1"/>
+        <rect x="14" y="7" width="3" height="10" rx="1"/>
+    </svg>
+`;
         stopButton.title = '点击停止AI输出';
         chatWindow.appendChild(stopButton);
 
@@ -1559,6 +1562,7 @@ reasoningDiv.style.display = 'none'; // 初始隐藏
                         }
 
                         function readStream() {
+if (isStopped) return; // 如果已停止，不再继续读取
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     console.log('流读取完成');
@@ -1589,101 +1593,112 @@ GM_setValue('fullConversation', config.fullConversation);
                        // GM_setValue('fullConversation',config.fullConversation);
                     }
                     addCopyButtonsToCodeBlocks(aiMsgDiv);
-                                    // 如果接收到过思考内容，在结束时保留 “思考内容：” 提示
-                                    if (isReasoningReceived) {
-                                        if (!reasoningTitleDiv) {
-                                            reasoningTitleDiv = document.createElement('div');
-                                            reasoningTitleDiv.className = 'ds-reasoning-title';
-                                            reasoningTitleDiv.innerText = '思考内容：';
-                                            aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
-                                        }
-                                        if (thinkingMsgDiv.parentNode) {
-                                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-                                        }
-                                    } else {
-                                        // 若未接收到思考内容，移除提示
-                                        if (thinkingMsgDiv.parentNode) {
-                                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-						reasoningTitleDiv = document.createElement('div');
-                                            reasoningTitleDiv.className = 'ds-reasoning-title';
-                                            reasoningTitleDiv.innerText = '注意:该模型没有思考内容';
-                                            aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
-
-                                        }
-                                    }
-                                    resolve();
-                                    return;
-                                }
-
-                                try {
-                                    buffer += decoder.decode(value, { stream: true });
-                                } catch (decodeError) {
-                                    console.error('解码响应流时出错:', decodeError);
-                                    reject(decodeError);
-                                    return;
-                                }
-
-                                const lines = buffer.split('\n');
-                                buffer = lines.pop() || '';
-
-                                for (const line of lines) {
-                                    if (!line.trim() || line === 'data: [DONE]') continue;
-                                    if (line.startsWith('data: ')) {
-                                        try {
-                                            const data = JSON.parse(line.slice(6));
-                                           // console.log('解析到的数据:', data); // 打印解析到的数据，方便调试
-                                            if (data.choices ?.[0] ?.delta ?.content) {
-                                                const newContent = data.choices[0].delta.content;
-                                                aiMessage += newContent;
-                                                contentDiv.innerHTML = marked.parse(aiMessage);
-                                                contentDiv.querySelectorAll('pre code').forEach((block) => {
-                                                    hljs.highlightElement(block);
-                                                });
-                                                addCopyButtonsToCodeBlocks(contentDiv);
-                                                const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-                                            }
-                                            if (data.choices ?.[0] ?.delta ?.reasoning_content) {
-                                                const newReasoningContent = data.choices[0].delta.reasoning_content;
-                                                reasoningMessage += newReasoningContent;
-                                                reasoningDiv.innerHTML = marked.parse(reasoningMessage);
-                                                reasoningDiv.querySelectorAll('pre code').forEach((block) => {
-                                                    hljs.highlightElement(block);
-                                                });
-                                                addCopyButtonsToCodeBlocks(reasoningDiv);
-                                                const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-                                                isReasoningReceived = true;
-                                                isReasoningFinished = false;
-                                                thinkingMsgDiv.className = 'ds-reasoning-title';
-                                                thinkingMsgDiv.innerText = '思考中......';
-                                            } else {
-                                                if (isReasoningReceived && !isReasoningFinished) {
-                                                    reasoningTitleDiv = document.createElement('div');
-                                                    reasoningTitleDiv.className = 'ds-reasoning-title';
-                                                    reasoningTitleDiv.innerText = '思考内容：';
-                                                    aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
-                                                    if (thinkingMsgDiv.parentNode) {
-                                                        thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-                                                    }
-                                                    isReasoningFinished = true;
-                                                }
-                                            }
-                                        } catch (parseError) {
-                                            console.warn('解析响应数据失败:', parseError, '行内容:', line);
-                                        }
-                                    }
-                                }
-
-                                readStream();
-                            }).catch(error => {
-                                console.error('读取流时出错:', error);
-                                reject(error);
-                            });
+                                   if (isReasoningReceived) {
+                        if (!reasoningTitleDiv) {
+                            reasoningTitleDiv = document.createElement('div');
+                            reasoningTitleDiv.className = 'ds-reasoning-title';
+                            reasoningTitleDiv.innerText = '思考内容：';
+                            aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
                         }
+                        if (thinkingMsgDiv.parentNode) {
+                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+                        }
+                    } else {
+                        // 若未接收到思考内容，移除提示
+                        if (thinkingMsgDiv.parentNode) {
+                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+                            reasoningTitleDiv = document.createElement('div');
+                            reasoningTitleDiv.className = 'ds-reasoning-title';
+                            reasoningTitleDiv.innerText = '注意:该模型没有思考内容';
+                            aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
 
-                        readStream();
-                    });
+                        }
+                    }
+                    resolve();
+                    return;
                 }
 
+                try {
+                    buffer += decoder.decode(value, { stream: true });
+                } catch (decodeError) {
+                    //stopButton.remove(); // 出错时也移除停止按钮
+                    console.error('解码响应流时出错:', decodeError);
+                    reject(decodeError);
+                    return;
+                }
+
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                for (const line of lines) {
+                    if (!line.trim() || line === 'data: [DONE]') continue;
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            // console.log('解析到的数据:', data); // 打印解析到的数据，方便调试
+                            if (data.choices?.[0]?.delta?.content) {
+                                const newContent = data.choices[0].delta.content;
+                                aiMessage += newContent;
+                                contentDiv.innerHTML = marked.parse(aiMessage);
+                                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                                    hljs.highlightElement(block);
+                                });
+                                addCopyButtonsToCodeBlocks(contentDiv);
+                                // 示例：只在用户当前已经接近底部时自动滚动
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+                            }
+                            if (data.choices?.[0]?.delta?.reasoning_content) {
+                                //console.log(data.choices?.[0]?.delta?.reasoning_content);
+                                const newReasoningContent = data.choices[0].delta.reasoning_content;
+                                reasoningMessage += newReasoningContent;
+                                reasoningDiv.innerHTML = marked.parse(reasoningMessage);
+                                reasoningDiv.querySelectorAll('pre code').forEach((block) => {
+                                    hljs.highlightElement(block);
+                                });
+                                addCopyButtonsToCodeBlocks(reasoningDiv);
+                                 reasoningDiv.style.display = 'block'; // 就是缺少这一句！
+                                // 示例：只在用户当前已经接近底部时自动滚动
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+                                isReasoningReceived = true;
+                                isReasoningFinished = false;
+                                thinkingMsgDiv.className = 'ds-reasoning-title';
+                                thinkingMsgDiv.innerText = '思考中......';
+                            } else {
+                                if (isReasoningReceived && !isReasoningFinished) {
+                                    reasoningTitleDiv = document.createElement('div');
+                                    reasoningTitleDiv.className = 'ds-reasoning-title';
+                                    reasoningTitleDiv.innerText = '思考内容：';
+                                    aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+                                    if (thinkingMsgDiv.parentNode) {
+                                        thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+                                    }
+                                    isReasoningFinished = true;
+                                }
+                            }
+                        } catch (parseError) {
+                           stopButton.remove(); // 出错时也移除停止按钮
+                            console.warn('解析响应数据失败:', parseError, '行内容:', line);
+                        }
+                    }
+                }
+
+                readStream();
+            }).catch(error => {
+                stopButton.remove(); // 出错时也移除停止按钮
+                console.error('读取流时出错:', error);
+                reject(error);
+            });
+        }
+
+        readStream();
+    });
+}
 
                 // ... 已有代码 ...
                 // 计算消息的 token 数量（简单估算）
