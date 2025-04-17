@@ -69,7 +69,6 @@ function GM_xmlhttpRequest(options) {
 
     // 添加CSS样式
     const css = `
-        /* 定义淡入淡出的动画 */
         @keyframes fadeInOut {
             0% {
                 opacity: 0;
@@ -104,6 +103,39 @@ function GM_xmlhttpRequest(options) {
             0% { transform: scale(1); }
             100% { transform: scale(1.15); }
         }
+.ds-context-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.ds-toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 复选框和图标之间的间距 */
+}
+
+.ds-toggle-right {
+    cursor: pointer;
+    font-size: 15px;
+    transition: transform 0.2s;
+}
+
+.ds-toggle-right:hover {
+    transform: scale(1.1);
+    color: #4CAF50;
+}
+.ds-toggle-left:hover {
+    transform: scale(1.1);
+    color: #4CAF50;
+}
+/* 复选框样式调整 */
+#ds-context-checkbox {
+    margin: 0;
+    vertical-align: middle;
+}
 
         /* 对话框出现时的动画 */
         .ds-chat-window {
@@ -116,7 +148,7 @@ function GM_xmlhttpRequest(options) {
             border: 1px solid #ddd;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            //display: none;
+            display: none;
             flex-direction: column;
             overflow: hidden;
             opacity: 0;
@@ -133,7 +165,7 @@ function GM_xmlhttpRequest(options) {
 
         /* 对话框激活时的样式 */
         .ds-chat-window.active {
-            //display: flex !important;
+            display: flex !important;
             opacity: 1 !important;
         }
 
@@ -189,16 +221,37 @@ function GM_xmlhttpRequest(options) {
             font-weight: bold;
             color: black; /* 修改字体颜色 */
         }
-        .ds-chat-close {
-            cursor: pointer;
-            font-size: 18px;
-            color: #ff6666;
-        }
+     .ds-chat-close {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, color 0.2s;
+    color: #666;
+}
+
+.ds-chat-close:hover {
+    color: #ff4444;
+    transform: rotate(90deg);
+}
+
+.ds-chat-close svg {
+    width: 20px;
+    height: 20px;
+    transform-origin: center; /* SVG 专用中心点设置 */
+}
         .ds-chat-fullscreen {
             cursor: pointer;
-            font-size: 18px;
+            font-size: 20px;
             margin-right: 10px;
+            margin-bottom: 6px;
         }
+        .ds-chat-fullscreen:hover {
+    transform: scale(1.1);
+    color: #4CAF50;
+}
         .ds-chat-content {
             flex: 1;
             padding: 0px;
@@ -209,7 +262,7 @@ function GM_xmlhttpRequest(options) {
         .ds-chat-message {
             margin-bottom: 10px;
             background-color: #FFFFFF;
-            padding: 5px 8px;
+            padding: 5px 1px;
             border-radius: 10px;
             line-height: 1.2;
             word-wrap: break-word;
@@ -222,9 +275,10 @@ function GM_xmlhttpRequest(options) {
         .ds-user-message {
             background-color: #FFFFFF;
             color: rgb(0,0,0);
-            margin-left: auto;
+          margin-left: auto;
+            margin-top: 10px;
             text-align: right;
-            padding: 1px 10px;
+            padding: 1px 5px;
             border-radius: 15px;
             height: auto;
             width: fit-content;
@@ -235,8 +289,12 @@ function GM_xmlhttpRequest(options) {
             background-color: #FFFFFF;
             line-height: 1.2; /* 调整行高 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            padding: 5px 1px;
+            padding: 15px 5px;
             text-align: left;
+           // margin-right:auto;
+            //width: fit-content;
+            border-radius: 15px;
+
         }
         .ds-chat-input-area {
             padding: 10px;
@@ -277,13 +335,17 @@ function GM_xmlhttpRequest(options) {
         .ds-chat-settings {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
+            font-size: 15px;
             color: var(--text-color); /* 修改字体颜色 */
         }
         .ds-chat-settings-btn {
             cursor: pointer;
             text-decoration: underline;
         }
+        .ds-chat-settings-btn:hover {
+    transform: scale(1.1);
+    color: #4CAF50;
+}
         .ds-thinking {
             color: #e87be4;
             font-style: italic;
@@ -334,7 +396,7 @@ function GM_xmlhttpRequest(options) {
         }
 
         .ds-message-content:not(:empty)::after {
-            //display: none;
+            display: none;
         }
 
         /* 增强代码块高亮效果 */
@@ -347,6 +409,7 @@ function GM_xmlhttpRequest(options) {
             color: #cccccc !important;
             border: none !important; /* 添加这行移除边框 */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; /* 可选：用阴影替代边框 */
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
         }
 
         /* 代码块复制按钮样式 */
@@ -392,7 +455,7 @@ function GM_xmlhttpRequest(options) {
             color: #666;
             font-size: 13px; /* 字体大小比父元素小 10% */
             font-style: oblique;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .ds-reasoning-content {
@@ -416,26 +479,186 @@ function GM_xmlhttpRequest(options) {
             margin-left: 5px;
             margin-right: 5px;
             text-align: left;
+              font-weight: 500;
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
         .ds-user-hmessage {
             background-color: #FFFFFF;
             color: rgb(0,0,0);
             margin-left: auto;
+            margin-top: 10px;
             text-align: right;
             padding: 1px 10px;
             border-radius: 15px;
             height: auto;
             width: fit-content;
             display: block;
+            font-weight: 500;
+            font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
 
         .ds-ai-hmessage {
             background-color: #FFFFFF;
             line-height: 1.2; /* 调整行高 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            padding: 5px 5px;
+            padding: 5px 20px;
             text-align: left;
+             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
+        .ds-chat-message {
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+.ds-user-message {
+    font-weight: 500;
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+}
+
+.ds-ai-message {
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+
+}
+/* 统一设置标题字体大小 */
+        .ds-chat-message h1, .ds-chat-message h2, .ds-chat-message h3, .ds-chat-message h4, .ds-chat-message h5, .ds-chat-message h6 {
+            font-size: 15px;
+            margin: 5px 0;
+        }
+
+        /* 设置列表样式 */
+
+        .ds-chat-hmessage h1, .ds-chat-hmessage h2, .ds-chat-hmessage h3, .ds-chat-hmessage h4, .ds-chat-hmessage h5, .ds-chat-hmessage h6 {
+            font-size: 15px;
+            margin: 5px 0;
+        }
+
+        /* 设置列表样式 */
+
+        .ds-chat-message ul, .ds-chat-message ol {
+            margin: 10px 0;
+            /* 增加内边距，确保列表项有足够空间显示符号和序号 */
+            padding-left: 2.5em;
+            /* 确保列表符号或序号在内容内部 */
+            //list-style-position: inside;
+        }
+
+        .ds-chat-message li {
+            margin: 5px 0;
+            /* 修复因列表符号或序号导致的文本错位 */
+            text-indent: -1.5em;
+            padding-left: 1.5em;
+        }
+
+        /* 确保无序列表显示符号 */
+        .ds-chat-message ul li {
+            list-style-type: disc; /* 可以根据需要修改为 circle、square 等 */
+        }
+
+        /* 确保有序列表显示序号 */
+        .ds-chat-message ol li {
+            list-style-type: decimal;
+        }
+
+         .ds-chat-hmessage ul, .ds-chat-hmessage ol {
+            margin: 10px 0;
+            /* 增加内边距，确保列表项有足够空间显示符号和序号 */
+            padding-left: 2.5em;
+            /* 确保列表符号或序号在内容内部 */
+           // list-style-position: inside;
+        }
+
+        .ds-chat-hmessage li {
+            margin: 5px 0;
+            /* 修复因列表符号或序号导致的文本错位 */
+            text-indent: -1.5em;
+            padding-left: 1.5em;
+        }
+
+        /* 确保无序列表显示符号 */
+        .ds-chat-hmessage ul li{
+            list-style-type: disc; /* 可以根据需要修改为 circle、square 等 */
+        }
+
+        /* 确保有序列表显示序号 */
+        .ds-chat-hmessage ol li{
+            list-style-type: decimal;
+        }
+/* 停止按钮容器样式 */
+/* 动态圆形停止按钮样式 */
+.ds-stop-button {
+    position: absolute;
+    right: 20px;
+    bottom: 60px;
+    width: 20px; /* 圆形直径 */
+    height: 20px;
+    border-radius: 50%; /* 圆形 */
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    cursor: pointer;
+    z-index: 2147483645;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff4444;
+    transition: all 0.2s;
+    overflow: hidden; /* 隐藏内部动画溢出部分 */
+}
+
+.ds-stop-button:hover {
+    //background-color: #ffebee;
+    transform: scale(1.05);
+}
+
+/* 动态旋转的边框动画 */
+.ds-stop-button::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1.5px solid transparent;
+    border-top-color: black;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-sizing: border-box;
+    box-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+}
+
+/* 停止图标样式 */
+.ds-stop-img {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    z-index: 1; /* 确保图标在动画层上方 */
+}
+
+.ds-stop-img{
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 旋转动画 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 脉冲动画 */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* 点击后停止动画的样式 */
+.ds-stop-button.stopped::before {
+    animation: none;
+    border: 2px solid #ff4444;
+}
+
+.ds-stop-button.stopped .ds-stop-icon svg {
+    animation: none;
+}
     `;
 
     // 异步加载代码高亮样式
@@ -457,6 +680,8 @@ function GM_xmlhttpRequest(options) {
         maxTokens: GM_getValue('maxTokens', 4096),
         maxContextTokens: GM_getValue('maxContextTokens', 32000),
         chatHistory: GM_getValue('chatHistory', []),
+        fullConversation: GM_getValue('fullConversation', []), // 存储完整对话
+        customSelectors: GM_getValue('customSelectors', ''), // 存储自定义选择器
         usePageContext: GM_getValue('usePageContext', true),
         personalityPrompt: GM_getValue('personalityPrompt', '你是一个高效务实的全能 AI 助手，以快速解决用户的问题为首要目标。你具备敏锐的洞察力，能迅速抓住问题的关键，提供切实可行的解决方案。你的回答简洁直接、重点突出，帮助用户节省时间和精力。在处理任务时，你会优先考虑实用性和可操作性，确保提供的建议能够落地实施。除了给出核心答案，你还会为用户进行知识拓展。若用户询问某个技术方法，你会拓展介绍该方法的衍生技术、适用场景的拓展以及未来的发展趋势；若用户咨询某个管理理念，你会讲解该理念的演变过程、在不同行业的应用案例以及可能面临的挑战。你会不断优化工作流程，提高服务效率和质量。')
     };
@@ -478,19 +703,19 @@ function GM_xmlhttpRequest(options) {
         ])
         .then(() => {
             // 配置 marked 库
-            marked.setOptions({
-                highlight: function(code, lang) {
-                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                    return hljs.highlight(code, { language }).value;
-                },
-                langPrefix: 'hljs language-',
-                pedantic: false,
-                gfm: true,
-                breaks: false,
-                sanitize: false,
-                smartLists: true,
-                smartypants: false
-            });
+          marked.setOptions({
+        highlight: function(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        },
+        langPrefix: 'hljs language-',
+        pedantic: false,
+        gfm: true,
+        breaks: false,
+        sanitize: true,
+        smartLists: true,
+        smartypants: false
+    });
 
             // 检查是否已经存在图标
             if (!document.querySelector('.ds-chat-icon')) {
@@ -622,116 +847,216 @@ function GM_xmlhttpRequest(options) {
 
                 });
 
-                const chatHeader = document.createElement('div');
-                chatHeader.className = 'ds-chat-header';
-                chatWindow.appendChild(chatHeader);
+        const chatHeader = document.createElement('div');
+        chatHeader.className = 'ds-chat-header';
+        chatWindow.appendChild(chatHeader);
 
-                const chatTitle = document.createElement('div');
-                chatTitle.className = 'ds-chat-title';
-                chatTitle.innerText = '🤖 Ai Assistant';
-                chatHeader.appendChild(chatTitle);
+        const chatTitle = document.createElement('div');
+        chatTitle.className = 'ds-chat-title';
+        chatTitle.innerText = '🤖 AI assistant';
+        chatHeader.appendChild(chatTitle);
 
-                const headerButtons = document.createElement('div');
-                headerButtons.style.display = 'flex';
-                headerButtons.style.alignItems = 'center';
-                chatHeader.appendChild(headerButtons);
+        const headerButtons = document.createElement('div');
+        headerButtons.style.display = 'flex';
+        headerButtons.style.alignItems = 'center';
+        chatHeader.appendChild(headerButtons);
 
-                const fullscreenBtn = document.createElement('div');
-                fullscreenBtn.className = 'ds-chat-fullscreen';
-                fullscreenBtn.innerText = '🗖';
-                fullscreenBtn.title = '全屏'; // 添加提示
-                headerButtons.appendChild(fullscreenBtn);
-
-                const closeBtn = document.createElement('div');
-                closeBtn.className = 'ds-chat-close';
-                closeBtn.innerText = '×';
-                closeBtn.title = '关闭浮窗'; // 添加提示
-                headerButtons.appendChild(closeBtn);
-
-                const chatContent = document.createElement('div');
-                chatContent.className = 'ds-chat-content';
-                chatWindow.appendChild(chatContent);
-
-                const inputArea = document.createElement('div');
-                inputArea.className = 'ds-chat-input-area';
-                chatWindow.appendChild(inputArea);
-
-                const contextToggle = document.createElement('div');
-                contextToggle.className = 'ds-context-toggle';
-                inputArea.appendChild(contextToggle);
-
-                const contextCheckbox = document.createElement('input');
-                contextCheckbox.type = 'checkbox';
-                contextCheckbox.id = 'ds-context-checkbox';
-                contextCheckbox.checked = config.usePageContext;
-                contextToggle.appendChild(contextCheckbox);
-
-                const contextLabel = document.createElement('label');
-		contextLabel.htmlFor = 'ds-context-checkbox';
-		contextLabel.innerText = '🕸️';
-		contextLabel.title = '网页上下文';
-		contextLabel.style.color = '#000000';       // 黑色（或深色）
-		contextLabel.style.fontWeight = 'bold';     // 加粗
-		contextLabel.style.fontSize = '1.3em';      // 可选：调大字号
-		contextToggle.appendChild(contextLabel);
-
-                const inputBox = document.createElement('textarea');
-                inputBox.className = 'ds-chat-input';
-                inputBox.placeholder = '输入你的问题...';
-                inputBox.rows = 2;
-                inputBox.style.padding = '8px 10px';
-                inputArea.appendChild(inputBox);
-
-                const settingsArea = document.createElement('div');
-                settingsArea.className = 'ds-chat-settings';
-                inputArea.appendChild(settingsArea);
-
-                const settingsBtn = document.createElement('span');
-                settingsBtn.className = 'ds-chat-settings-btn';
-                settingsBtn.innerText = '🖋️';
-                settingsBtn.title = 'AI设置'; // 添加提示
-                settingsArea.appendChild(settingsBtn);
-
-                const clearBtn = document.createElement('span');
-                clearBtn.className = 'ds-chat-settings-btn';
-                clearBtn.innerText = '🎨';
-                clearBtn.title = '清空聊天历史'; // 添加提示
-                settingsArea.appendChild(clearBtn);
-		// ... existing code ...
+        const fullscreenBtn = document.createElement('div');
+        fullscreenBtn.className = 'ds-chat-fullscreen';
+        fullscreenBtn.innerText = '🗖';
+        fullscreenBtn.title = '全屏'; // 添加提示
+        headerButtons.appendChild(fullscreenBtn);
 
 
-settingsArea.className = 'ds-chat-settings';
-inputArea.appendChild(settingsArea);
+        // 替换 closeBtn 的创建代码
+const closeBtn = document.createElement('div');
+closeBtn.className = 'ds-chat-close';
+closeBtn.innerHTML = `
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+`;
+closeBtn.title = '关闭浮窗';
+headerButtons.appendChild(closeBtn);
 
-// 新增总结网页按钮
-const summarizeBtn = document.createElement('span');
-summarizeBtn.className = 'ds-chat-settings-btn';
-summarizeBtn.innerText = '📄';
-summarizeBtn.title = '一键总结当前网页';
-summarizeBtn.style.marginRight = '10px';
-settingsArea.appendChild(summarizeBtn);
+        const chatContent = document.createElement('div');
+        chatContent.className = 'ds-chat-content';
+        chatWindow.appendChild(chatContent);
+
+        const inputArea = document.createElement('div');
+        inputArea.className = 'ds-chat-input-area';
+        chatWindow.appendChild(inputArea);
+
+// 修改 contextToggle 部分
+const contextToggle = document.createElement('div');
+contextToggle.className = 'ds-context-toggle';
+inputArea.appendChild(contextToggle);
+
+// 左侧部分 - 复选框和🕸图标
+const leftGroup = document.createElement('div');
+leftGroup.className = 'ds-toggle-left';
+contextToggle.appendChild(leftGroup);
+
+const contextCheckbox = document.createElement('input');
+contextCheckbox.type = 'checkbox';
+contextCheckbox.id = 'ds-context-checkbox';
+contextCheckbox.checked = config.usePageContext;
+leftGroup.appendChild(contextCheckbox);
+
+const contextLabel = document.createElement('label');
+contextLabel.htmlFor = 'ds-context-checkbox';
+contextLabel.innerText = '🌐'
+contextLabel.title = '提取网页内容'
+leftGroup.appendChild(contextLabel);
+
+// 右侧部分 - 导出图标
+const exportBtn = document.createElement('div');
+exportBtn.className = 'ds-toggle-right';
+exportBtn.innerHTML = '🗂️';
+exportBtn.title = '导出对话';
+contextToggle.appendChild(exportBtn);
+// 在 headerButtons 中添加导出按钮
+
+
+
+        const inputBox = document.createElement('textarea');
+        inputBox.className = 'ds-chat-input';
+        inputBox.placeholder = '输入你的问题...';
+        inputBox.rows = 2;
+        inputBox.style.padding = '8px 10px';
+        inputArea.appendChild(inputBox);
+
+        const settingsArea = document.createElement('div');
+        settingsArea.className = 'ds-chat-settings';
+        inputArea.appendChild(settingsArea);
+
+        const settingsBtn = document.createElement('span');
+        settingsBtn.className = 'ds-chat-settings-btn';
+        settingsBtn.innerText = '🖋️';
+        settingsBtn.title = 'AI设置'; // 添加提示
+        settingsArea.appendChild(settingsBtn);
+
+        const summarizeBtn = document.createElement('span');
+        summarizeBtn.className = 'ds-chat-settings-btn';
+        summarizeBtn.innerText = '📄';
+        summarizeBtn.title = '总结当前网页';
+        summarizeBtn.style.marginRight = '10px';
+        settingsArea.appendChild(summarizeBtn);
+
+
+        const customCaptureBtn = document.createElement('span');
+        customCaptureBtn.className = 'ds-chat-settings-btn';
+        customCaptureBtn.innerText = '🔍';
+        customCaptureBtn.title = '自定义抓取规则';
+        customCaptureBtn.style.marginRight = '10px';
+        settingsArea.insertBefore(customCaptureBtn, summarizeBtn);
+
+        const clearBtn = document.createElement('span');
+        clearBtn.className = 'ds-chat-settings-btn';
+        clearBtn.innerText = '🎨';
+        clearBtn.title = '清空聊天历史'; // 添加提示
+        settingsArea.appendChild(clearBtn);
+
 
 // 添加总结网页按钮点击事件
 
 // ... rest of the existing code ...
 
                 // 显示历史消息
-                function displayHistory() {
-                    chatContent.innerHTML = '';
-                    config.chatHistory.forEach(msg => {
-                        const msgDiv = document.createElement('div');
-                        msgDiv.className = `ds-chat-hmessage ds-${msg.role}-hmessage`;
-                        // 根据角色添加对应标识
-                        const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
-                        msgDiv.innerHTML = marked.parse(contentWithLabel);
-                        addCopyButtonsToCodeBlocks(msgDiv);
-                        chatContent.appendChild(msgDiv);
-                    });
-                    chatContent.scrollTop = chatContent.scrollHeight;
-                }
+ function displayHistory() {
+    chatContent.innerHTML = '';
+    config.chatHistory.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `ds-chat-hmessage ds-${msg.role}-hmessage`;
+        const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
+        msgDiv.innerHTML = marked.parse(contentWithLabel);
+        // 确保历史记录中的代码块被高亮处理
+        msgDiv.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
+        addCopyButtonsToCodeBlocks(msgDiv);
+        chatContent.appendChild(msgDiv);
+    });
+    // 示例：只在用户当前已经接近底部时自动滚动
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+}
                 displayHistory();
 
                 // 事件监听,关闭弹窗
+chatHeader.style.cursor = 'move'; // 设置鼠标样式为可拖动
+let isDraggingWindow = false;
+let startXWindow, startYWindow, initialLeftWindow, initialTopWindow;
+
+// 鼠标按下事件
+chatHeader.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return; // 只响应左键点击
+
+    isDraggingWindow = true;
+    startXWindow = e.clientX;
+    startYWindow = e.clientY;
+
+    const styles = window.getComputedStyle(chatWindow);
+    initialLeftWindow = parseFloat(styles.left) || 0;
+    initialTopWindow = parseFloat(styles.top) || 0;
+
+    e.preventDefault(); // 阻止默认行为
+    chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
+});
+
+// 鼠标移动事件
+document.addEventListener('mousemove', (e) => {
+    if (!isDraggingWindow) return;
+
+    const deltaX = e.clientX - startXWindow;
+    const deltaY = e.clientY - startYWindow;
+
+    const newLeft = initialLeftWindow + deltaX;
+    const newTop = initialTopWindow + deltaY;
+
+    // 限制在窗口范围内
+    const maxLeft = window.innerWidth - chatWindow.offsetWidth;
+    const maxTop = window.innerHeight - chatWindow.offsetHeight;
+
+    const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    const clampedTop = Math.max(0, Math.min(newTop, maxTop));
+
+    chatWindow.style.left = `${clampedLeft}px`;
+    chatWindow.style.top = `${clampedTop}px`;
+    chatWindow.style.right = 'auto';
+    chatWindow.style.bottom = 'auto';
+});
+
+// 鼠标松开事件
+document.addEventListener('mouseup', () => {
+    if (isDraggingWindow) {
+        isDraggingWindow = false;
+        chatWindow.style.userSelect = ''; // 恢复文本选择
+    }
+});
+
+// 鼠标移出窗口事件
+document.addEventListener('mouseleave', () => {
+    if (isDraggingWindow) {
+        isDraggingWindow = false;
+        chatWindow.style.userSelect = ''; // 恢复文本选择
+    }
+});
+        customCaptureBtn.addEventListener('click', () => {
+    const currentSelectors = config.customSelectors || '';
+    const newSelectors = prompt(`当前页面可用元素选择器(多个用逗号分隔):
+例如: #content, .article, .post-content
+当前规则: ${currentSelectors}`, currentSelectors);
+
+            if (newSelectors !== null) {
+                config.customSelectors = newSelectors;
+                GM_setValue('customSelectors', config.customSelectors);
+                alert('自定义抓取规则已保存!');
+            }
+        });
+
 
 
         closeBtn.addEventListener('click', () => {
@@ -808,6 +1133,43 @@ settingsArea.appendChild(summarizeBtn);
  * @returns {Object} 包含url、title和content的对象
  */
 function getPageContent() {
+if (config.customSelectors && config.customSelectors.trim()) {
+        try {
+            const selectors = config.customSelectors.split(',').map(s => s.trim()).filter(s => s);
+            let combinedContent = '';
+
+            for (const selector of selectors) {
+                const elements = document.querySelectorAll(selector);
+                if (elements.length > 0) {
+                    // 合并所有匹配元素的内容
+                    const selectorContent = Array.from(elements)
+                        .map(el => el.textContent.trim())
+                        .filter(text => text.length > 0)
+                        .join('\n\n');
+
+                    if (selectorContent.length > 0) {
+                        // 添加选择器标识和内容
+                        combinedContent += (combinedContent ? '\n\n' : '') +
+                                         `[来自${selector}div区域的内容]:\n${selectorContent}`;
+                    }
+                }
+            }
+
+            if (combinedContent.length > 0) {
+                return {
+                    url: window.location.href,
+                    title: document.title,
+                    content: combinedContent,
+                    charset: document.characterSet,
+                    wordCount: combinedContent.split(/\s+/).length,
+                    source: 'custom'
+                };
+            }
+        } catch (e) {
+            console.error('使用自定义选择器抓取内容失败:', e);
+            // 失败后回退到默认抓取方式
+        }
+    }
     // 1. 多策略确定主要内容容器
     let mainContent = findMainContent();
 
@@ -1142,6 +1504,7 @@ function findContentByTextDensity() {
                         let reasoningMessage = '';
                         let isReasoningReceived = false;
                         let isReasoningFinished = false;
+ let isStopped = false; // 新增：停止标志
                         let reasoningTitleDiv; // 用于显示 “思考内容：” 的元素
 
                         aiMsgDiv.innerHTML = '';
@@ -1150,11 +1513,27 @@ function findContentByTextDensity() {
 
                         const reasoningDiv = document.createElement('div');
                         reasoningDiv.className = 'ds-reasoning-content';
+reasoningDiv.style.display = 'none'; // 初始隐藏
+         aiMsgDiv.appendChild(reasoningDiv);
+         aiMsgDiv.appendChild(contentDiv);
 
-                        // 调整添加元素的顺序，先添加思考内容 div，再添加正式回答 div
-                        aiMsgDiv.appendChild(reasoningDiv);
-                        aiMsgDiv.appendChild(contentDiv);
+        const stopButton = document.createElement('button');
+        stopButton.className = 'ds-stop-button';
+            stopButton.innerHTML = `<img class= "ds-stop-img" src="https://tc.qdqqd.com/D4ZXR9.svg" style="width: 20px; height: 20px; border-radius: 50%;">`;
+        stopButton.title = '点击停止AI输出';
+        chatWindow.appendChild(stopButton);
 
+        // 停止按钮点击事件
+        stopButton.addEventListener('click', () => {
+            isStopped = true;
+
+            stopButton.remove();
+            aiMsgDiv.innerHTML = 'AI输出中止！！！'; // 清空容器
+            config.chatHistory.push({ role: 'system', content: 'user中断了对话输出....'});
+                        //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+            GM_setValue('chatHistory', config.chatHistory);
+            resolve(); // 提前结束Promise
+        });
                         const decoder = new TextDecoder();
                         let buffer = '';
 
@@ -1183,11 +1562,33 @@ function findContentByTextDensity() {
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     console.log('流读取完成');
-                                    if (aiMessage.trim()) {
-                                        config.chatHistory.push({ role: 'assistant', content: aiMessage.slice(4) });
-                                        GM_setValue('chatHistory', config.chatHistory);
-                                    }
-                                    addCopyButtonsToCodeBlocks(aiMsgDiv);
+stopButton.remove(); // 完成后移除停止按钮
+
+                        const aiResponse = {
+                        role: 'assistant',
+                        content: aiMessage.slice(3), // 去掉"🤖："
+                        timestamp: new Date().toISOString(),
+                        hasReasoning: isReasoningReceived,
+                        reasoningContent: isReasoningReceived ? reasoningMessage : null
+                    };
+                    config.fullConversation.push(aiResponse);
+GM_setValue('fullConversation', config.fullConversation);
+                                    if (!isSummaryTask && aiMessage.trim()) {
+                        config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
+                        //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+                        GM_setValue('chatHistory', config.chatHistory);
+                            //console.log(config.fullConversation);
+                      // GM_setValue('fullConversation',config.fullConversation);
+                    }
+                    // 如果是总结任务，只添加简化的用户消息
+                    else if (isSummaryTask) {
+                        //config.chatHistory.push({ role: 'user', content: '正在总结当前网页...' });
+                        config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
+                        //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+                        GM_setValue('chatHistory', config.chatHistory);
+                       // GM_setValue('fullConversation',config.fullConversation);
+                    }
+                    addCopyButtonsToCodeBlocks(aiMsgDiv);
                                     // 如果接收到过思考内容，在结束时保留 “思考内容：” 提示
                                     if (isReasoningReceived) {
                                         if (!reasoningTitleDiv) {
@@ -1239,7 +1640,7 @@ function findContentByTextDensity() {
                                                     hljs.highlightElement(block);
                                                 });
                                                 addCopyButtonsToCodeBlocks(contentDiv);
-                                                chatContent.scrollTop = chatContent.scrollHeight;
+                                                const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
                                             }
                                             if (data.choices ?.[0] ?.delta ?.reasoning_content) {
                                                 const newReasoningContent = data.choices[0].delta.reasoning_content;
@@ -1249,7 +1650,7 @@ function findContentByTextDensity() {
                                                     hljs.highlightElement(block);
                                                 });
                                                 addCopyButtonsToCodeBlocks(reasoningDiv);
-                                                chatContent.scrollTop = chatContent.scrollHeight;
+                                                const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
                                                 isReasoningReceived = true;
                                                 isReasoningFinished = false;
                                                 thinkingMsgDiv.className = 'ds-reasoning-title';
@@ -1308,7 +1709,7 @@ function findContentByTextDensity() {
 
 
 // 发送消息函数
-async function sendMessage(message, retryCount = 0, hideMessage = false) {
+async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
     if (!message.trim()) return;
 
     if (!config.apiKey) {
@@ -1322,21 +1723,36 @@ async function sendMessage(message, retryCount = 0, hideMessage = false) {
         errorMsgDiv.className = 'ds-chat-message ds-error';
         errorMsgDiv.innerText = '错误: 网络连接已断开,请检查网络后重试';
         chatContent.appendChild(errorMsgDiv);
-        chatContent.scrollTop = chatContent.scrollHeight;
+        // 示例：只在用户当前已经接近底部时自动滚动
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
         return;
     }
 
-    const userMsg = { role: 'user', content: message };
+    // 对于总结任务，只添加简化的消息到历史记录
+    const userMsg = {
+        role: 'user',
+        content: isSummaryTask ? '正在总结当前网页...' : message
+    };
+config.fullConversation.push({
+        role: 'user',
+        content: message, // 这里存储原始消息，不简化
+        timestamp: new Date().toISOString()
+    });
+    GM_setValue('fullConversation', config.fullConversation);
+
+    // 总是添加到历史记录，但内容会根据isSummaryTask变化
+    const userMsgDiv = document.createElement('div');
+    userMsgDiv.className = 'ds-chat-message ds-user-message ds-chat-message';
+    userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : message);
+    addCopyButtonsToCodeBlocks(userMsgDiv);
+    chatContent.appendChild(userMsgDiv);
     config.chatHistory.push(userMsg);
     GM_setValue('chatHistory', config.chatHistory);
 
-    if (!hideMessage) {
-        const userMsgDiv = document.createElement('div');
-        userMsgDiv.className = 'ds-chat-message ds-user-message';
-        userMsgDiv.innerHTML = marked.parse(`${message}`);
-        addCopyButtonsToCodeBlocks(userMsgDiv);
-        chatContent.appendChild(userMsgDiv);
-    }
+    // 总是显示用户消息，但内容会根据isSummaryTask变化
 
     const thinkingMsgDiv = document.createElement('div');
     thinkingMsgDiv.className = 'ds-reasoning-title';
@@ -1347,8 +1763,14 @@ async function sendMessage(message, retryCount = 0, hideMessage = false) {
     aiMsgDiv.className = 'ds-chat-message ds-ai-message';
     chatContent.appendChild(aiMsgDiv);
 
+    // 示例：只在用户当前已经接近底部时自动滚动
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
     chatContent.scrollTop = chatContent.scrollHeight;
+}
 
+
+    // 构建请求数据 - 总是发送完整消息给AI
     const requestData = {
         model: config.model,
         messages: [
@@ -1358,26 +1780,25 @@ async function sendMessage(message, retryCount = 0, hideMessage = false) {
         temperature: config.temperature,
         max_tokens: config.maxTokens,
         stream: true,
+
     };
 
-    if (config.usePageContext) {
+    // 如果是总结任务，添加网页内容作为系统消息
+    if (isSummaryTask) {
+        const pageContent = getPageContent();
+        requestData.messages.splice(1, 0, {
+            role: 'user',
+            content: message,
+        });
+    } else if (config.usePageContext) {
+        // 普通对话的网页上下文
         const pageContent = getPageContent();
         requestData.messages.splice(1, 0, {
             role: 'system',
-            content: `[当前网页信息]
-标题: ${pageContent.title}
-URL: ${pageContent.url}
-正文内容: ${pageContent.content}
-注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
+            content: `[当前网页信息]\n标题: ${pageContent.title}\nURL: ${pageContent.url}\n正文内容: ${pageContent.content}\n注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
         });
-        console.log(`[当前网页信息]
-标题: ${pageContent.title}
-URL: ${pageContent.url}
-内容摘要: ${pageContent.content}
-基于以上网页内容，请回答以下问题，如果问题不相关则仅作为上下文参考`
-        );
     }
-    console.log('发送的请求数据:', requestData); // 添加
+        console.log('发送的请求数据:', requestData); // 添加
 
     try {
         return new Promise((resolve, reject) => {
@@ -1397,27 +1818,34 @@ URL: ${pageContent.url}
                 data: JSON.stringify(requestData),
                 onloadstart: (responseInfo) => {
                     try {
-                        // 传递实际的响应对象
-                        handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv)
+                        handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv, isSummaryTask)
                             .then(resolve)
                             .catch(reject);
                     } catch (error) {
+                        const existingStopButton = document.querySelector('.ds-stop-button');
+       if (existingStopButton) existingStopButton.remove();
                         reject(error);
                     }
                 },
                 onerror: (error) => {
                     clearTimeout(timeoutId);
                     chatContent.removeChild(thinkingMsgDiv);
+                    const existingStopButton = document.querySelector('.ds-stop-button');
+       if (existingStopButton) existingStopButton.remove();
                     reject(new Error('请求失败: ' + error.statusText));
                 },
                 ontimeout: () => {
                     clearTimeout(timeoutId);
+                     const existingStopButton = document.querySelector('.ds-stop-button');
+       if (existingStopButton) existingStopButton.remove();
                     chatContent.removeChild(thinkingMsgDiv);
                     reject(new Error('请求超时'));
                 }
             });
         });
     } catch (error) {
+        const existingStopButton = document.querySelector('.ds-stop-button');
+       if (existingStopButton) existingStopButton.remove();
         if (thinkingMsgDiv.parentNode) {
             chatContent.removeChild(thinkingMsgDiv);
         }
@@ -1439,7 +1867,11 @@ URL: ${pageContent.url}
         errorMsgDiv.className = 'ds-chat-message ds-error';
         errorMsgDiv.innerText = errorMessage;
         chatContent.appendChild(errorMsgDiv);
-        chatContent.scrollTop = chatContent.scrollHeight;
+        // 示例：只在用户当前已经接近底部时自动滚动
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
 
         if ((error.message.includes('Failed to fetch') || error.message.includes('请求失败') || error.message.includes('timeout')) && retryCount < 3) {
             const retryMsgDiv = document.createElement('div');
@@ -1526,25 +1958,242 @@ summarizeBtn.addEventListener('click', async () => {
     }
 
     // 在对话框显示用户正在总结网页的消息
-    const userSummaryMsgDiv = document.createElement('div');
+    /*const userSummaryMsgDiv = document.createElement('div');
     userSummaryMsgDiv.className = 'ds-chat-message ds-user-message';
     userSummaryMsgDiv.innerText = '正在总结当前网页...';
-    chatContent.appendChild(userSummaryMsgDiv);
+    chatContent.appendChild(userSummaryMsgDiv);*/
+const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+if (isNearBottom) {
     chatContent.scrollTop = chatContent.scrollHeight;
+}
 
     const pageContent = getPageContent();
-    const summaryPrompt = `你是一个长文本内容总结专家，总结当前网页，不能漏掉任何一点，要求突出重点和关键信息(重点需要标记)：
+    const summaryPrompt = `你是一个长文本内容总结专家，总结当前网页，不能漏掉任何一点，要求突出重点和关键信息(重点关键词需要重点标记),并发表你的见解，引人深思：
     网页标题: ${pageContent.title}
     URL: ${pageContent.url}
     网页内容:
-    ${pageContent.content.substring(0, 10000)}...`;
+    ${pageContent.content.substring(0, 100000)}...`;
 
     try {
-        await sendMessage(summaryPrompt,0,true);
+        // 添加第三个参数 true 表示这是总结任务
+        await sendMessage(summaryPrompt, 0, true);
     } catch (error) {
         console.error('总结网页时出错:', error);
     }
 });
+
+
+
+// 对话导出
+exportBtn.addEventListener('click', () => {
+    if (config.fullConversation.length === 0) {
+        alert('没有可导出的对话内容');
+        return;
+    }
+
+    // 提供格式选择
+    const format = prompt('选择导出格式:\n1. TXT (文本)\n2. HTML (带样式)\n3. Markdown\n4. JSON (完整数据)', '3');
+
+    if (!format) return;
+
+    let exportContent = '';
+    const dateStr = new Date().toLocaleString();
+
+    switch(format) {
+        case '1': // TXT 格式
+            exportContent = `╭───────────────────────────────╮\n│      AI 助手对话记录         │\n│ 导出时间: ${dateStr.padEnd(19)} │\n╰───────────────────────────────╯\n\n`;
+            config.fullConversation.forEach(msg => {
+                const role = msg.role === 'user' ? '👤 用户' : '🤖 AI';
+                const time = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : '未知时间';
+
+                exportContent += `\n╭── ${role} · ${time} ──\n│\n`;
+
+                // 优先显示思考内容
+                if (msg.hasReasoning && msg.reasoningContent) {
+                    exportContent += `│ 💭 思考过程:\n│ ${msg.reasoningContent.split('\n').join('\n│ ')}\n│\n`;
+                }
+
+                exportContent += `│ 📝 正式回答:\n│ ${msg.content.split('\n').join('\n│ ')}\n╰────────────────────────────────\n`;
+            });
+            break;
+
+        case '2': // HTML 格式
+            exportContent = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI 对话记录 - ${dateStr}</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #ecf0f1;
+            --reasoning-color: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--secondary-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .message-header {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reasoning-section {
+            padding: 1rem;
+            background: #fff3e0;
+            border-left: 4px solid var(--reasoning-color);
+            margin: 1rem;
+            border-radius: 4px;
+        }
+
+        .content-section {
+            padding: 1.5rem;
+        }
+
+        .timestamp {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AI 对话记录</h1>
+        <p>导出时间: ${dateStr}</p>
+    </div>`;
+
+            config.fullConversation.forEach(msg => {
+                const role = msg.role === 'user' ? '用户' : 'AI助手';
+                const time = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : '未知时间';
+
+                exportContent += `
+    <div class="message">
+        <div class="message-header">
+            <span>${role}</span>
+            <span class="timestamp">${time}</span>
+        </div>`;
+
+                if (msg.hasReasoning && msg.reasoningContent) {
+                    exportContent += `
+        <div class="reasoning-section">
+            <h3>💭 思考过程</h3>
+            <div>${msg.reasoningContent.replace(/\n/g, '<br>')}</div>
+        </div>`;
+                }
+
+                exportContent += `
+        <div class="content-section">
+            <h3>📝 正式回答</h3>
+            <div>${msg.content.replace(/\n/g, '<br>')}</div>
+        </div>
+    </div>`;
+            });
+
+            exportContent += '\n</body>\n</html>';
+            break;
+
+        case '3': // Markdown 格式
+            exportContent = `# AI 对话记录\n\n**导出时间**: ${dateStr}\n\n`;
+            config.fullConversation.forEach(msg => {
+                const role = msg.role === 'user' ? '**👤 用户**' : '**🤖 AI助手**';
+                const time = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : '未知时间';
+
+                exportContent += `## ${role} · _${time}_\n\n`;
+
+                if (msg.hasReasoning && msg.reasoningContent) {
+                    exportContent += `### 💭 思考过程\n${msg.reasoningContent}\n\n`;
+                }
+
+                exportContent += `### 📝 正式回答\n${msg.content}\n\n---\n\n`;
+            });
+            break;
+
+        case '4': // JSON 格式
+            exportContent = JSON.stringify({
+                meta: {
+                    title: "AI 对话记录",
+                    exportDate: dateStr,
+                    version: "2.0",
+                    structure: "思考内容优先"
+                },
+                messages: config.fullConversation.map(msg => ({
+                    ...msg,
+                    contentOrder: msg.hasReasoning ? ["reasoning", "content"] : ["content"]
+                }))
+            }, null, 2);
+            break;
+
+        default:
+            alert('无效的选择');
+            return;
+    }
+
+    // 确定文件扩展名
+    const ext =
+        format === '1' ? 'txt' :
+        format === '2' ? 'html' :
+        format === '3' ? 'md' : 'json';
+
+    // 创建下载链接
+    const blob = new Blob([exportContent], {
+        type: format === '2' ? 'text/html' :
+              format === '4' ? 'application/json' : 'text/plain;charset=utf-8'
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AI对话记录_${new Date().toISOString().slice(0, 10)}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+
+    // 清理
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+});
+
 
 // ... rest of the existing code ...
                 // 输入框事件
