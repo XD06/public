@@ -587,7 +587,7 @@ function GM_xmlhttpRequest(options) {
 .ds-stop-button {
     position: absolute;
     right: 20px;
-    bottom: 55px;
+    bottom: 65px;
     width: 20px; /* 圆形直径 */
     height: 20px;
     border-radius: 50%; /* 圆形 */
@@ -606,7 +606,7 @@ function GM_xmlhttpRequest(options) {
 .ds-start-button {
     position: absolute;
     right: 20px;
-    bottom: 55px;
+    bottom: 65px;
     width: 20px; /* 圆形直径 */
     height: 20px;
     border-radius: 50%; /* 圆形 */
@@ -806,7 +806,7 @@ function GM_xmlhttpRequest(options) {
 
 .copy-code-btn {
     position: absolute;
-    top: 20px;
+    top: 5px;
     right: 8px;
     background-color: #555;
     color: white;
@@ -1078,7 +1078,7 @@ function detectCodeType(code) {
                 // 创建UI元素 - 只在body元素下添加
                 const icon = document.createElement('div');
                 icon.className = 'ds-chat-icon';
-                icon.innerHTML = `<img src="${GM_getResourceURL('https://tc.qdqqd.com/2xv3Ht.apng')}" style="width: 30px; height: 30px; border-radius: 50%;">`;
+                icon.innerHTML = `<img src="/img/icon.apng" style="width: 30px; height: 30px; border-radius: 50%;">`;
 
                 // 确保只添加到body元素，而不是其他元素
                 document.body.appendChild(icon);
@@ -1337,7 +1337,7 @@ function detectCodeType(code) {
                     msgDiv.querySelectorAll('pre code').forEach((block) => {
                         hljs.highlightElement(block);
                         // 为代码块添加运行按钮
-                        addExecuteButton(block.parentNode);
+                        //addExecuteButton(block.parentNode);
                     });
         
                     addCopyButtonsToCodeBlocks(msgDiv);
@@ -2066,8 +2066,10 @@ function Add_codebutton(){
     const btnContainer = document.createElement('div');
     btnContainer.className = 'code-buttons-container';
     btnContainer.style.position = 'relative';
-
+    const code = preElement.textContent;
+    const codeType = detectCodeType(code);
     // 创建运行按钮
+    if (codeType === 'python' || codeType === 'html') {
     const runBtn = document.createElement('button');
     runBtn.className = 'code-execute-btn';
     runBtn.textContent = '运行';
@@ -2083,6 +2085,7 @@ function Add_codebutton(){
 
     // 将运行按钮添加到容器底部
     btnContainer.appendChild(runBtn);
+}
 }
 
 
@@ -2365,7 +2368,8 @@ GM_setValue('fullConversation', config.fullConversation);
                        // GM_setValue('fullConversation',config.fullConversation);
                     }
                     addCopyButtonsToCodeBlocks(aiMsgDiv);
-                                   if (isReasoningReceived) {
+                    Add_codebutton();
+                    if (isReasoningReceived) {
                         if (!reasoningTitleDiv) {
                             reasoningTitleDiv = document.createElement('div');
                             reasoningTitleDiv.className = 'ds-reasoning-title';
@@ -2416,6 +2420,7 @@ GM_setValue('fullConversation', config.fullConversation);
                                     hljs.highlightElement(block);
                                 });
                                 addCopyButtonsToCodeBlocks(contentDiv);
+                                Add_codebutton();
                                 // 示例：只在用户当前已经接近底部时自动滚动
 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
 if (isNearBottom) {
@@ -2431,6 +2436,7 @@ if (isNearBottom) {
                                     hljs.highlightElement(block);
                                 });
                                 addCopyButtonsToCodeBlocks(reasoningDiv);
+                                Add_codebutton();
                                  reasoningDiv.style.display = 'block'; // 就是缺少这一句！
                                 // 示例：只在用户当前已经接近底部时自动滚动
 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
@@ -2535,6 +2541,7 @@ config.fullConversation.push({
     userMsgDiv.className = 'ds-chat-message ds-user-message ds-chat-message';
     userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : message);
     addCopyButtonsToCodeBlocks(userMsgDiv);
+    Add_codebutton();
     chatContent.appendChild(userMsgDiv);
     config.chatHistory.push(userMsg);
     GM_setValue('chatHistory', config.chatHistory);
@@ -2677,64 +2684,124 @@ if (isNearBottom) {
 
 // ... rest of the existing code ...
 // 为代码块添加复制按钮
-function addCopyButtonsToCodeBlocks(container) {
-    container.querySelectorAll('pre').forEach(pre => {
-        // 强制添加 hljs 类确保样式应用
-        if (!pre.classList.contains('hljs')) {
-            pre.classList.add('hljs');
-        }
+// function addCopyButtonsToCodeBlocks(container) {
+//     container.querySelectorAll('pre').forEach(pre => {
+//         // 强制添加 hljs 类确保样式应用
+//         if (!pre.classList.contains('hljs')) {
+//             pre.classList.add('hljs');
+//         }
 
-        // 如果不存在代码元素则自动创建
-        if (!pre.querySelector('code')) {
-            const code = document.createElement('code');
-            code.textContent = pre.textContent;
-            pre.innerHTML = '';
-            pre.appendChild(code);
-        }
+//         // 如果不存在代码元素则自动创建
+//         if (!pre.querySelector('code')) {
+//             const code = document.createElement('code');
+//             code.textContent = pre.textContent;
+//             pre.innerHTML = '';
+//             pre.appendChild(code);
+//         }
 
-              // 创建复制按钮
-        const copyButton = document.createElement('button');
-        copyButton.className = 'copy-code-btn';
-        copyButton.textContent = '复制';
+//               // 创建复制按钮
+     
+//   if (!pre.nextElementSibling?.classList?.contains('code-buttons-container')) {
+//         // 创建按钮容器
+//         const btnContainer = document.createElement('div');
+//         btnContainer.className = 'code-buttons-container';
+//         btnContainer.style.position = 'relative';
+//         const copyButton = document.createElement('button');
+//         copyButton.className = 'copy-code-btn';
+//         copyButton.textContent = '复制';
 
-        // 绑定复制事件（带重试机制）
-        copyButton.addEventListener('click', () => {
-            const code = pre.textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                // 显示成功提示
-                const successMessage = document.createElement('span');
-                successMessage.className = 'copy-success';
-                successMessage.textContent = '已复制!';
-                copyButton.parentNode.appendChild(successMessage);
+//         // 绑定复制事件（带重试机制）
+//         copyButton.addEventListener('click', () => {
+//             const code = pre.textContent;
+//             navigator.clipboard.writeText(code).then(() => {
+//                 // 显示成功提示
+//                 const successMessage = document.createElement('span');
+//                 successMessage.className = 'copy-success';
+//                 successMessage.textContent = '已复制!';
+//                 copyButton.parentNode.appendChild(successMessage);
 
-                // 2秒后移除
-                setTimeout(() => {
-                    successMessage.remove();
-                }, 2000);
-            }).catch(err => {
-                console.error('复制失败: ', err);
-            });
-        });
-  if (!pre.nextElementSibling?.classList?.contains('code-buttons-container')) {
-        // 创建按钮容器
-        const btnContainer = document.createElement('div');
-        btnContainer.className = 'code-buttons-container';
-        btnContainer.style.position = 'relative';
+//                 // 2秒后移除
+//                 setTimeout(() => {
+//                     successMessage.remove();
+//                 }, 2000);
+//             }).catch(err => {
+//                 console.error('复制失败: ', err);
+//             });
+//         });
 
+//            // 将按钮容器插入到pre元素前面
+//         pre.parentNode.insertBefore(btnContainer, pre);
 
-           // 将按钮容器插入到pre元素前面
-        pre.parentNode.insertBefore(btnContainer, pre);
+//         // 将复制按钮添加到容器顶部
+//         btnContainer.appendChild(copyButton);
 
-        // 将复制按钮添加到容器顶部
-        btnContainer.appendChild(copyButton);
-
-        }
+//         }
    
-        // 强制重新高亮代码（解决时序问题）
-        hljs.highlightElement(pre.querySelector('code'));
-    });
-}
+//         // 强制重新高亮代码（解决时序问题）
+//         hljs.highlightElement(pre.querySelector('code'));
+//     });
+// }
 //一键总结网页内容事件
+    function addCopyButtonsToCodeBlocks(container) {
+        // 遍历所有 pre 元素（不仅仅是已高亮的）
+        container.querySelectorAll('pre').forEach(pre => {
+            // 强制添加 hljs 类确保样式应用
+            if (!pre.classList.contains('hljs')) {
+                pre.classList.add('hljs');
+            }
+
+            // 如果不存在代码元素则自动创建
+            if (!pre.querySelector('code')) {
+                const code = document.createElement('code');
+                code.textContent = pre.textContent;
+                pre.innerHTML = '';
+                pre.appendChild(code);
+            }
+
+            // 移除已存在的复制按钮
+            const existingButton = pre.querySelector('.copy-code-btn');
+            if (existingButton) {
+                existingButton.remove();
+            }
+
+            // 创建新的复制按钮
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-code-btn';
+            copyButton.textContent = '复制';
+
+            // 绑定复制事件（带重试机制）
+            copyButton.addEventListener('click', () => {
+                const code = pre.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    // 显示成功提示
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'copy-success';
+                    successMessage.textContent = '复制成功';
+                    pre.appendChild(successMessage);
+
+                    // 2秒后淡出移除
+                    setTimeout(() => {
+                        successMessage.style.opacity = '0';
+                        setTimeout(() => {
+                            pre.removeChild(successMessage);
+                        }, 500);
+                    }, 1500);
+                }).catch(err => {
+                    console.error('复制失败: ', err);
+                    // 可选：添加错误提示
+                });
+            });
+
+            // 添加按钮到代码块
+            pre.appendChild(copyButton);
+            addExecuteButton(pre);
+
+
+            // 强制重新高亮代码（解决时序问题）
+            hljs.highlightElement(pre.querySelector('code'));
+        });
+    }
+
 
 // 添加总结网页按钮点击事件
 summarizeBtn.addEventListener('click', async () => {
