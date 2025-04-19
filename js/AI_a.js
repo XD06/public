@@ -69,7 +69,7 @@ function GM_xmlhttpRequest(options) {
 
     // 添加CSS样式
     const css = `
-        @keyframes fadeInOut {
+       @keyframes fadeInOut {
             0% {
                 opacity: 0;
             }
@@ -150,7 +150,7 @@ function GM_xmlhttpRequest(options) {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             display: none;
             flex-direction: column;
-           // overflow: hidden;
+            overflow: hidden;
             opacity: 0;
            /*transform: translateY(20px);*/
             z-index: 2147483646;
@@ -189,7 +189,7 @@ function GM_xmlhttpRequest(options) {
             right: 20px;
             width: 50px;
             height: 50px;
-            background-color: var(--primary-color);
+            background-color: transparent;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -206,17 +206,29 @@ function GM_xmlhttpRequest(options) {
         .ds-chat-icon {
             transform: scale(1.05);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
-            background-color: rgb(0, 0, 0);
+            background-color: transparent;
         }
         .ds-chat-header {
             padding: 10px 15px;
-            background-color: #9a9e994f;
-            color: black;
+            background-color: var(--header-bg, #9a9e994f) !important;
+             color: var(--header-text, #222) !important;
+    transition: background-color 0.5s ease, color 0.3s ease;
+    backdrop-filter: blur(5px);
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-radius: 15px 15px 0 0;
         }
+
+       .ds-chat-close,
+.ds-chat-fullscreen {
+    color: var(--header-text, #666) !important;
+    transition: color 0.3s ease;
+}
+
+.ds-chat-close:hover {
+    color: #ff4444 !important;
+}
         .ds-chat-title {
             font-weight: bold;
             color: black; /* 修改字体颜色 */
@@ -277,7 +289,7 @@ function GM_xmlhttpRequest(options) {
             color: rgb(0,0,0);
           margin-left: auto;
             margin-top: 10px;
-            text-align: right;
+           // text-align: right;
             padding: 1px 5px;
             border-radius: 15px;
             height: auto;
@@ -413,25 +425,12 @@ function GM_xmlhttpRequest(options) {
         }
 
         /* 代码块复制按钮样式 */
-        .copy-code-btn {
-            position: absolute !important;
-            top: 8px !important;
-            right: 8px !important;
-            background-color: #555 !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 4px !important;
-            padding: 4px 10px !important;
-            font-size: 12px !important;
-            cursor: pointer !important;
-            opacity: 0.8 !important;
-            transition: opacity 0.3s !important;
-        }
+
 
         /* 复制成功提示样式 */
         .copy-success {
             position: absolute !important;
-            top: 8px !important;
+            top: 20px !important;
             right: 60px !important;
             background-color: #28a745 !important;
             color: white !important;
@@ -439,6 +438,7 @@ function GM_xmlhttpRequest(options) {
             padding: 4px 10px !important;
             font-size: 12px !important;
             animation: fadeOut 2s forwards !important;
+            z-index: 10;
         }
 
         @keyframes fadeOut {
@@ -587,11 +587,11 @@ function GM_xmlhttpRequest(options) {
 .ds-stop-button {
     position: absolute;
     right: 20px;
-    bottom: 60px;
+    bottom: 55px;
     width: 20px; /* 圆形直径 */
     height: 20px;
     border-radius: 50%; /* 圆形 */
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.9);
     border: none;
     cursor: pointer;
     z-index: 2147483645;
@@ -599,13 +599,32 @@ function GM_xmlhttpRequest(options) {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #ff4444;
     transition: all 0.2s;
-   overflow: hidden; /* 隐藏内部动画溢出部分 */
+    overflow: hidden; /* 隐藏内部动画溢出部分 */
+}
+.ds-start-button {
+    position: absolute;
+    right: 20px;
+    bottom: 55px;
+    width: 20px; /* 圆形直径 */
+    height: 20px;
+    border-radius: 50%; /* 圆形 */
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    cursor: pointer;
+    z-index: 214748364;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff4444;
+    transition: all 0.2s;
+    overflow: hidden; /* 隐藏内部动画溢出部分 */
 }
 
 .ds-stop-button:hover {
-    background-color: #ffebee;
+    background-color: white;
     transform: scale(1.05);
 }
 
@@ -615,7 +634,7 @@ function GM_xmlhttpRequest(options) {
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 1.5px solid transparent;
+    border: 1px solid transparent;
     border-top-color: white;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -625,8 +644,10 @@ function GM_xmlhttpRequest(options) {
 
 /* 停止图标样式 */
 .ds-stop-img {
-    width: 20px;
-    height: 20px;
+    width: 20px !important;
+    height: 20px !important;
+    color: black;
+    //background-color: black;
     position: relative;
     z-index: 1; /* 确保图标在动画层上方 */
 }
@@ -634,8 +655,8 @@ function GM_xmlhttpRequest(options) {
 .ds-stop-img{
     width: 100%;
     height: 100%;
-    fill: white;
-    animation: pulse 1.5s ease-in-out infinite;
+    fill: currentColor;
+    animation: pulse 1s ease-in-out infinite;
 }
 
 /* 旋转动画 */
@@ -653,11 +674,172 @@ function GM_xmlhttpRequest(options) {
 /* 点击后停止动画的样式 */
 .ds-stop-button.stopped::before {
     animation: none;
-   border: 2px solid #ff4444;
+    border: 2px solid #ff4444;
 }
 
 .ds-stop-button.stopped .ds-stop-icon svg {
     animation: none;
+}
+/* 新增代码执行相关样式 */
+
+
+    /* 代码执行弹窗样式 - 基于demo文件中的样式 */
+    .code-execution-modal {
+        display: none;
+        position: fixed;
+        z-index: 2147483645;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .code-execution-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 85%;
+        max-width: 900px;
+        height: 80vh;
+        max-height: 700px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .code-execution-header {
+        padding: 10px 10px;
+        background-color: #171818e8;
+        color: white;
+        display: flex;
+        align-items: end;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .code-execution-header h3 {
+        margin: 0;
+        font-size: 1.2em;
+        display: contents;
+    }
+
+    .code-execution-close {
+        color: #fff;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 1;
+        margin-left: auto;
+    }
+
+    .code-execution-body {
+        flex: 1;
+        padding: 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #code-sandbox {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #ffffff;
+    }
+
+    #code-status-bar {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        min-height: 1.5em;
+        background-color: #f1f3f5;
+        border-top: 1px solid #dee2e6;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 150px;
+        overflow-y: auto;
+        color: #333;
+    }
+
+    .fullscreen-btn {
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 1;
+        margin-left: 10px;
+    }
+
+    .code-execution-modal.fullscreen .code-execution-content {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+    }
+
+    .status-running {
+        color: #007bff;
+    }
+
+    .status-success {
+        color: #28a745;
+    }
+
+    .status-error {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    .code-buttons-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.copy-code-btn {
+    position: absolute;
+    top: 20px;
+    right: 8px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+    z-index: 10;
+}
+
+.code-execute-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 10;
+}
+
+pre {
+    position: relative;
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+    //display: ruby-base-container;
 }
     `;
 
@@ -685,6 +867,180 @@ function GM_xmlhttpRequest(options) {
         usePageContext: GM_getValue('usePageContext', true),
         personalityPrompt: GM_getValue('personalityPrompt', '你是一个高效务实的全能 AI 助手，以快速解决用户的问题为首要目标。你具备敏锐的洞察力，能迅速抓住问题的关键，提供切实可行的解决方案。你的回答简洁直接、重点突出，帮助用户节省时间和精力。在处理任务时，你会优先考虑实用性和可操作性，确保提供的建议能够落地实施。除了给出核心答案，你还会为用户进行知识拓展。若用户询问某个技术方法，你会拓展介绍该方法的衍生技术、适用场景的拓展以及未来的发展趋势；若用户咨询某个管理理念，你会讲解该理念的演变过程、在不同行业的应用案例以及可能面临的挑战。你会不断优化工作流程，提高服务效率和质量。')
     };
+// 初始化在线运行配置
+let pyodideInstance = null;
+    let isPythonRunning = false;
+    // 配置 marked 库
+// 初始化
+    let pyodide;
+
+        // 初始化Pyodide
+        async function initializePyodide() {
+            console.log("正在加载Pyodide核心...", "info");
+
+            try {
+                // 初始化Pyodide
+                pyodide = await loadPyodide({
+                    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/",
+                    stdout: handleStdout,
+                    stderr: handleStderr
+                });
+
+                console.log("正在加载基础包...", "info");
+
+                // 预加载常用包
+                await loadCommonPackages();
+
+                // 重写Python的input()函数
+                await patchPythonInput();
+
+                console.log("Pyodide已就绪!", "success");
+                pyodideInstance = true;
+
+            } catch (e) {
+                console.log(`初始化失败: ${e}`, "error");
+                console.error("Pyodide初始化错误:", e);
+                pyodideInstance = false;
+            }
+        }
+
+        // 加载常用包
+        async function loadCommonPackages() {
+            try {
+                await pyodide.loadPackage(["numpy", "micropip"]);
+                console.log("基础包加载完成", "success");
+            } catch (e) {
+                console.log(`基础包加载失败: ${e}`, "error");
+            }
+        }
+
+        // 处理标准输出
+        function handleStdout(text) {
+            const output = document.getElementById("output");
+            output.textContent += text;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // 处理错误输出
+        function handleStderr(text) {
+            const output = document.getElementById("output");
+            output.innerHTML += `<span class="error">${text}</span>`;
+            output.scrollTop = output.scrollHeight;
+        }
+ async function patchPythonInput() {
+            await pyodide.runPythonAsync(`
+                import sys
+                import asyncio
+                from js import document, console
+
+                _original_input = input
+                _input_promise = None
+
+                async def browser_input(prompt=None):
+                    global _input_promise
+                    if prompt:
+                        document.getElementById("output").textContent += str(prompt)
+
+                    # 显示输入框
+                    document.getElementById("input-container").style.display = "flex"
+
+                    # 等待用户输入
+                    loop = asyncio.get_event_loop()
+                    _input_promise = loop.create_future()
+                    user_input = await _input_promise
+
+                    # 隐藏输入框
+                    document.getElementById("input-container").style.display = "none"
+                    return user_input
+
+                # 替换内置input函数
+                input = browser_input
+                __builtins__.input = browser_input
+            `);
+
+            // 设置Python端的promise解析器
+            pyodide.globals.set("_resolve_input", (value) => {
+                pyodide.runPythonAsync(`_input_promise.set_result("${value}")`);
+            });
+        }
+
+
+//检测代码类型
+function hasHtmlTags(code) {
+    // 检查常见的HTML标签
+    const htmlTagRegex = /<([a-z][a-z0-9]*)(?:\s+[^>]*)?>|<\/[a-z][a-z0-9]*>/i;
+    return htmlTagRegex.test(code);
+}
+
+// 检查CSS样式
+function hasCssStyles(code) {
+    // 检查CSS选择器或属性
+    const cssRegex = /{[^}]*:[^}]*}|\.\w+\s*\{|\#\w+\s*\{|@media\s|@keyframes\s/i;
+    return cssRegex.test(code);
+}
+
+// 检查JavaScript代码
+function hasJavaScriptCode(code) {
+    // 检查JS关键字和语法
+    const jsRegex = /\b(function|=>|var\s|let\s|const\s|console\.|document\.|window\.|\.addEventListener\()/;
+    return jsRegex.test(code);
+}
+
+// 检查Python特有语法
+function hasPythonSpecificSyntax(code) {
+    // 检查Python特有语法
+    const pythonRegex = /^(?:def\s|class\s|import\s|from\s|print\(|lambda\s|async\sdef\s|await\s|yield\s|with\s|as\s|try\s|except\s|finally\s|raise\s)/m;
+
+    // 检查Python特有的缩进块
+    const lines = code.split('\n');
+    let pythonIndentation = false;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+
+        // 空行跳过
+        if (!line) continue;
+
+        // 检查Python特有的控制结构
+        if (line.match(/^(if|elif|else|for|while|try|except|finally|with|def|class)\s+/)) {
+            // 检查下一行是否有缩进
+            if (i < lines.length - 1 && lines[i+1].match(/^\s+/)) {
+                pythonIndentation = true;
+                break;
+            }
+        }
+    }
+
+    return pythonRegex.test(code) || pythonIndentation;
+}
+
+function detectCodeType(code) {
+    // 去除注释和字符串内容，只保留代码结构
+
+
+    // 检查HTML标签
+    if (hasHtmlTags(code)) {
+        return 'html';
+    }
+
+    // 检查CSS样式
+    if (hasCssStyles(code)) {
+        return 'html';
+    }
+
+    // 检查JavaScript代码
+    if (hasJavaScriptCode(code)) {
+        return 'html';
+    }
+
+    // 检查Python特有语法
+    if (hasPythonSpecificSyntax(code)) {
+        return 'python';
+    }
+
+    // 默认认为是Python
+    return 'html';
+}
 
     // 动态加载依赖库
     function loadScript(url) {
@@ -847,298 +1203,487 @@ function GM_xmlhttpRequest(options) {
 
                 });
 
-        const chatHeader = document.createElement('div');
-        chatHeader.className = 'ds-chat-header';
-        chatWindow.appendChild(chatHeader);
-
-        const chatTitle = document.createElement('div');
-        chatTitle.className = 'ds-chat-title';
-        chatTitle.innerText = '🤖 AI assistant';
-        chatHeader.appendChild(chatTitle);
-
-        const headerButtons = document.createElement('div');
-        headerButtons.style.display = 'flex';
-        headerButtons.style.alignItems = 'center';
-        chatHeader.appendChild(headerButtons);
-
-        const fullscreenBtn = document.createElement('div');
-        fullscreenBtn.className = 'ds-chat-fullscreen';
-        fullscreenBtn.innerText = '🗖';
-        fullscreenBtn.title = '全屏'; // 添加提示
-        headerButtons.appendChild(fullscreenBtn);
-
-
-        // 替换 closeBtn 的创建代码
-const closeBtn = document.createElement('div');
-closeBtn.className = 'ds-chat-close';
-closeBtn.innerHTML = `
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-`;
-closeBtn.title = '关闭浮窗';
-headerButtons.appendChild(closeBtn);
-
-        const chatContent = document.createElement('div');
-        chatContent.className = 'ds-chat-content';
-        chatWindow.appendChild(chatContent);
-
-        const inputArea = document.createElement('div');
-        inputArea.className = 'ds-chat-input-area';
-        chatWindow.appendChild(inputArea);
-
-// 修改 contextToggle 部分
-const contextToggle = document.createElement('div');
-contextToggle.className = 'ds-context-toggle';
-inputArea.appendChild(contextToggle);
-
-// 左侧部分 - 复选框和🕸图标
-const leftGroup = document.createElement('div');
-leftGroup.className = 'ds-toggle-left';
-contextToggle.appendChild(leftGroup);
-
-const contextCheckbox = document.createElement('input');
-contextCheckbox.type = 'checkbox';
-contextCheckbox.id = 'ds-context-checkbox';
-contextCheckbox.checked = config.usePageContext;
-leftGroup.appendChild(contextCheckbox);
-
-const contextLabel = document.createElement('label');
-contextLabel.htmlFor = 'ds-context-checkbox';
-contextLabel.innerText = '🌐'
-contextLabel.title = '提取网页内容'
-leftGroup.appendChild(contextLabel);
-
-// 右侧部分 - 导出图标
-const exportBtn = document.createElement('div');
-exportBtn.className = 'ds-toggle-right';
-exportBtn.innerHTML = '🗂️';
-exportBtn.title = '导出对话';
-contextToggle.appendChild(exportBtn);
-// 在 headerButtons 中添加导出按钮
-
-
-
-        const inputBox = document.createElement('textarea');
-        inputBox.className = 'ds-chat-input';
-        inputBox.placeholder = '输入你的问题...';
-        inputBox.rows = 2;
-        inputBox.style.padding = '8px 10px';
-        inputArea.appendChild(inputBox);
-
-        const settingsArea = document.createElement('div');
-        settingsArea.className = 'ds-chat-settings';
-        inputArea.appendChild(settingsArea);
-
-        const settingsBtn = document.createElement('span');
-        settingsBtn.className = 'ds-chat-settings-btn';
-        settingsBtn.innerText = '🖋️';
-        settingsBtn.title = 'AI设置'; // 添加提示
-        settingsArea.appendChild(settingsBtn);
-
-        const summarizeBtn = document.createElement('span');
-        summarizeBtn.className = 'ds-chat-settings-btn';
-        summarizeBtn.innerText = '📄';
-        summarizeBtn.title = '总结当前网页';
-        summarizeBtn.style.marginRight = '10px';
-        settingsArea.appendChild(summarizeBtn);
-
-
-        const customCaptureBtn = document.createElement('span');
-        customCaptureBtn.className = 'ds-chat-settings-btn';
-        customCaptureBtn.innerText = '🔍';
-        customCaptureBtn.title = '自定义抓取规则';
-        customCaptureBtn.style.marginRight = '10px';
-        settingsArea.insertBefore(customCaptureBtn, summarizeBtn);
-
-        const clearBtn = document.createElement('span');
-        clearBtn.className = 'ds-chat-settings-btn';
-        clearBtn.innerText = '🎨';
-        clearBtn.title = '清空聊天历史'; // 添加提示
-        settingsArea.appendChild(clearBtn);
-
-
-// 添加总结网页按钮点击事件
-
-// ... rest of the existing code ...
-
+                const chatHeader = document.createElement('div');
+                chatHeader.className = 'ds-chat-header';
+                chatWindow.appendChild(chatHeader);
+        
+                const chatTitle = document.createElement('div');
+                chatTitle.className = 'ds-chat-title';
+                chatTitle.innerText = '🤖 AI assistant';
+                chatHeader.appendChild(chatTitle);
+        
+                const headerButtons = document.createElement('div');
+                headerButtons.style.display = 'flex';
+                headerButtons.style.alignItems = 'center';
+                chatHeader.appendChild(headerButtons);
+        
+                const fullscreenBtn = document.createElement('div');
+                fullscreenBtn.className = 'ds-chat-fullscreen';
+                fullscreenBtn.innerHTML = '🗖';
+                fullscreenBtn.title = '全屏'; // 添加提示
+                headerButtons.appendChild(fullscreenBtn);
+        
+        
+                // 替换 closeBtn 的创建代码
+        const closeBtn = document.createElement('div');
+        closeBtn.className = 'ds-chat-close';
+        closeBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        `;
+        closeBtn.title = '关闭浮窗';
+        headerButtons.appendChild(closeBtn);
+        
+                const chatContent = document.createElement('div');
+                chatContent.className = 'ds-chat-content';
+                chatWindow.appendChild(chatContent);
+        
+                const inputArea = document.createElement('div');
+                inputArea.className = 'ds-chat-input-area';
+                chatWindow.appendChild(inputArea);
+        
+        
+        
+                const startButton = document.createElement('button');//发送消息
+                startButton.className = 'ds-start-button';
+                startButton.title = '发送';
+                startButton.innerHTML = `<img class= "ds-start-img" style="width: 16px !important;height:16px !important; max-width: none !important" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA3UlEQVR4nO3WMWpCQRRG4Q9MYxkhha4ikMI9CJbpFFK5CKtsIWV6K9tsIKIpXIEoaJlCsLOzMAgvYCEhT525jT9MOZwzlzszl1sC84UZuqjkBG+wL9Y8p8D0CPy7VujhLiV4cAKcReD1D3BSgc4/wEkEmiXAVxWonQG+WOABwwvAZwk8Y30FaGmBKhp4QrvYcOjwt6IKEyyxi+qBCup4RAsv6B8JjrHA9oTAKAr8WabU7/hIWeo2viOa65D74oRZr1PoAxL6ZHZyA8O/xUFuYPjos4ka9sZR4+0tUuQHPT4UVVhjZqUAAAAASUVORK5CYII=" alt="sent">`;
+                inputArea.appendChild(startButton);
+        
+        // 修改 contextToggle 部分
+        const contextToggle = document.createElement('div');
+        contextToggle.className = 'ds-context-toggle';
+        inputArea.appendChild(contextToggle);
+        
+        // 左侧部分 - 复选框和🕸图标
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'ds-toggle-left';
+        contextToggle.appendChild(leftGroup);
+        
+        const contextCheckbox = document.createElement('input');
+        contextCheckbox.type = 'checkbox';
+        contextCheckbox.id = 'ds-context-checkbox';
+        contextCheckbox.checked = config.usePageContext;
+        leftGroup.appendChild(contextCheckbox);
+        
+        const contextLabel = document.createElement('label');
+        contextLabel.htmlFor = 'ds-context-checkbox';
+        contextLabel.innerText = '🌐'
+        contextLabel.title = '提取网页内容'
+        leftGroup.appendChild(contextLabel);
+        
+        // 右侧部分 - 导出图标
+        const exportBtn = document.createElement('div');
+        exportBtn.className = 'ds-toggle-right';
+        exportBtn.innerHTML = '🗂️';
+        exportBtn.title = '导出对话';
+        contextToggle.appendChild(exportBtn);
+        // 在 headerButtons 中添加导出按钮
+        
+        
+        
+                const inputBox = document.createElement('textarea');
+                inputBox.className = 'ds-chat-input';
+                inputBox.placeholder = '输入你的问题...';
+                inputBox.rows = 2;
+                inputBox.style.padding = '8px 10px';
+                inputArea.appendChild(inputBox);
+        
+                const settingsArea = document.createElement('div');
+                settingsArea.className = 'ds-chat-settings';
+                inputArea.appendChild(settingsArea);
+        
+                const settingsBtn = document.createElement('span');
+                settingsBtn.className = 'ds-chat-settings-btn';
+                settingsBtn.innerText = '🖋️';
+                settingsBtn.title = 'AI设置'; // 添加提示
+                settingsArea.appendChild(settingsBtn);
+        
+                const summarizeBtn = document.createElement('span');
+                summarizeBtn.className = 'ds-chat-settings-btn';
+                summarizeBtn.innerText = '📄';
+                summarizeBtn.title = '总结当前网页';
+                summarizeBtn.style.marginRight = '10px';
+                settingsArea.appendChild(summarizeBtn);
+        
+        
+                const customCaptureBtn = document.createElement('span');
+                customCaptureBtn.className = 'ds-chat-settings-btn';
+                customCaptureBtn.innerText = '🔍';
+                customCaptureBtn.title = '自定义抓取规则';
+                customCaptureBtn.style.marginRight = '10px';
+                settingsArea.insertBefore(customCaptureBtn, summarizeBtn);
+        
+                const clearBtn = document.createElement('span');
+                clearBtn.className = 'ds-chat-settings-btn';
+                clearBtn.innerText = '🎨';
+                clearBtn.title = '清空聊天历史'; // 添加提示
+                settingsArea.appendChild(clearBtn);
+        
                 // 显示历史消息
-        function displayHistory() {
-    chatContent.innerHTML = '';
-    config.chatHistory.forEach(msg => {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `ds-chat-hmessage ds-${msg.role}-hmessage`;
-        const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
-        msgDiv.innerHTML = marked.parse(contentWithLabel);
-        // 确保历史记录中的代码块被高亮处理
-        msgDiv.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block);
-        });
-        addCopyButtonsToCodeBlocks(msgDiv);
-        chatContent.appendChild(msgDiv);
-    });
-    // 示例：只在用户当前已经接近底部时自动滚动
-const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-if (isNearBottom) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
-}
+                // ... 已有代码 ...
+        
+        
+         function displayHistory() {
+                chatContent.innerHTML = '';
+                config.chatHistory.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `ds-chat-hmessage ds-${msg.role}-hmessage`;
+                    const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
+                    msgDiv.innerHTML = marked.parse(contentWithLabel);
+        
+                    // 确保历史记录中的代码块被高亮处理
+                    msgDiv.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                        // 为代码块添加运行按钮
+                        addExecuteButton(block.parentNode);
+                    });
+        
+                    addCopyButtonsToCodeBlocks(msgDiv);
+                    chatContent.appendChild(msgDiv);
+                });
+        
+                const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 200;
+                if (isNearBottom) {
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                }
+            }
+        // ... 已有代码 ...
                 displayHistory();
-
-                // 事件监听,关闭弹窗
-        // 在创建chatHeader后添加以下代码
-chatHeader.style.cursor = 'move'; // 设置鼠标样式为可拖动
-let isDraggingWindow = false;
-let startXWindow, startYWindow, initialLeftWindow, initialTopWindow;
-
-// 鼠标按下事件
-chatHeader.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return; // 只响应左键点击
-
-    isDraggingWindow = true;
-    startXWindow = e.clientX;
-    startYWindow = e.clientY;
-
-    const styles = window.getComputedStyle(chatWindow);
-    initialLeftWindow = parseFloat(styles.left) || 0;
-    initialTopWindow = parseFloat(styles.top) || 0;
-
-    e.preventDefault(); // 阻止默认行为
-    chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
-});
-
-// 鼠标移动事件
-document.addEventListener('mousemove', (e) => {
-    if (!isDraggingWindow) return;
-
-    const deltaX = e.clientX - startXWindow;
-    const deltaY = e.clientY - startYWindow;
-
-    const newLeft = initialLeftWindow + deltaX;
-    const newTop = initialTopWindow + deltaY;
-
-    // 限制在窗口范围内
-    const maxLeft = window.innerWidth - chatWindow.offsetWidth;
-    const maxTop = window.innerHeight - chatWindow.offsetHeight;
-
-    const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
-    const clampedTop = Math.max(0, Math.min(newTop, maxTop));
-
-    chatWindow.style.left = `${clampedLeft}px`;
-    chatWindow.style.top = `${clampedTop}px`;
-    chatWindow.style.right = 'auto';
-    chatWindow.style.bottom = 'auto';
-});
-
-// 鼠标松开事件
-document.addEventListener('mouseup', () => {
-    if (isDraggingWindow) {
-        isDraggingWindow = false;
-        chatWindow.style.userSelect = ''; // 恢复文本选择
-    }
-});
-
-// 鼠标移出窗口事件
-document.addEventListener('mouseleave', () => {
-    if (isDraggingWindow) {
-        isDraggingWindow = false;
-        chatWindow.style.userSelect = ''; // 恢复文本选择
-    }
-});
-        customCaptureBtn.addEventListener('click', () => {
-    const currentSelectors = config.customSelectors || '';
-    const newSelectors = prompt(`当前页面可用元素选择器(多个用逗号分隔):
-例如: #content, .article, .post-content
-当前规则: ${currentSelectors}`, currentSelectors);
-
-            if (newSelectors !== null) {
-                config.customSelectors = newSelectors;
-                GM_setValue('customSelectors', config.customSelectors);
-                alert('自定义抓取规则已保存!');
+        //颜色变化适配
+        
+        
+        
+        
+         // 在创建 chatHeader 后添加以下代码
+        function updateHeaderTheme() {
+            // 1. 尝试获取网页的主题色meta标签
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeColorMeta && themeColorMeta.content) {
+                applyThemeColor(themeColorMeta.content);
+                return;
             }
-        });
-
-        closeBtn.addEventListener('click', () => {
-            chatWindow.classList.remove('active');
-            chatWindow.style.display = 'none';
-            icon.style.display = 'flex';
-        });
-
-        fullscreenBtn.addEventListener('click', () => {
-            chatWindow.classList.toggle('fullscreen');
-            if (chatWindow.classList.contains('fullscreen')) {
-                fullscreenBtn.innerText = '🗖';
-                // 全屏时禁用拖动
-                chatHeader.style.cursor = 'default';
+        
+            // 2. 智能分析页面主色调
+            getDominantColor().then(color => {
+                applyThemeColor(color);
+            }).catch(() => {
+                // 3. 回退到随机柔和色
+                applyRandomColor();
+            });
+        }
+        
+        // 使用Canvas分析页面主色调（性能优化版）
+        function getDominantColor() {
+            return new Promise((resolve, reject) => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+        
+                    // 设置较小尺寸提高性能
+                    canvas.width = 50;
+                    canvas.height = 50;
+        
+                    // 绘制页面缩略图
+                    ctx.drawWindow(window, 0, 0, canvas.width, canvas.height, 'rgb(255,255,255)');
+        
+                    // 获取主要颜色
+                    const pixelData = ctx.getImageData(0, 0, 1, 1).data;
+                    const color = `rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, 0.2)`;
+                    resolve(color);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        }
+        
+        // 应用主题色
+        function applyThemeColor(color) {
+            // 转换为HSL调整亮度
+            const hsl = hexToHSL(color);
+            const adjustedHsl = `hsla(${hsl.h}, ${hsl.s}%, ${Math.min(hsl.l, 85)}%, 0.2)`;
+        
+            chatHeader.style.setProperty('--header-bg', adjustedHsl);
+            chatHeader.style.setProperty('--header-text', hsl.l > 50 ? '#222' : '#fff');
+        }
+        
+        // 应用随机柔和色
+        function applyRandomColor() {
+            const hue = Math.floor(Math.random() * 360);
+            const color = `hsla(${hue}, 70%, 80%, 0.15)`;
+            chatHeader.style.setProperty('--header-bg', color);
+        }
+        
+        // 辅助函数：HEX转HSL
+        function hexToHSL(hex) {
+            // 处理rgb/rgba颜色
+            if (hex.startsWith('rgb')) {
+                const match = hex.match(/(\d+),\s*(\d+),\s*(\d+)/);
+                if (match) {
+                    const r = parseInt(match[1]) / 255;
+                    const g = parseInt(match[2]) / 255;
+                    const b = parseInt(match[3]) / 255;
+                    return rgbToHSL(r, g, b);
+                }
+            }
+        
+            // 处理hex颜色
+            let r = 0, g = 0, b = 0;
+            if (hex.length === 4) {
+                r = parseInt(hex[1] + hex[1], 16);
+                g = parseInt(hex[2] + hex[2], 16);
+                b = parseInt(hex[3] + hex[3], 16);
+            } else if (hex.length === 7) {
+                r = parseInt(hex.substring(1, 3), 16);
+                g = parseInt(hex.substring(3, 5), 16);
+                b = parseInt(hex.substring(5, 7), 16);
+            }
+            return rgbToHSL(r / 255, g / 255, b / 255);
+        }
+        
+        function rgbToHSL(r, g, b) {
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+        
+            if (max === min) {
+                h = s = 0;
             } else {
-                fullscreenBtn.innerText = '🗖';
-                // 退出全屏时恢复拖动
-                chatHeader.style.cursor = 'move';
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+        
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
+        }
+        
+        // 初始化调用
+        updateHeaderTheme();
+        
+        // 监听主题变化（如暗黑模式切换）
+        const themeObserver = new MutationObserver(() => {
+            updateHeaderTheme();
+        });
+        
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class', 'style']
+        });
+        
+        // 监听页面主要元素变化
+        const resizeObserver = new ResizeObserver(() => {
+            if (!document.hidden) {
+                updateHeaderTheme();
             }
         });
-
-        contextCheckbox.addEventListener('change', () => {
-            config.usePageContext = contextCheckbox.checked;
-            GM_setValue('usePageContext', config.usePageContext);
+        
+        // 观察页面主要区域
+        const mainElements = ['body', 'main', '#main', '.main-content'].map(q => document.querySelector(q));
+        mainElements.forEach(el => {
+            if (el) resizeObserver.observe(el);
         });
-
-        settingsBtn.addEventListener('click', () => {
-           /* const newCustomSelectors = prompt('自定义抓取规则(CSS选择器，多个用逗号分隔，留空使用默认):', config.customSelectors);
-    if (newCustomSelectors !== null) {
-        config.customSelectors = newCustomSelectors;
-        GM_setValue('customSelectors', config.customSelectors);
-    }*/
-            const newApiUrl = prompt('API地址(默认:https://api.deepseek.com/v1/chat/completions):', config.apiUrl);
-            if (newApiUrl !== null) {
-                config.apiUrl = newApiUrl;
-                GM_setValue('apiUrl', config.apiUrl);
-            }
-            const newApiKey = prompt('API密钥:', config.apiKey);
-            if (newApiKey !== null) {
-                config.apiKey = newApiKey;
-                GM_setValue('apiKey', config.apiKey);
-            }
-
-            const newModel = prompt('模型默认(deepseek-chat):', config.model);
-            if (newModel !== null) {
-                config.model = newModel;
-                GM_setValue('model', config.model);
-            }
-
-            const newTemp = parseFloat(prompt('Temperature (0-2建议0.5-0.8)', config.temperature));
-            if (!isNaN(newTemp) && newTemp >= 0 && newTemp <= 2) {
-                config.temperature = newTemp;
-                GM_setValue('temperature', config.temperature);
-            }
-
-            const newMaxTokens = parseInt(prompt('输出Token限制最大不能超过8192默认4096(输出文本):', config.maxTokens));
-            if (!isNaN(newMaxTokens) && newMaxTokens > 0 && newMaxTokens <= 8192) {
-                config.maxTokens = newMaxTokens;
-                GM_setValue('maxTokens', config.maxTokens);
-            }
-
-            const newMaxContextTokens = parseInt(prompt('最大上下文限制128k默认32k(越大记忆越好):', config.maxContextTokens));
-            if (!isNaN(newMaxContextTokens) && newMaxContextTokens > 0 && newMaxContextTokens <= 128000) {
-                config.maxContextTokens = newMaxContextTokens;
-                GM_setValue('maxContextTokens', config.maxContextTokens);
-            }
-
-            const newPersonalityPrompt = prompt('自定义人格提示词:(AI助手)', config.personalityPrompt);
-            if (newPersonalityPrompt !== null) {
-                config.personalityPrompt = newPersonalityPrompt;
-                GM_setValue('personalityPrompt', config.personalityPrompt);
+        
+        
+        
+        
+        
+        
+        
+                // 事件监听
+                // 在创建chatHeader后添加以下代码
+        chatHeader.style.cursor = 'move'; // 设置鼠标样式为可拖动
+        let isDraggingWindow = false;
+        let startXWindow, startYWindow, initialLeftWindow, initialTopWindow;
+        
+        // 鼠标按下事件
+        chatHeader.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return; // 只响应左键点击
+        
+            isDraggingWindow = true;
+            startXWindow = e.clientX;
+            startYWindow = e.clientY;
+        
+            const styles = window.getComputedStyle(chatWindow);
+            initialLeftWindow = parseFloat(styles.left) || 0;
+            initialTopWindow = parseFloat(styles.top) || 0;
+        
+            e.preventDefault(); // 阻止默认行为
+            chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
+        });
+        
+        // 鼠标移动事件
+        document.addEventListener('mousemove', (e) => {
+            if (!isDraggingWindow) return;
+        
+            const deltaX = e.clientX - startXWindow;
+            const deltaY = e.clientY - startYWindow;
+        
+            const newLeft = initialLeftWindow + deltaX;
+            const newTop = initialTopWindow + deltaY;
+        
+            // 限制在窗口范围内
+            const maxLeft = window.innerWidth - chatWindow.offsetWidth;
+            const maxTop = window.innerHeight - chatWindow.offsetHeight;
+        
+            const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
+            const clampedTop = Math.max(0, Math.min(newTop, maxTop));
+        
+            chatWindow.style.left = `${clampedLeft}px`;
+            chatWindow.style.top = `${clampedTop}px`;
+            chatWindow.style.right = 'auto';
+            chatWindow.style.bottom = 'auto';
+        });
+        
+        // 鼠标松开事件
+        document.addEventListener('mouseup', () => {
+            if (isDraggingWindow) {
+                isDraggingWindow = false;
+                chatWindow.style.userSelect = ''; // 恢复文本选择
             }
         });
-
-        clearBtn.addEventListener('click', () => {
-    if (confirm('确定要清空所有对话记录吗？这将同时清空当前对话和完整历史记录。')) {
-        config.chatHistory = [];
-        config.fullConversation = [];
-        GM_setValue('chatHistory', config.chatHistory);
-        GM_setValue('fullConversation', config.fullConversation);
-        chatContent.innerHTML = '';
-    }
-});
+        
+        // 鼠标移出窗口事件
+        document.addEventListener('mouseleave', () => {
+            if (isDraggingWindow) {
+                isDraggingWindow = false;
+                chatWindow.style.userSelect = ''; // 恢复文本选择
+            }
+        });
+                customCaptureBtn.addEventListener('click', () => {
+            const currentSelectors = config.customSelectors || '';
+            const newSelectors = prompt(`当前页面可用元素选择器(多个用逗号分隔):
+        例如: #content, .article, .post-content
+        当前规则: ${currentSelectors}`, currentSelectors);
+        
+                    if (newSelectors !== null) {
+                        config.customSelectors = newSelectors;
+                        GM_setValue('customSelectors', config.customSelectors);
+                        alert('自定义抓取规则已保存!');
+                    }
+                });
+        
+                closeBtn.addEventListener('click', () => {
+                    chatWindow.classList.remove('active');
+                    chatWindow.style.display = 'none';
+                    icon.style.display = 'flex';
+                });
+        
+                fullscreenBtn.addEventListener('click', () => {
+                    chatWindow.classList.toggle('fullscreen');
+                    if (chatWindow.classList.contains('fullscreen')) {
+                        fullscreenBtn.innerText = '🗖';
+                        // 全屏时禁用拖动
+                        chatHeader.style.cursor = 'default';
+                    } else {
+                        fullscreenBtn.innerText = '🗖';
+                        // 退出全屏时恢复拖动
+                        chatHeader.style.cursor = 'move';
+                    }
+                });
+        
+                contextCheckbox.addEventListener('change', () => {
+                    config.usePageContext = contextCheckbox.checked;
+                    GM_setValue('usePageContext', config.usePageContext);
+                });
+        
+                settingsBtn.addEventListener('click', () => {
+                   /* const newCustomSelectors = prompt('自定义抓取规则(CSS选择器，多个用逗号分隔，留空使用默认):', config.customSelectors);
+            if (newCustomSelectors !== null) {
+                config.customSelectors = newCustomSelectors;
+                GM_setValue('customSelectors', config.customSelectors);
+            }*/
+                    const newApiUrl = prompt('API地址(默认:https://api.deepseek.com/v1/chat/completions):', config.apiUrl);
+                    if (newApiUrl !== null) {
+                        config.apiUrl = newApiUrl;
+                        GM_setValue('apiUrl', config.apiUrl);
+                    }
+                    const newApiKey = prompt('API密钥:', config.apiKey);
+                    if (newApiKey !== null) {
+                        config.apiKey = newApiKey;
+                        GM_setValue('apiKey', config.apiKey);
+                    }
+        
+                    const newModel = prompt('模型默认(deepseek-chat):', config.model);
+                    if (newModel !== null) {
+                        config.model = newModel;
+                        GM_setValue('model', config.model);
+                    }
+        
+                    const newTemp = parseFloat(prompt('Temperature (0-2建议0.5-0.8)', config.temperature));
+                    if (!isNaN(newTemp) && newTemp >= 0 && newTemp <= 2) {
+                        config.temperature = newTemp;
+                        GM_setValue('temperature', config.temperature);
+                    }
+        
+                    const newMaxTokens = parseInt(prompt('输出Token限制最大不能超过8192默认4096(输出文本):', config.maxTokens));
+                    if (!isNaN(newMaxTokens) && newMaxTokens > 0 && newMaxTokens <= 8192) {
+                        config.maxTokens = newMaxTokens;
+                        GM_setValue('maxTokens', config.maxTokens);
+                    }
+        
+                    const newMaxContextTokens = parseInt(prompt('最大上下文限制128k默认32k(越大记忆越好):', config.maxContextTokens));
+                    if (!isNaN(newMaxContextTokens) && newMaxContextTokens > 0 && newMaxContextTokens <= 128000) {
+                        config.maxContextTokens = newMaxContextTokens;
+                        GM_setValue('maxContextTokens', config.maxContextTokens);
+                    }
+        
+                    const newPersonalityPrompt = prompt('自定义人格提示词:(AI助手)', config.personalityPrompt);
+                    if (newPersonalityPrompt !== null) {
+                        config.personalityPrompt = newPersonalityPrompt;
+                        GM_setValue('personalityPrompt', config.personalityPrompt);
+                    }
+                });
+        
+                clearBtn.addEventListener('click', () => {
+            if (confirm('确定要清空所有对话记录吗？这将同时清空当前对话和完整历史记录。')) {
+                config.chatHistory = [];
+                config.fullConversation = [];
+                GM_setValue('chatHistory', config.chatHistory);
+                GM_setValue('fullConversation', config.fullConversation);
+                chatContent.innerHTML = '';
+            }
+        });
+        //点击发送消息
+               startButton.addEventListener('click', () => {
+            const message = inputBox.value.trim();
+                     if (message == "dsk") {
+            if (confirm('激活成功，使用内置api')) {
+              config.model = "deepseek-v3-250324";
+                 config.apiKey = "ae75309e-e48e-4bb5-8374-a73fb206d4c2";
+                 config.apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
+                 inputBox.value = '';
+            }
+             }
+                else if(message != '') {
+                            sendMessage(message);
+                            inputBox.value = '';
+                        }
+                   else{
+                   alert("发送消息不能为空！");
+                   }
+        });
+        //隐藏默认配置
+                // 输入框事件
+                inputBox.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const message = inputBox.value.trim();
+                        if (message) {
+                            sendMessage(message);
+                            inputBox.value = '';
+                        }
+                    }
+                });
 
                  /**
  * 获取网页主要内容
@@ -1494,23 +2039,250 @@ icon.addEventListener('click', (e) => {
 
     }
 });
+// 代码实时执行
+function initCodeExecution() {
+    // 为现有代码块添加按钮
+    document.querySelectorAll('pre').forEach(preElement => {
+        if (!preElement.nextElementSibling?.classList?.contains('code-buttons-container')) {
+            addExecuteButton(preElement);
+        }
+    });
 
-                // 流式响应处理
-                function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =false) {
-                    return new Promise((resolve, reject) => {
-                        let aiMessage = '🤖：';
-                        let reasoningMessage = '';
-                        let isReasoningReceived = false;
-                        let isReasoningFinished = false;
- let isStopped = false; // 新增：停止标志
-                        let reasoningTitleDiv; // 用于显示 “思考内容：” 的元素
 
-                        aiMsgDiv.innerHTML = '';
-                        const contentDiv = document.createElement('div');
-                        contentDiv.className = 'ds-chat-message ds-ai-message';
 
-                        const reasoningDiv = document.createElement('div');
-                        reasoningDiv.className = 'ds-reasoning-content';
+    // 创建代码执行弹窗
+    createExecutionModal();
+}
+function Add_codebutton(){
+    document.querySelectorAll('pre').forEach(preElement => {
+        if (!preElement.nextElementSibling?.classList?.contains('code-buttons-container')) {
+            addExecuteButton(preElement);
+        }
+    });
+}
+    // 为代码块添加运行按钮
+   function addExecuteButton(preElement) {
+    // 创建按钮容器
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'code-buttons-container';
+    btnContainer.style.position = 'relative';
+
+    // 创建运行按钮
+    const runBtn = document.createElement('button');
+    runBtn.className = 'code-execute-btn';
+    runBtn.textContent = '运行';
+    runBtn.onclick = function(e) {
+        e.stopPropagation();
+        const code = preElement.textContent;
+        const lang = detectCodeType(code);
+        executeCode(code, lang);
+    };
+
+    // 将按钮容器插入到pre元素后面
+    preElement.parentNode.insertBefore(btnContainer, preElement.nextSibling);
+
+    // 将运行按钮添加到容器底部
+    btnContainer.appendChild(runBtn);
+}
+
+
+    // 创建代码执行弹窗
+
+function createExecutionModal() {
+    const existingModal = document.querySelector('.code-execution-modal');
+            if (existingModal) {
+        existingModal.remove();
+    }
+
+
+        const modal = document.createElement('div');
+        modal.className = 'code-execution-modal';
+        modal.innerHTML = `
+            <div class="code-execution-content">
+                <div class="code-execution-header">
+                    <h3>代码执行结果<span id="code-timer-status"></span></h3>
+                    <span class="fullscreen-btn" onclick="toggleFullscreen()">⛶</span>
+                    <span class="code-execution-close">&times;</span>
+                </div>
+                <div class="code-execution-body">
+                    <iframe id="code-sandbox"></iframe>
+                    <div id="code-status-bar">等待执行...</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // 事件监听
+        modal.querySelector('.code-execution-close').onclick = closeExecutionModal;
+        modal.querySelector('.fullscreen-btn').onclick = toggleFullscreen;
+
+    }
+
+
+
+    // 切换全屏模式
+    function toggleFullscreen() {
+        const modal = document.querySelector('.code-execution-modal');
+        modal.classList.toggle('fullscreen');
+    }
+
+    // 关闭代码执行弹窗
+    function closeExecutionModal() {
+        document.querySelector('.code-execution-modal').style.display = 'none';
+         //chatWindow.classList.add('active');
+         chatWindow.style.display = 'flex';
+    }
+
+    // 检测代码语言
+    function detectCodeLanguage(code) {
+        // 简单检测Python代码
+        if (code.includes('import ') || code.includes('def ') || code.includes('print(') ||
+            code.includes('from ') || code.includes('class ') || code.includes('lambda ')) {
+            return 'python';
+        }
+        // 简单检测HTML代码
+        if (code.includes('<html') || code.includes('<div') || code.includes('<style') ||
+            code.includes('<script') || code.includes('</') || code.includes('/>')) {
+            return 'html';
+        }
+        return 'html'; // 默认Python
+    }
+
+    // 执行代码并显示弹窗
+    async function executeCode(code, lang) {
+    // 确保弹窗存在
+    if (!document.querySelector('.code-execution-modal')) {
+        createExecutionModal();
+    }
+
+    const modal = document.querySelector('.code-execution-modal');
+    const iframe = document.getElementById('code-sandbox');
+    const statusBar = document.getElementById('code-status-bar');
+    const sandbox = modal.querySelector('#code-sandbox');
+
+
+    // 重置弹窗状态
+    modal.style.display = 'flex';
+    chatWindow.style.display = 'none';//关闭聊天框
+    statusBar.textContent = '准备执行代码...';
+    statusBar.className = '';
+
+    // 根据语言设置执行环境
+    if (lang === 'python') {
+        initializePyodide();
+        executePythonCode(code, statusBar,sandbox);
+    }else if(lang== 'html'){
+        executeHtmlCode(code,statusBar,sandbox);
+    } else {
+        statusBar.textContent = `不支持执行 ${lang} 代码`;
+        statusBar.className = 'status-error';
+    }
+
+    // 添加关闭按钮事件
+    const closeBtn = modal.querySelector('.code-execution-close');
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+        // 重置iframe以清除之前执行的状态
+        iframe.src = 'about:blank';
+         chatWindow.style.display = 'flex';//关闭聊天框
+    };
+}
+    // 执行Python代码
+    async function executePythonCode(code, statusBar, sandbox) {
+        if (isPythonRunning) {
+            updateStatus(statusBar, '已有代码正在执行', 'error');
+            return;
+        }
+
+        isPythonRunning = true;
+        updateStatus(statusBar, '正在执行Python代码...', 'running');
+        await pyodideInstance.runPythonAsync(code);
+
+        try {
+            // 初始化Pyodide（如果尚未初始化）
+            if (pyodideInstance) {
+                 statusBar.textContent = '';
+
+            // 执行代码
+            await pyodideInstance.runPythonAsync(code);
+            updateStatus(statusBar, '✅执行完成', 'success');
+            }
+
+        } catch (e) {
+            appendStatus(statusBar, `❌执行错误: ${e}`, 'error');
+            console.error("Python执行错误:", e);
+        } finally {
+            isPythonRunning = false;
+        }
+    }
+
+    // 执行HTML/CSS/JS代码
+    function executeHtmlCode(code, statusBar, sandbox) {
+        console.log(code);
+        updateStatus(statusBar, '正在执行HTML/CSS/JS代码...', 'running');
+
+        try {
+            // 清空状态栏
+            statusBar.textContent = '';
+
+            // 在iframe中执行代码
+            const doc = sandbox.contentDocument || sandbox.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                    </style>
+                </head>
+                <body>
+                    ${code.includes('<html') ? '' : '<div id="output"></div>'}
+                    ${code}
+                </body>
+                </html>
+            `);
+            doc.close();
+
+            updateStatus(statusBar, '✅执行完成', 'success');
+        } catch (e) {
+            appendStatus(statusBar, `❌执行错误: ${e}`, 'error');
+        }
+    }
+
+    // 更新状态
+    function updateStatus(element, message, type) {
+        element.textContent = message;
+        element.className = type ? `status-${type}` : '';
+    }
+
+    // 追加状态信息
+    function appendStatus(element, message, type = '') {
+        const line = document.createElement('div');
+        line.textContent = message;
+        if (type) line.className = `status-${type}`;
+        element.appendChild(line);
+        element.scrollTop = element.scrollHeight;
+    }
+         initCodeExecution();//添加运行
+
+
+         // 流式响应处理
+function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =false) {
+    return new Promise((resolve, reject) => {
+        let aiMessage = '🤖：';
+        let reasoningMessage = '';
+        let isReasoningReceived = false;
+        let isReasoningFinished = false;
+        let isStopped = false; // 新增：停止标志
+        let reasoningTitleDiv; // 用于显示 “思考内容：” 的元素
+
+        aiMsgDiv.innerHTML = '';
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'ds-chat-message ds-ai-message';
+
+        const reasoningDiv = document.createElement('div');
+        reasoningDiv.className = 'ds-reasoning-content';
 reasoningDiv.style.display = 'none'; // 初始隐藏
          aiMsgDiv.appendChild(reasoningDiv);
          aiMsgDiv.appendChild(contentDiv);
@@ -1904,64 +2676,64 @@ if (isNearBottom) {
 
 
 // ... rest of the existing code ...
-                // 为代码块添加复制按钮
-                function addCopyButtonsToCodeBlocks(container) {
-                    // 遍历所有 pre 元素（不仅仅是已高亮的）
-                    container.querySelectorAll('pre').forEach(pre => {
-                        // 强制添加 hljs 类确保样式应用
-                        if (!pre.classList.contains('hljs')) {
-                            pre.classList.add('hljs');
-                        }
+// 为代码块添加复制按钮
+function addCopyButtonsToCodeBlocks(container) {
+    container.querySelectorAll('pre').forEach(pre => {
+        // 强制添加 hljs 类确保样式应用
+        if (!pre.classList.contains('hljs')) {
+            pre.classList.add('hljs');
+        }
 
-                        // 如果不存在代码元素则自动创建
-                        if (!pre.querySelector('code')) {
-                            const code = document.createElement('code');
-                            code.textContent = pre.textContent;
-                            pre.innerHTML = '';
-                            pre.appendChild(code);
-                        }
+        // 如果不存在代码元素则自动创建
+        if (!pre.querySelector('code')) {
+            const code = document.createElement('code');
+            code.textContent = pre.textContent;
+            pre.innerHTML = '';
+            pre.appendChild(code);
+        }
 
-                        // 移除已存在的复制按钮
-                        const existingButton = pre.querySelector('.copy-code-btn');
-                        if (existingButton) {
-                            existingButton.remove();
-                        }
+              // 创建复制按钮
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-code-btn';
+        copyButton.textContent = '复制';
 
-                        // 创建新的复制按钮
-                        const copyButton = document.createElement('button');
-                        copyButton.className = 'copy-code-btn';
-                        copyButton.textContent = '复制';
+        // 绑定复制事件（带重试机制）
+        copyButton.addEventListener('click', () => {
+            const code = pre.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                // 显示成功提示
+                const successMessage = document.createElement('span');
+                successMessage.className = 'copy-success';
+                successMessage.textContent = '已复制!';
+                copyButton.parentNode.appendChild(successMessage);
 
-                        // 绑定复制事件（带重试机制）
-                        copyButton.addEventListener('click', () => {
-                            const code = pre.querySelector('code').textContent;
-                            navigator.clipboard.writeText(code).then(() => {
-                                // 显示成功提示
-                                const successMessage = document.createElement('div');
-                                successMessage.className = 'copy-success';
-                                successMessage.textContent = '复制成功';
-                                pre.appendChild(successMessage);
+                // 2秒后移除
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败: ', err);
+            });
+        });
+  if (!pre.nextElementSibling?.classList?.contains('code-buttons-container')) {
+        // 创建按钮容器
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'code-buttons-container';
+        btnContainer.style.position = 'relative';
 
-                                // 2秒后淡出移除
-                                setTimeout(() => {
-                                    successMessage.style.opacity = '0';
-                                    setTimeout(() => {
-                                        pre.removeChild(successMessage);
-                                    }, 500);
-                                }, 1500);
-                            }).catch(err => {
-                                console.error('复制失败: ', err);
-                                // 可选：添加错误提示
-                            });
-                        });
 
-                        // 添加按钮到代码块
-                        pre.appendChild(copyButton);
+           // 将按钮容器插入到pre元素前面
+        pre.parentNode.insertBefore(btnContainer, pre);
 
-                        // 强制重新高亮代码（解决时序问题）
-                        hljs.highlightElement(pre.querySelector('code'));
-                    });
-                }
+        // 将复制按钮添加到容器顶部
+        btnContainer.appendChild(copyButton);
+
+        }
+   
+        // 强制重新高亮代码（解决时序问题）
+        hljs.highlightElement(pre.querySelector('code'));
+    });
+}
 //一键总结网页内容事件
 
 // 添加总结网页按钮点击事件
@@ -2212,18 +2984,9 @@ exportBtn.addEventListener('click', () => {
 
 // ... rest of the existing code ...
                 // 输入框事件
-                inputBox.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        const message = inputBox.value.trim();
-                        if (message) {
-                            sendMessage(message);
-                            inputBox.value = '';
-                        }
-                    }
-                });
-            }
-        })
+       
+}
+})
         .catch(error => {
             console.error('加载依赖库失败:', error);
         });
