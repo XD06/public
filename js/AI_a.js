@@ -109,7 +109,7 @@ function GM_xmlhttpRequest(options) {
             width: 20px !important;
             height: 20px !important;
             max-width: none !important;
-            display: inline-block !important;
+            display: inline-block;
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
@@ -123,26 +123,26 @@ function GM_xmlhttpRequest(options) {
             overflow-clip-margin: 0 !important; /* Override website's overflow-clip-margin */
         }
 
-        /* 直接针对网站全局样式的覆盖 */
-        .ds-stop-button img, .ds-start-button img {
-            overflow: visible !important;
-            overflow-clip-margin: 0 !important;
-            width: 20px !important;
-            height: 20px !important;
-            display: inline !important;
-        }
+        // /* 直接针对网站全局样式的覆盖 */
+        // .ds-stop-button img, .ds-start-button img {
+        //     overflow: visible !important;
+        //     overflow-clip-margin: 0 !important;
+        //     width: 20px !important;
+        //     height: 20px !important;
+        //     display: inline !important;
+        // }
 
-        /* 确保按钮本身有正确的样式 */
-        .ds-stop-button, .ds-start-button {
-            display: flex;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 0 !important;
-            border: none !important;
-            background-size: auto !important;
-            min-width: auto !important;
-            min-height: auto !important;
-        }
+        // /* 确保按钮本身有正确的样式 */
+        // .ds-stop-button, .ds-start-button {
+        //     display: flex;
+        //     align-items: center !important;
+        //     justify-content: center !important;
+        //     padding: 0 !important;
+        //     border: none !important;
+        //     background-size: auto !important;
+        //     min-width: auto !important;
+        //     min-height: auto !important;
+        // }
 
 .ds-context-toggle {
     display: flex;
@@ -189,7 +189,7 @@ function GM_xmlhttpRequest(options) {
             border: 1px solid #ddd;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: none;
+            //display: none;
             flex-direction: column;
             overflow: hidden;
             opacity: 0;
@@ -449,7 +449,7 @@ function GM_xmlhttpRequest(options) {
         .ds-message-content {
             line-height: 1.5 !important;
             color: var(--text-color) !important;
-            display: block !important;
+            display: block;
             visibility: visible !important;
             opacity: 1 !important;
             min-height: 1em;
@@ -956,7 +956,7 @@ pre {
 .ds-ai-message .ds-message-content {
     white-space: break-spaces !important;
     line-height: 1.5 !important;
-    display: block !important;
+    display: block;
 }
 
 .ds-ai-message .ds-message-content p {
@@ -1392,32 +1392,46 @@ function detectCodeType(code) {
 
                 // 添加触摸点击事件处理 - 修复触屏设备上无法点击打开悬浮窗的问题
                 icon.addEventListener('touchend', (e) => {
-                    console.log("图标触摸结束事件被触发");
-                    if (!hasMoved && isDragging) {
-                        e.preventDefault(); // 阻止默认行为
-                        
+                    console.log("图标点击事件被触发了！");
+                    console.log("当前 hasMoved 状态:", hasMoved);
+
+
+                    if (!hasMoved) {
                         const isActive = chatWindow.classList.contains('active');
                         if (!isActive) {
+                            // --- 修改这里的逻辑 ---
+                            // 1. 先添加 active 类，并隐藏图标
+                            
+                            // 2. 使用 requestAnimationFrame 将定位操作推迟到下一帧
+                                
                             chatWindow.classList.add('active');
                             chatWindow.style.display = 'flex';
-                            icon.style.display = 'none';
-                            console.log("触摸点击：窗口已激活");
-                            requestAnimationFrame(() => {
-                                try {
-                                    console.log("触摸点击：在下一帧尝试定位完成");
-                                } catch (positionError) {
-                                    console.error("触摸点击：定位窗口时出错:", positionError);
-                                }
-                            });
+                           icon.style.display = 'none';
+                            console.log("窗口已激活，准备请求下一帧定位");
+                                requestAnimationFrame(() => {
+                                    try { // 最好加上 try...catch 以防 positionChatWindow 内部出错
+                                       
+                                        console.log("在下一帧尝试定位完成");
+                                    } catch (positionError) {
+                                        console.error("定位窗口时出错:", positionError);
+                                        // 可以在这里添加一些备用逻辑，比如显示窗口但不定位，或者显示错误信息
+                                    }
+                                });
+                            
+
                         } else {
-                            chatWindow.classList.remove('active');
-                            chatWindow.style.display = 'none';
+                            // 关闭窗口的逻辑保持不变
+				            chatWindow.classList.remove('active');
+                             chatWindow.style.display = 'none';
                             icon.style.display = 'flex';
-                            console.log("触摸点击：窗口已关闭");
+                            console.log("窗口已关闭");
                         }
+                    } else {
+                        console.log("检测到拖拽，忽略点击。");
+	
                     }
-                    isDragging = false;
                 });
+         
 
                 // 触摸取消事件 - 新增触摸支持
                 document.addEventListener('touchcancel', () => {
@@ -1801,6 +1815,22 @@ function detectCodeType(code) {
             chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
         });
         
+        // 触摸开始事件（移动端）
+        chatHeader.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return; // 只响应单指触摸
+            
+            isDraggingWindow = true;
+            startXWindow = e.touches[0].clientX;
+            startYWindow = e.touches[0].clientY;
+            
+            const styles = window.getComputedStyle(chatWindow);
+            initialLeftWindow = parseFloat(styles.left) || 0;
+            initialTopWindow = parseFloat(styles.top) || 0;
+            
+            e.preventDefault(); // 阻止默认行为
+            chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
+        });
+        
         // 鼠标移动事件
         document.addEventListener('mousemove', (e) => {
             if (!isDraggingWindow) return;
@@ -1824,8 +1854,49 @@ function detectCodeType(code) {
             chatWindow.style.bottom = 'auto';
         });
         
+        // 触摸移动事件（移动端）
+        document.addEventListener('touchmove', (e) => {
+            if (!isDraggingWindow) return;
+            
+            const deltaX = e.touches[0].clientX - startXWindow;
+            const deltaY = e.touches[0].clientY - startYWindow;
+            
+            const newLeft = initialLeftWindow + deltaX;
+            const newTop = initialTopWindow + deltaY;
+            
+            // 限制在窗口范围内
+            const maxLeft = window.innerWidth - chatWindow.offsetWidth;
+            const maxTop = window.innerHeight - chatWindow.offsetHeight;
+            
+            const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
+            const clampedTop = Math.max(0, Math.min(newTop, maxTop));
+            
+            chatWindow.style.left = `${clampedLeft}px`;
+            chatWindow.style.top = `${clampedTop}px`;
+            chatWindow.style.right = 'auto';
+            chatWindow.style.bottom = 'auto';
+            
+            e.preventDefault(); // 阻止页面滚动
+        }, { passive: false });
+        
         // 鼠标松开事件
         document.addEventListener('mouseup', () => {
+            if (isDraggingWindow) {
+                isDraggingWindow = false;
+                chatWindow.style.userSelect = ''; // 恢复文本选择
+            }
+        });
+        
+        // 触摸结束事件（移动端）
+        document.addEventListener('touchend', () => {
+            if (isDraggingWindow) {
+                isDraggingWindow = false;
+                chatWindow.style.userSelect = ''; // 恢复文本选择
+            }
+        });
+        
+        // 触摸取消事件（移动端）
+        document.addEventListener('touchcancel', () => {
             if (isDraggingWindow) {
                 isDraggingWindow = false;
                 chatWindow.style.userSelect = ''; // 恢复文本选择
@@ -2854,7 +2925,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =
 
         const reasoningDiv = document.createElement('div');
         reasoningDiv.className = 'ds-reasoning-content';
-reasoningDiv.style.display = 'none'; // 初始隐藏
+        reasoningDiv.style.display = 'none'; // 初始隐藏
          aiMsgDiv.appendChild(reasoningDiv);
          aiMsgDiv.appendChild(contentDiv);
 
