@@ -599,20 +599,20 @@ function GM_xmlhttpRequest(options) {
 
         /* 设置列表样式 */
 
-        .ds-chat-message ul, .ds-chat-message ol {
-            margin: 10px 0;
-            /* 增加内边距，确保列表项有足够空间显示符号和序号 */
-            padding-left: 2.5em;
-            /* 确保列表符号或序号在内容内部 */
-            //list-style-position: inside;
-        }
+        // .ds-chat-message ul, .ds-chat-message ol {
+        //     margin: 10px 0;
+        //     /* 增加内边距，确保列表项有足够空间显示符号和序号 */
+        //     padding-left: 2.5em;
+        //     /* 确保列表符号或序号在内容内部 */
+        //     //list-style-position: inside;
+        // }
 
-        .ds-chat-message li {
-            margin: 5px 0;
-            /* 修复因列表符号或序号导致的文本错位 */
-            text-indent: -1.5em;
-            padding-left: 1.5em;
-        }
+        // .ds-chat-message li {
+        //     margin: 5px 0;
+        //     /* 修复因列表符号或序号导致的文本错位 */
+        //     text-indent: -1.5em;
+        //     padding-left: 1.5em;
+        // }
 
         /* 确保无序列表显示符号 */
         .ds-chat-message ul li {
@@ -787,12 +787,14 @@ function GM_xmlhttpRequest(options) {
         display: flex;
         align-items: center;
         border-bottom: 1px solid #dee2e6;
+        justify-content: space-between;
     }
 
     .code-execution-header h3 {
         margin: 0;
         font-size: 1.2em;
         display: contents;
+        justify-content: space-between;  
     }
 
     .code-execution-close {
@@ -801,7 +803,7 @@ function GM_xmlhttpRequest(options) {
         font-weight: bold;
         cursor: pointer;
         line-height: 1;
-        margin-left: auto;
+        margin-left: 12px;
     }
 
     .code-execution-body {
@@ -955,34 +957,76 @@ pre {
 /* 修复AI消息显示格式 */
 .ds-ai-message .ds-message-content {
     white-space: break-spaces !important;
-    line-height: 1.5 !important;
+   // line-height: 1.5 !important;
     display: block;
 }
 
 .ds-ai-message .ds-message-content p {
-    margin: 0.5em 0 !important;
+   // margin: 0.5em 0 !important;
 }
 
 .ds-ai-message .ds-message-content pre {
-    margin: 0.75em 0 !important;
+   // margin: 0.75em 0 !important;
 }
 
 .ds-ai-message .ds-message-content ul,
 .ds-ai-message .ds-message-content ol {
-    margin: 0.5em 0 !important;
+   // margin: 0.5em 0 !important;
     padding-left: 1.5em !important;
 }
 
 /* 确保列表项正确显示 */
 .ds-ai-message .ds-message-content ul li {
     list-style-type: disc !important;
-    margin: 0.25em 0 !important;
+   // margin: 0.25em 0 !important;
 }
 
 .ds-ai-message .ds-message-content ol li {
     list-style-type: decimal !important;
-    margin: 0.25em 0 !important;
+   // margin: 0.25em 0 !important;
 }
+    /* --- 添加或修改以下 CSS 规则 --- */
+
+/* 减小 AI 消息中主要块级元素的默认间距 */
+.ds-ai-message p,
+.ds-ai-message ul,
+.ds-ai-message ol,
+.ds-ai-message pre,
+.ds-ai-message blockquote,
+.ds-ai-message table, /* 也考虑表格 */
+.ds-ai-message h1,   /* 也考虑标题 */
+.ds-ai-message h2,
+.ds-ai-message h3,
+.ds-ai-message h4,
+.ds-ai-message h5,
+.ds-ai-message h6 {
+    margin-top: auto!important;
+    margin-bottom: auto!important;
+    display: inline-table!important;
+}
+
+/* 关键：减小列表项内部 <p> 的距 */
+.ds-ai-message li p {
+    margin-top: 0.1em; /* 列表项内的段落用更小的间距 */
+    margin-bottom: 0.1em;
+}
+
+/* 可选：移除内容区域第一个元素的上边距 */
+.ds-message-content > *:first-child {
+    margin-top: 0 !important;
+}
+
+/* 可选：移除内容区域最后一个元素的下边距 */
+.ds-message-content > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* 如果你的列表项 li 本身有边距，也需要调整 */
+.ds-ai-message li {
+     margin-top: 0.1em; /* 调整 li 本身的边距 (如果需要) */
+     margin-bottom: 0.1em;
+}
+
 
 `;
 
@@ -1098,11 +1142,55 @@ let pyodideInstance = null;
                 // 增加超时检测
                 const timeout = setTimeout(() => {
                     console.log("加载包超时，可能是网络问题");
-                }, 30000); // 30秒超时
+                }, 40000); // 增加到40秒超时
                 
-                await pyodide.loadPackage(["numpy", "micropip"]);
+                // 预加载更多基础包
+                await pyodide.loadPackage([
+                    "pandas","numpy","micropip","matplotlib", 
+                    "scipy","scikit-learn","sympy"
+                ]);
+                
                 clearTimeout(timeout);
                 console.log("基础包加载完成", "success");
+                
+                // 安装一些常用的纯Python包
+                try {
+                    await pyodide.runPythonAsync(`
+                        import micropip
+                        await micropip.install([
+                            'nltk', 'pillow', 'networkx', 'plotly',
+                            'requests', 'beautifulsoup4'
+                        ])
+                    `);
+                    console.log("额外包安装完成");
+                } catch (e) {
+                    console.log(`额外包安装部分失败: ${e}`);
+                }
+                
+                // 初始化虚拟文件系统，使得Python可以读写文件
+                await pyodide.runPythonAsync(`
+                    import os
+                    import sys
+                    
+                    # 创建一个虚拟工作目录
+                    if not os.path.exists('/home/pyodide'):
+                        os.makedirs('/home/pyodide')
+                    os.chdir('/home/pyodide')
+                    
+                    # 创建一些示例文件
+                    with open('example.txt', 'w') as f:
+                        f.write('这是一个示例文件。\\n可以使用open()函数读写。')
+                        
+                    # 设置环境变量
+                    os.environ['PYTHONPATH'] = '/home/pyodide'
+                    
+                    # 初始化matplotlib后端为Agg (非交互式)
+                    try:
+                        import matplotlib
+                        matplotlib.use('Agg')
+                    except:
+                        pass
+                `);
             } catch (e) {
                 console.log(`基础包加载失败: ${e}`, "error");
                 // 即使基础包加载失败，也不要中断整个流程
@@ -1111,53 +1199,94 @@ let pyodideInstance = null;
 
         // 处理标准输出
         function handleStdout(text) {
-            const output = document.getElementById("output");
-            output.textContent += text;
-            output.scrollTop = output.scrollHeight;
+            const defaultOutput = document.getElementById("output");
+            const outputElement = window.pyodideOutputElement || defaultOutput;
+            
+            if (outputElement) {
+                outputElement.textContent += text;
+                if (outputElement.scrollIntoView) {
+                    outputElement.scrollIntoView(false);
+                }
+            }
         }
 
         // 处理错误输出
         function handleStderr(text) {
-            const output = document.getElementById("output");
-            output.innerHTML += `<span class="error">${text}</span>`;
-            output.scrollTop = output.scrollHeight;
+            const defaultOutput = document.getElementById("output");
+            const outputElement = window.pyodideOutputElement || defaultOutput;
+            
+            if (outputElement) {
+                outputElement.innerHTML += `<span class="error">${text}</span>`;
+                if (outputElement.scrollIntoView) {
+                    outputElement.scrollIntoView(false);
+                }
+            }
         }
  async function patchPythonInput() {
-            await pyodide.runPythonAsync(`
-                import sys
-                import asyncio
-                from js import document, console
+    // 清理旧的输入处理器
+    try {
+        await pyodide.runPythonAsync(`
+            if '_resolve_input' in globals():
+                del _resolve_input
+            if '_input_promise' in globals():
+                del _input_promise
+        `);
+    } catch (e) {
+        console.error("清理输入处理器时出错:", e);
+    }
+    
+    // 安装新的输入处理器
+    await pyodide.runPythonAsync(`
+        import sys
+        import asyncio
+        from js import document, console
 
-                _original_input = input
-                _input_promise = None
+        _original_input = input
+        _input_promise = None
 
-                async def browser_input(prompt=None):
-                    global _input_promise
-                    if prompt:
-                        document.getElementById("output").textContent += str(prompt)
+        async def browser_input(prompt=None):
+            global _input_promise
+            if prompt:
+                from js import pyodideOutputElement
+                if pyodideOutputElement:
+                    pyodideOutputElement.textContent += str(prompt)
 
-                    # 显示输入框
-                    document.getElementById("input-container").style.display = "flex"
+            # 显示输入框
+            input_container = document.getElementById("input-container")
+            if input_container:
+                input_container.style.display = "flex"
 
-                    # 等待用户输入
-                    loop = asyncio.get_event_loop()
-                    _input_promise = loop.create_future()
-                    user_input = await _input_promise
+            # 等待用户输入
+            loop = asyncio.get_event_loop()
+            _input_promise = loop.create_future()
+            try:
+                user_input = await _input_promise
+            except Exception as e:
+                console.error("输入出错:", str(e))
+                user_input = ""
 
-                    # 隐藏输入框
-                    document.getElementById("input-container").style.display = "none"
-                    return user_input
+            # 隐藏输入框
+            if input_container:
+                input_container.style.display = "none"
+            return user_input
 
-                # 替换内置input函数
-                input = browser_input
-                __builtins__.input = browser_input
+        # 替换内置input函数
+        input = browser_input
+        __builtins__.input = browser_input
+    `);
+
+    // 设置Python端的promise解析器
+    pyodide.globals.set("_resolve_input", (value) => {
+        try {
+            pyodide.runPythonAsync(`
+                if '_input_promise' in globals() and _input_promise is not None and not _input_promise.done():
+                    _input_promise.set_result("${value.replace(/"/g, '\\"')}")
             `);
-
-            // 设置Python端的promise解析器
-            pyodide.globals.set("_resolve_input", (value) => {
-                pyodide.runPythonAsync(`_input_promise.set_result("${value}")`);
-            });
+        } catch (e) {
+            console.error("设置输入值时出错:", e);
         }
+    });
+}
 
 
 //检测代码类型
@@ -1184,11 +1313,22 @@ function hasJavaScriptCode(code) {
 // 检查Python特有语法
 function hasPythonSpecificSyntax(code) {
     // 检查Python特有语法
-    const pythonRegex = /^(?:def\s|class\s|import\s|from\s|print\(|lambda\s|async\sdef\s|await\s|yield\s|with\s|as\s|try\s|except\s|finally\s|raise\s)/m;
+    const pythonRegex = /^(?:def\s|class\s|import\s|from\s|print\(|lambda\s|async\sdef\s|await\s|yield\s|with\s|as\s|try\s|except\s|finally\s|raise\s|elif\s|@\w+)/m;
+
+    // Python特有的函数和库
+    const pythonFunctions = /\b(?:len|range|enumerate|zip|dict|list|tuple|set|sum|min|max|sorted|filter|map|any|all|isinstance|issubclass|hasattr|getattr|setattr|delattr|globals|locals)\s*\(/;
+    
+    // Python特有的库
+    const pythonLibs = /\b(?:numpy|pandas|matplotlib|scipy|torch|tensorflow|sklearn|os|sys|re|json|math|random|datetime|collections|itertools|functools)\b/;
+    
+    // Python特有的关键字
+    const pythonKeywords = /\b(?:and|or|not|is|in|None|True|False|pass|continue|break|return|assert|global|nonlocal)\b/;
 
     // 检查Python特有的缩进块
     const lines = code.split('\n');
     let pythonIndentation = false;
+    let colonEndedLine = false;
+    let indentedBlockFollow = false;
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
@@ -1196,8 +1336,21 @@ function hasPythonSpecificSyntax(code) {
         // 空行跳过
         if (!line) continue;
 
+        // 上一行以冒号结尾，检查下一行是否有缩进
+        if (colonEndedLine && i > 0) {
+            if (lines[i].match(/^\s+/) && lines[i-1].trim().endsWith(':')) {
+                indentedBlockFollow = true;
+            }
+            colonEndedLine = false;
+        }
+
+        // 检查这一行是否以冒号结尾
+        if (line.endsWith(':')) {
+            colonEndedLine = true;
+        }
+
         // 检查Python特有的控制结构
-        if (line.match(/^(if|elif|else|for|while|try|except|finally|with|def|class)\s+/)) {
+        if (line.match(/^(if|elif|else|for|while|try|except|finally|with|def|class)\s+.*:$/)) {
             // 检查下一行是否有缩进
             if (i < lines.length - 1 && lines[i+1].match(/^\s+/)) {
                 pythonIndentation = true;
@@ -1206,35 +1359,64 @@ function hasPythonSpecificSyntax(code) {
         }
     }
 
-    return pythonRegex.test(code) || pythonIndentation;
+    return pythonRegex.test(code) || 
+           pythonFunctions.test(code) || 
+           pythonLibs.test(code) || 
+           pythonKeywords.test(code) || 
+           pythonIndentation || 
+           indentedBlockFollow;
 }
 
 function detectCodeType(code) {
     // 去除注释和字符串内容，只保留代码结构
-
-
-    // 检查HTML标签
-    if (hasHtmlTags(code)) {
-        return 'html';
+    const cleanedCode = code.trim();
+    
+    // 显式的语言标记
+    if (cleanedCode.startsWith('```python') || 
+        cleanedCode.startsWith('```py') || 
+        cleanedCode.match(/^#\s*python\b/)) {
+        return 'python';
     }
 
-    // 检查CSS样式
-    if (hasCssStyles(code)) {
-        return 'html';
-    }
-
-    // 检查JavaScript代码
-    if (hasJavaScriptCode(code)) {
+    if (cleanedCode.startsWith('```html') || 
+        cleanedCode.startsWith('```css') || 
+        cleanedCode.startsWith('```javascript') || 
+        cleanedCode.startsWith('```js')) {
         return 'html';
     }
 
     // 检查Python特有语法
-    if (hasPythonSpecificSyntax(code)) {
+    if (hasPythonSpecificSyntax(cleanedCode)) {
         return 'python';
     }
-
     
-    return 'none';
+    // 检查HTML标签
+    if (hasHtmlTags(cleanedCode)) {
+        return 'html';
+    }
+
+    // 检查CSS样式
+    if (hasCssStyles(cleanedCode)) {
+        return 'html';
+    }
+
+    // 检查JavaScript代码
+    if (hasJavaScriptCode(cleanedCode)) {
+        return 'html';
+    }
+
+    // 如果无法确定，根据启发式判断
+    // 存在缩进、使用#作为注释、没有花括号或分号，更可能是Python
+    const hasPythonHeuristics = cleanedCode.includes('#') && 
+                        !cleanedCode.includes('{') && 
+                        !cleanedCode.includes(';');
+    
+    if (hasPythonHeuristics) {
+        return 'python';
+    }
+    
+    // 默认使用Python，因为在线环境中Python更为常用
+    return 'html';
 }
 
     // 动态加载依赖库
@@ -1254,19 +1436,25 @@ function detectCodeType(code) {
         ])
         .then(() => {
             // 配置 marked 库
-          marked.setOptions({
-        highlight: function(code, lang) {
-            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-            return hljs.highlight(code, { language }).value;
-        },
-        langPrefix: 'hljs language-',
-        pedantic: false,
-        gfm: true,
-        breaks: true,
-        sanitize: true,
-        smartLists: true,
-        smartypants: false
-    });
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    try {
+                        return hljs.highlight(code, { language }).value;
+                    } catch (e) {
+                        console.error("Highlighting error:", e);
+                        return code; // Return original code on error
+                    }
+                },
+                langPrefix: 'hljs language-', // 类名前缀
+                pedantic: false,          // 容错 GFM
+                gfm: true,                // 启用 GFM (GitHub Flavored Markdown)
+                // breaks: true,          // <--- 将这一行注释掉或改为 false ---
+                breaks: false,            // <--- 或者明确设置为 false ---
+                // sanitize: true,        // <--- 同样建议移除或设为 false，并使用 DOMPurify (如果需要安全处理)
+                smartLists: true,         // 优化列表输出
+                smartypants: false        // 不转换标点
+            });
 
             // 检查是否已经存在图标
             if (!document.querySelector('.ds-chat-icon')) {
@@ -1293,202 +1481,256 @@ function detectCodeType(code) {
                 document.body.appendChild(chatWindow);
 
                 // 拖动相关变量
-                let isDragging = false;
-                let startX, startY, initialRight, initialBottom;
-                let hasMoved = false; // 记录是否发生了移动
-
-                // 鼠标按下事件
-                icon.addEventListener('mousedown', (e) => {
-                    isDragging = true;
-                    hasMoved = false; // 每次按下鼠标时，重置移动标志
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    const styles = window.getComputedStyle(icon);
-                    initialRight = parseFloat(styles.right) || 0;
-                    initialBottom = parseFloat(styles.bottom) || 0;
-                    e.preventDefault(); // 阻止默认的拖动行为（如图片拖拽）和文本选择
-                });
-
-                // 触摸开始事件 - 新增触摸支持
-                icon.addEventListener('touchstart', (e) => {
-                    if (e.touches.length === 1) {
-                        isDragging = true;
-                        hasMoved = false; // 每次触摸开始时，重置移动标志
-                        startX = e.touches[0].clientX;
-                        startY = e.touches[0].clientY;
-                        const styles = window.getComputedStyle(icon);
-                        initialRight = parseFloat(styles.right) || 0;
-                        initialBottom = parseFloat(styles.bottom) || 0;
-                        e.preventDefault(); // 阻止默认的滚动和缩放行为
-                    }
-                });
-
-                // 鼠标移动事件
-                document.addEventListener('mousemove', (e) => {
-                    if (isDragging) {
-                        const deltaX = e.clientX - startX;
-                        const deltaY = e.clientY - startY;
-
-                        // 设置一个小的阈值（例如3像素），只有超过这个距离才算移动
-                        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-                            hasMoved = true; // 一旦移动超过阈值，就标记为已移动
-                        }
-
-                        // 如果确实移动了，才更新图标位置
-                        if (hasMoved) {
-                            const newRight = initialRight - deltaX;
-                            const newBottom = initialBottom - deltaY;
-                            const maxRight = window.innerWidth - icon.offsetWidth;
-                            const maxBottom = window.innerHeight - icon.offsetHeight;
-                            const clampedRight = Math.max(0, Math.min(newRight, maxRight));
-                            const clampedBottom = Math.max(0, Math.min(newBottom, maxBottom));
-                            icon.style.right = `${clampedRight}px`;
-                            icon.style.bottom = `${clampedBottom}px`;
-                        }
-                    }
-                });
-
-                // 触摸移动事件 - 新增触摸支持
-                document.addEventListener('touchmove', (e) => {
-                    if (isDragging && e.touches.length === 1) {
-                        const deltaX = e.touches[0].clientX - startX;
-                        const deltaY = e.touches[0].clientY - startY;
-
-                        // 设置一个小的阈值（例如3像素），只有超过这个距离才算移动
-                        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-                            hasMoved = true; // 一旦移动超过阈值，就标记为已移动
-                        }
-
-                        // 如果确实移动了，才更新图标位置
-                        if (hasMoved) {
-                            const newRight = initialRight - deltaX;
-                            const newBottom = initialBottom - deltaY;
-                            const maxRight = window.innerWidth - icon.offsetWidth;
-                            const maxBottom = window.innerHeight - icon.offsetHeight;
-                            const clampedRight = Math.max(0, Math.min(newRight, maxRight));
-                            const clampedBottom = Math.max(0, Math.min(newBottom, maxBottom));
-                            icon.style.right = `${clampedRight}px`;
-                            icon.style.bottom = `${clampedBottom}px`;
-                        }
-                        e.preventDefault(); // 防止页面在拖动时滚动
-                    }
-                });
-
-                // 鼠标松开事件
-                document.addEventListener('mouseup', () => {
-                    if (isDragging) {
-                        isDragging = false;
-                        // 注意：hasMoved 的状态在这里保持不变，它记录了 mousedown 和 mouseup 之间是否发生过移动
-                    }
-                });
-
-                // 触摸结束事件 - 新增触摸支持
-                document.addEventListener('touchend', () => {
-                    if (isDragging) {
-                        isDragging = false;
-                        // 注意：hasMoved 的状态在这里保持不变
-                    }
-                });
-
-                // 添加触摸点击事件处理 - 修复触屏设备上无法点击打开悬浮窗的问题
-                icon.addEventListener('touchend', (e) => {
-                    console.log("图标点击事件被触发了！");
-                    console.log("当前 hasMoved 状态:", hasMoved);
-
-
-                    if (!hasMoved) {
-                        const isActive = chatWindow.classList.contains('active');
-                        if (!isActive) {
-                            // --- 修改这里的逻辑 ---
-                            // 1. 先添加 active 类，并隐藏图标
-                            
-                            // 2. 使用 requestAnimationFrame 将定位操作推迟到下一帧
-                                
-                            chatWindow.classList.add('active');
-                            chatWindow.style.display = 'flex';
-                           icon.style.display = 'none';
-                            console.log("窗口已激活，准备请求下一帧定位");
-                                requestAnimationFrame(() => {
-                                    try { // 最好加上 try...catch 以防 positionChatWindow 内部出错
-                                       
-                                        console.log("在下一帧尝试定位完成");
-                                    } catch (positionError) {
-                                        console.error("定位窗口时出错:", positionError);
-                                        // 可以在这里添加一些备用逻辑，比如显示窗口但不定位，或者显示错误信息
-                                    }
-                                });
-                            
-
-                        } else {
-                            // 关闭窗口的逻辑保持不变
-				            chatWindow.classList.remove('active');
-                             chatWindow.style.display = 'none';
-                            icon.style.display = 'flex';
-                            console.log("窗口已关闭");
-                        }
-                    } else {
-                        console.log("检测到拖拽，忽略点击。");
-	
-                    }
-                });
-         
-
-                // 触摸取消事件 - 新增触摸支持
-                document.addEventListener('touchcancel', () => {
-                    if (isDragging) {
-                        isDragging = false;
-                    }
-                });
-
-                // 鼠标移出窗口事件 (修复：仅在拖动时处理)
-                document.addEventListener('mouseleave', () => {
-                    if (isDragging) { // 只有在拖动状态下移出窗口才需要停止拖动
-                        isDragging = false;
-                        // hasMoved 状态同样保持
-                    }
-                });
-                // 点击事件处理 (最关键的部分)
-                icon.addEventListener('click', (e) => {
-                    console.log("图标点击事件被触发了！");
-                    console.log("当前 hasMoved 状态:", hasMoved);
-
-
-                    if (!hasMoved) {
-                        const isActive = chatWindow.classList.contains('active');
-                        if (!isActive) {
-                            // --- 修改这里的逻辑 ---
-                            // 1. 先添加 active 类，并隐藏图标
-                            
-                            // 2. 使用 requestAnimationFrame 将定位操作推迟到下一帧
-                    
-			   chatWindow.classList.add('active');
-			   chatWindow.style.display = 'flex';
-                           icon.style.display = 'none';
-                            console.log("窗口已激活，准备请求下一帧定位");
-                                requestAnimationFrame(() => {
-                                    try { // 最好加上 try...catch 以防 positionChatWindow 内部出错
-                                       
-                                        console.log("在下一帧尝试定位完成");
-                                    } catch (positionError) {
-                                        console.error("定位窗口时出错:", positionError);
-                                        // 可以在这里添加一些备用逻辑，比如显示窗口但不定位，或者显示错误信息
-                                    }
-                                });
-                            
-
-                        } else {
-                            // 关闭窗口的逻辑保持不变
-				chatWindow.classList.remove('active');
-                             chatWindow.style.display = 'none';
-                            icon.style.display = 'flex';
-                            console.log("窗口已关闭");
-                        }
-                    } else {
-                        console.log("检测到拖拽，忽略点击。");
-	
-                    }
-
-                });
+                     // 图标拖动状态变量
+                     let isDraggingIcon = false;    // 图标是否正在被拖动
+                     let iconStartX, iconStartY;    // 拖动起始的坐标
+                     let iconInitialRight, iconInitialBottom; // 拖动起始时图标的 right 和 bottom 值
+                     let iconHasMoved = false;      // 本次交互中图标是否发生了移动（超过阈值）
+     
+                     // 打开/关闭聊天窗口的函数
+                     function toggleChatWindow(show) {
+                         const isActive = chatWindow.classList.contains('active');
+     
+                         if (show && !isActive) {
+                             // --- 打开窗口 ---
+                             console.log("尝试打开聊天窗口...");
+                             // 1. 先定位窗口 (此时图标可见，便于参考)
+                             try {
+                                  positionChatWindow(); // 计算并设置初始位置
+                                  console.log("聊天窗口已定位。");
+                             } catch (positionError) {
+                                  console.error("定位聊天窗口时出错:", positionError);
+                                  // 定位出错时的后备方案
+                                  chatWindow.style.right = '10px';
+                                  chatWindow.style.bottom = '70px'; // 放在图标大致消失的位置
+                                  chatWindow.style.left = 'auto';
+                                  chatWindow.style.top = 'auto';
+                             }
+     
+                             // 2. 让窗口可见并隐藏图标
+                             chatWindow.classList.add('active');
+                             chatWindow.style.display = 'flex'; // 让窗口占据空间
+                             // 使用 requestAnimationFrame 可能让动画更流畅
+                             requestAnimationFrame(() => {
+                                  chatWindow.style.opacity = '1'; // 如果使用了透明度过渡动画
+                             });
+                             icon.style.display = 'none'; // 隐藏图标
+                             console.log("聊天窗口已打开。");
+                             // 可选：打开时更新头部主题色
+                             updateHeaderTheme();
+     
+                         } else if (!show && isActive) {
+                             // --- 关闭窗口 ---
+                             console.log("尝试关闭聊天窗口...");
+                             chatWindow.classList.remove('active');
+                             chatWindow.style.opacity = '0'; // 开始淡出动画（如果使用）
+                             // 如果有动画，等待动画结束再隐藏；否则直接隐藏
+                             // setTimeout(() => { chatWindow.style.display = 'none'; }, 500); // 假设动画 0.5 秒
+                              chatWindow.style.display = 'none'; // 直接隐藏
+                             icon.style.display = 'flex';   // 显示图标
+                             console.log("聊天窗口已关闭。");
+     
+                              // 通过关闭按钮关闭窗口时，也保存一下图标当前位置
+                              const currentIconStyles = window.getComputedStyle(icon);
+                              const finalRight = parseFloat(currentIconStyles.right);
+                              const finalBottom = parseFloat(currentIconStyles.bottom);
+                              if (!isNaN(finalRight) && !isNaN(finalBottom)) {
+                                 GM_setValue('iconRight', finalRight);
+                                 GM_setValue('iconBottom', finalBottom);
+                                  console.log(`通过按钮关闭时保存图标位置: R=${finalRight}, B=${finalBottom}`);
+                              }
+                         }
+                     }
+     
+                     // --- 图标的触摸事件 ---
+                     icon.addEventListener('touchstart', (e) => {
+                         if (e.touches.length === 1) { // 仅处理单指触摸
+                             isDraggingIcon = true;      // 开始拖动状态
+                             iconHasMoved = false;       // 重置移动标志
+                             const touch = e.touches[0];
+                             iconStartX = touch.clientX; // 记录起始X
+                             iconStartY = touch.clientY; // 记录起始Y
+                             const styles = window.getComputedStyle(icon);
+                             // 优先读取 right/bottom，如果无效（比如是'auto'），则进行回退计算
+                             iconInitialRight = parseFloat(styles.right);
+                             iconInitialBottom = parseFloat(styles.bottom);
+                             if (isNaN(iconInitialRight) || isNaN(iconInitialBottom)) {
+                                 // 使用 getBoundingClientRect 作为后备来计算初始 right/bottom
+                                 const rect = icon.getBoundingClientRect();
+                                 iconInitialRight = window.innerWidth - rect.right;
+                                 iconInitialBottom = window.innerHeight - rect.bottom;
+                                  console.log("触摸开始时，通过 BBox 计算初始位置");
+                             }
+                             // 暂时不阻止默认行为，允许可能的页面滚动，直到确认发生拖动
+                             icon.style.cursor = 'grabbing'; // 改变鼠标指针样式（桌面端效果）
+                              console.log("图标 touchstart");
+                         }
+                     }, { passive: false }); // 使用 passive: false，因为我们可能在 touchmove 中调用 preventDefault
+     
+                     icon.addEventListener('touchmove', (e) => {
+                         if (isDraggingIcon && e.touches.length === 1) { // 必须是正在拖动状态且是单指
+                             const touch = e.touches[0];
+                             const deltaX = touch.clientX - iconStartX; // 计算X位移
+                             const deltaY = touch.clientY - iconStartY; // 计算Y位移
+     
+                             // 检查位移是否超过阈值，判断是否为有效拖动
+                             if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) { // 阈值设为5像素
+                                  if (!iconHasMoved) {
+                                       // 首次超过阈值，标记为已移动
+                                       console.log("图标拖动开始（超过阈值）");
+                                       iconHasMoved = true;
+                                       // 只有当确认是拖动时，才阻止页面的默认滚动行为
+                                       e.preventDefault();
+                                  }
+     
+                                 // 计算新的 right 和 bottom 值
+                                 const newRight = iconInitialRight - deltaX;
+                                 const newBottom = iconInitialBottom - deltaY;
+     
+                                 // 边界检查，防止图标拖出屏幕
+                                 const maxRight = window.innerWidth - icon.offsetWidth;
+                                 const maxBottom = window.innerHeight - icon.offsetHeight;
+                                 const clampedRight = Math.max(0, Math.min(newRight, maxRight));   // 限制右边界
+                                 const clampedBottom = Math.max(0, Math.min(newBottom, maxBottom)); // 限制下边界
+     
+                                 // 更新图标位置
+                                 icon.style.right = `${clampedRight}px`;
+                                 icon.style.bottom = `${clampedBottom}px`;
+                             }
+                         }
+                     }, { passive: false }); // 使用 passive: false 因为我们调用了 preventDefault
+     
+                     icon.addEventListener('touchend', (e) => {
+                          console.log(`图标 touchend: isDraggingIcon=${isDraggingIcon}, iconHasMoved=${iconHasMoved}`);
+                         if (isDraggingIcon) { // 必须是从拖动状态结束
+                             if (!iconHasMoved) {
+                                 // 如果没有移动，说明这是一次“轻触”（Tap）
+                                 console.log("通过 touchend 检测到 Tap。");
+                                  // 使用一个微小的延迟来执行，减少与浏览器可能模拟的 click 事件冲突的概率
+                                  setTimeout(() => {
+                                    toggleChatWindow(true); // 打开聊天窗口
+                                  }, 50); // 50毫秒延迟
+                             } else {
+                                 // 如果移动了，说明这是拖拽结束
+                                 console.log("通过 touchend 检测到拖拽结束。");
+                                 // 拖拽结束后保存图标的最终位置
+                                 const finalRight = parseFloat(icon.style.right);
+                                 const finalBottom = parseFloat(icon.style.bottom);
+                                  if (!isNaN(finalRight) && !isNaN(finalBottom)) {
+                                     GM_setValue('iconRight', finalRight); // 保存 right 值
+                                     GM_setValue('iconBottom', finalBottom); // 保存 bottom 值
+                                     console.log(`拖拽结束时保存图标位置: R=${finalRight}, B=${finalBottom}`);
+                                  }
+                             }
+                             // 不论是 Tap 还是拖拽结束，都需要重置状态
+                             isDraggingIcon = false;
+                             iconHasMoved = false;
+                             icon.style.cursor = 'move'; // 恢复鼠标指针样式
+                         }
+                          // touchend 通常不需要阻止默认行为
+                     });
+     
+                     icon.addEventListener('touchcancel', () => {
+                         // 处理触摸被意外取消的情况（例如电话接入）
+                         if (isDraggingIcon) {
+                             isDraggingIcon = false;
+                             iconHasMoved = false;
+                             icon.style.cursor = 'move';
+                              console.log("图标 touchcancel");
+                         }
+                     });
+     
+                     // --- 图标的鼠标事件（保持桌面端功能） ---
+                      icon.addEventListener('mousedown', (e) => {
+                         if (e.button !== 0) return; // 仅响应鼠标左键
+                         isDraggingIcon = true;
+                         iconHasMoved = false;
+                         iconStartX = e.clientX;
+                         iconStartY = e.clientY;
+                         const styles = window.getComputedStyle(icon);
+                          iconInitialRight = parseFloat(styles.right);
+                          iconInitialBottom = parseFloat(styles.bottom);
+                          if (isNaN(iconInitialRight) || isNaN(iconInitialBottom)) {
+                              const rect = icon.getBoundingClientRect();
+                              iconInitialRight = window.innerWidth - rect.right;
+                              iconInitialBottom = window.innerHeight - rect.bottom;
+                              console.log("鼠标按下时，通过 BBox 计算初始位置");
+                          }
+                         e.preventDefault(); // 阻止默认行为，如文本选择或图片拖拽
+                         icon.style.cursor = 'grabbing';
+                          console.log("图标 mousedown");
+                     });
+     
+                     // 鼠标移动和松开事件最好监听在 document 上，以防鼠标移出图标区域
+                      document.addEventListener('mousemove', (e) => {
+                         if (!isDraggingIcon) return; // 必须是图标启动的拖动
+     
+                         const deltaX = e.clientX - iconStartX;
+                         const deltaY = e.clientY - iconStartY;
+     
+                          // 首次超过阈值时标记为移动
+                          if (!iconHasMoved && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                              console.log("图标拖动开始（mousemove 阈值）");
+                              iconHasMoved = true;
+                          }
+     
+                          // 只有标记为移动后才更新位置
+                          if (iconHasMoved) {
+                             const newRight = iconInitialRight - deltaX;
+                             const newBottom = iconInitialBottom - deltaY;
+     
+                             const maxRight = window.innerWidth - icon.offsetWidth;
+                             const maxBottom = window.innerHeight - icon.offsetHeight;
+                             const clampedRight = Math.max(0, Math.min(newRight, maxRight));
+                             const clampedBottom = Math.max(0, Math.min(newBottom, maxBottom));
+     
+                             icon.style.right = `${clampedRight}px`;
+                             icon.style.bottom = `${clampedBottom}px`;
+                          }
+                     });
+     
+                      document.addEventListener('mouseup', (e) => {
+                          console.log(`Document mouseup: isDraggingIcon=${isDraggingIcon}, iconHasMoved=${iconHasMoved}`);
+                         if (isDraggingIcon) { // 必须是图标启动的拖动结束
+                             if (!iconHasMoved) {
+                                 // 没有移动，这是一次“点击”
+                                 console.log("通过 mouseup 检测到 Click。");
+                                 toggleChatWindow(true); // 打开窗口
+                             } else {
+                                 // 移动了，这是拖拽结束
+                                 console.log("通过 mouseup 检测到拖拽结束。");
+                                 const finalRight = parseFloat(icon.style.right);
+                                 const finalBottom = parseFloat(icon.style.bottom);
+                                 if (!isNaN(finalRight) && !isNaN(finalBottom)) {
+                                     GM_setValue('iconRight', finalRight);
+                                     GM_setValue('iconBottom', finalBottom);
+                                      console.log(`拖拽结束时保存图标位置: R=${finalRight}, B=${finalBottom}`);
+                                 }
+                             }
+                             // 重置状态
+                             isDraggingIcon = false;
+                             iconHasMoved = false;
+                             icon.style.cursor = 'move';
+                         }
+                     });
+     
+                      // 处理鼠标拖动时离开窗口的情况
+                      document.addEventListener('mouseleave', (e) => {
+                         if (isDraggingIcon) {
+                              console.log("鼠标在拖动时离开窗口");
+                              // 像拖拽结束一样处理
+                             const finalRight = parseFloat(icon.style.right);
+                             const finalBottom = parseFloat(icon.style.bottom);
+                              if (!isNaN(finalRight) && !isNaN(finalBottom)) {
+                                GM_setValue('iconRight', finalRight);
+                                GM_setValue('iconBottom', finalBottom);
+                                 console.log(`鼠标离开时保存图标位置: R=${finalRight}, B=${finalBottom}`);
+                              }
+                             isDraggingIcon = false;
+                             iconHasMoved = false;
+                             icon.style.cursor = 'move';
+                         }
+                     });        
 
                 const chatHeader = document.createElement('div');
                 chatHeader.className = 'ds-chat-header';
@@ -1795,121 +2037,98 @@ function detectCodeType(code) {
         
                 // 事件监听
                 // 在创建chatHeader后添加以下代码
-        chatHeader.style.cursor = 'move'; // 设置鼠标样式为可拖动
-        let isDraggingWindow = false;
-        let startXWindow, startYWindow, initialLeftWindow, initialTopWindow;
-        
-        // 鼠标按下事件
-        chatHeader.addEventListener('mousedown', (e) => {
-            if (e.button !== 0) return; // 只响应左键点击
-        
-            isDraggingWindow = true;
-            startXWindow = e.clientX;
-            startYWindow = e.clientY;
-        
-            const styles = window.getComputedStyle(chatWindow);
-            initialLeftWindow = parseFloat(styles.left) || 0;
-            initialTopWindow = parseFloat(styles.top) || 0;
-        
-            e.preventDefault(); // 阻止默认行为
-            chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
-        });
-        
-        // 触摸开始事件（移动端）
-        chatHeader.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) return; // 只响应单指触摸
-            
-            isDraggingWindow = true;
-            startXWindow = e.touches[0].clientX;
-            startYWindow = e.touches[0].clientY;
-            
-            const styles = window.getComputedStyle(chatWindow);
-            initialLeftWindow = parseFloat(styles.left) || 0;
-            initialTopWindow = parseFloat(styles.top) || 0;
-            
-            e.preventDefault(); // 阻止默认行为
-            chatWindow.style.userSelect = 'none'; // 防止拖动时选中文本
-        });
-        
-        // 鼠标移动事件
-        document.addEventListener('mousemove', (e) => {
-            if (!isDraggingWindow) return;
-        
-            const deltaX = e.clientX - startXWindow;
-            const deltaY = e.clientY - startYWindow;
-        
-            const newLeft = initialLeftWindow + deltaX;
-            const newTop = initialTopWindow + deltaY;
-        
-            // 限制在窗口范围内
-            const maxLeft = window.innerWidth - chatWindow.offsetWidth;
-            const maxTop = window.innerHeight - chatWindow.offsetHeight;
-        
-            const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
-            const clampedTop = Math.max(0, Math.min(newTop, maxTop));
-        
-            chatWindow.style.left = `${clampedLeft}px`;
-            chatWindow.style.top = `${clampedTop}px`;
-            chatWindow.style.right = 'auto';
-            chatWindow.style.bottom = 'auto';
-        });
-        
-        // 触摸移动事件（移动端）
-        document.addEventListener('touchmove', (e) => {
-            if (!isDraggingWindow) return;
-            
-            const deltaX = e.touches[0].clientX - startXWindow;
-            const deltaY = e.touches[0].clientY - startYWindow;
-            
-            const newLeft = initialLeftWindow + deltaX;
-            const newTop = initialTopWindow + deltaY;
-            
-            // 限制在窗口范围内
-            const maxLeft = window.innerWidth - chatWindow.offsetWidth;
-            const maxTop = window.innerHeight - chatWindow.offsetHeight;
-            
-            const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
-            const clampedTop = Math.max(0, Math.min(newTop, maxTop));
-            
-            chatWindow.style.left = `${clampedLeft}px`;
-            chatWindow.style.top = `${clampedTop}px`;
-            chatWindow.style.right = 'auto';
-            chatWindow.style.bottom = 'auto';
-            
-            e.preventDefault(); // 阻止页面滚动
-        }, { passive: false });
-        
-        // 鼠标松开事件
-        document.addEventListener('mouseup', () => {
-            if (isDraggingWindow) {
-                isDraggingWindow = false;
-                chatWindow.style.userSelect = ''; // 恢复文本选择
-            }
-        });
-        
-        // 触摸结束事件（移动端）
-        document.addEventListener('touchend', () => {
-            if (isDraggingWindow) {
-                isDraggingWindow = false;
-                chatWindow.style.userSelect = ''; // 恢复文本选择
-            }
-        });
-        
-        // 触摸取消事件（移动端）
-        document.addEventListener('touchcancel', () => {
-            if (isDraggingWindow) {
-                isDraggingWindow = false;
-                chatWindow.style.userSelect = ''; // 恢复文本选择
-            }
-        });
-        
-        // 鼠标移出窗口事件
-        document.addEventListener('mouseleave', () => {
-            if (isDraggingWindow) { // 只有在拖动状态下移出窗口才需要停止拖动
-                isDraggingWindow = false;
-                chatWindow.style.userSelect = ''; // 恢复文本选择
-            }
-        });
+       
+                chatHeader.style.cursor = 'move'; // 设置头部的鼠标样式为可拖动
+                let isDraggingWindow = false;     // 窗口是否正在被拖动
+                let windowStartX, windowStartY;   // 窗口拖动起始坐标
+                let windowInitialLeft, windowInitialTop; // 窗口拖动起始位置
+
+                chatHeader.addEventListener('mousedown', (e) => {
+                   // 仅左键，且非全屏时才能拖动
+                   if (e.button !== 0 || chatWindow.classList.contains('fullscreen')) return;
+                   isDraggingWindow = true;
+                   windowStartX = e.clientX;
+                   windowStartY = e.clientY;
+                   const styles = window.getComputedStyle(chatWindow);
+                   // 拖动窗口时，通常是基于 left/top 定位
+                   windowInitialLeft = parseFloat(styles.left) || (window.innerWidth - chatWindow.offsetWidth) / 2; // 读取当前left，若无效则居中
+                   windowInitialTop = parseFloat(styles.top) || 50; // 读取当前top，若无效则靠近顶部
+                   e.preventDefault();
+                   chatWindow.style.userSelect = 'none'; // 拖动时禁止选择窗口内文本
+                   chatWindow.style.cursor = 'grabbing'; // 窗口拖动时的鼠标样式
+                });
+
+                chatHeader.addEventListener('touchstart', (e) => {
+                    // 仅单指，且非全屏时
+                    if (e.touches.length !== 1 || chatWindow.classList.contains('fullscreen')) return;
+                    isDraggingWindow = true;
+                    const touch = e.touches[0];
+                    windowStartX = touch.clientX;
+                    windowStartY = touch.clientY;
+                    const styles = window.getComputedStyle(chatWindow);
+                    windowInitialLeft = parseFloat(styles.left) || (window.innerWidth - chatWindow.offsetWidth) / 2;
+                    windowInitialTop = parseFloat(styles.top) || 50;
+                    // touchstart 时可以先不阻止默认行为，允许可能的滚动启动
+                    chatWindow.style.userSelect = 'none';
+                    chatWindow.style.cursor = 'grabbing';
+                 }, { passive: true }); // 如果这里不调用 preventDefault，可以是 passive
+
+                // 同样，窗口的移动和结束事件监听 document
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDraggingWindow) return; // 必须是窗口启动的拖动
+                    const deltaX = e.clientX - windowStartX;
+                    const deltaY = e.clientY - windowStartY;
+                    const newLeft = windowInitialLeft + deltaX;
+                    const newTop = windowInitialTop + deltaY;
+
+                    // 窗口边界检查
+                    const maxLeft = window.innerWidth - chatWindow.offsetWidth;
+                    const maxTop = window.innerHeight - chatWindow.offsetHeight;
+                    const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                    const clampedTop = Math.max(0, Math.min(newTop, maxTop));
+
+                    // 更新窗口位置 (使用 left/top)
+                    chatWindow.style.left = `${clampedLeft}px`;
+                    chatWindow.style.top = `${clampedTop}px`;
+                    chatWindow.style.right = 'auto'; // 确保 right/bottom 是 auto
+                    chatWindow.style.bottom = 'auto';
+                });
+
+                 document.addEventListener('touchmove', (e) => {
+                    if (!isDraggingWindow || e.touches.length !== 1) return; // 必须是窗口启动的拖动且单指
+                     e.preventDefault(); // 拖动窗口时，必须阻止页面滚动
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - windowStartX;
+                    const deltaY = touch.clientY - windowStartY;
+                    const newLeft = windowInitialLeft + deltaX;
+                    const newTop = windowInitialTop + deltaY;
+
+                    const maxLeft = window.innerWidth - chatWindow.offsetWidth;
+                    const maxTop = window.innerHeight - chatWindow.offsetHeight;
+                    const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                    const clampedTop = Math.max(0, Math.min(newTop, maxTop));
+
+                    chatWindow.style.left = `${clampedLeft}px`;
+                    chatWindow.style.top = `${clampedTop}px`;
+                    chatWindow.style.right = 'auto';
+                    chatWindow.style.bottom = 'auto';
+                }, { passive: false }); // 这里需要 passive: false 因为调用了 preventDefault
+
+                // 统一处理窗口拖动结束的函数
+                const endWindowDrag = () => {
+                    if (isDraggingWindow) {
+                        isDraggingWindow = false;
+                        chatWindow.style.userSelect = ''; // 恢复文本选择
+                        chatWindow.style.cursor = '';     // 恢复窗口默认光标
+                        // 根据是否全屏恢复头部的光标
+                        chatHeader.style.cursor = chatWindow.classList.contains('fullscreen') ? 'default' : 'move';
+                    }
+                };
+
+                document.addEventListener('mouseup', endWindowDrag);
+                document.addEventListener('touchend', endWindowDrag);
+                document.addEventListener('mouseleave', endWindowDrag); // 鼠标离开窗口也要结束拖动
+                document.addEventListener('touchcancel', endWindowDrag); // 触摸取消也要结束
                 customCaptureBtn.addEventListener('click', () => {
             const currentSelectors = config.customSelectors || '';
             const newSelectors = prompt(`当前页面可用元素选择器(多个用逗号分隔):
@@ -2463,12 +2682,19 @@ function createExecutionModal() {
             <div class="code-execution-content">
                 <div class="code-execution-header">
                     <h3 style= "color: white;">代码执行结果<span id="code-timer-status"></span></h3>
-                    <span class="fullscreen-btn" onclick="toggleFullscreen()">⛶</span>
-                    <span class="code-execution-close">&times;</span>
+                    <div style="display: flex; align-items: center;">
+                        <button id="examples-btn" style="margin-right: 10px; background-color: #2196F3; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">示例</button>
+                        <span class="fullscreen-btn" onclick="toggleFullscreen()">⛶</span>
+                        <span class="code-execution-close">&times;</span>
+                    </div>
                 </div>
                 <div class="code-execution-body">
                     <iframe id="code-sandbox"></iframe>
                     <div id="code-status-bar">等待执行...</div>
+                    <div class="input-group" id="input-container" style="display: none; margin-top: 10px;">
+                        <input type="text" id="python-input" placeholder="请输入内容..." style="padding: 8px; width: 70%; margin-right: 10px;">
+                        <button id="submit-input" style="padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">提交</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -2477,7 +2703,40 @@ function createExecutionModal() {
         // 事件监听
         modal.querySelector('.code-execution-close').onclick = closeExecutionModal;
         modal.querySelector('.fullscreen-btn').onclick = toggleFullscreen;
-
+        
+        // 设置Python输入提交按钮事件
+        const submitBtn = modal.querySelector('#submit-input');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                const inputValue = modal.querySelector('#python-input').value;
+                const outputElement = document.getElementById('output') || 
+                                     document.querySelector('#code-sandbox').contentDocument.getElementById('output');
+                if (outputElement) {
+                    outputElement.textContent += `${inputValue}\n`;
+                }
+                modal.querySelector('#python-input').value = '';
+                if (pyodide && pyodide.globals) {
+                    pyodide.globals.get('_resolve_input')(inputValue);
+                }
+            });
+        }
+        
+        // Python输入框回车事件
+        const inputField = modal.querySelector('#python-input');
+        if (inputField) {
+            inputField.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    modal.querySelector('#submit-input').click();
+                }
+            });
+        }
+        
+        // 示例按钮事件
+        const examplesBtn = modal.querySelector('#examples-btn');
+        if (examplesBtn) {
+            examplesBtn.addEventListener('click', showPythonExamples);
+        }
     }
 
 
@@ -2497,17 +2756,8 @@ function createExecutionModal() {
 
     // 检测代码语言
     function detectCodeLanguage(code) {
-        // 简单检测Python代码
-        if (code.includes('import ') || code.includes('def ') || code.includes('print(') ||
-            code.includes('from ') || code.includes('class ') || code.includes('lambda ')) {
-            return 'python';
-        }
-        // 简单检测HTML代码
-        if (code.includes('<html') || code.includes('<div') || code.includes('<style') ||
-            code.includes('<script') || code.includes('</') || code.includes('/>')) {
-            return 'html';
-        }
-        return 'html'; // 默认Python
+        // 使用更精确的代码类型检测
+        return detectCodeType(code);
     }
 
     // 执行代码并显示弹窗
@@ -2551,7 +2801,7 @@ function createExecutionModal() {
 }
     // 执行Python代码
     async function executePythonCode(code, statusBar, sandbox) {
-        if (!pyodideInstance) {
+        if (!pyodide) {
             updateStatus(statusBar, "加载Pyodide环境...", "running");
             const initialized = await initializePyodide();
             if (!initialized) {
@@ -2575,11 +2825,50 @@ function createExecutionModal() {
                 <html>
                 <head>
                     <style>
-                        body { font-family: monospace; margin: 0; padding: 10px; white-space: pre-wrap; }
-                        .error { color: red; }
+                        body { 
+                            font-family: monospace; 
+                            margin: 0; 
+                            padding: 10px; 
+                            white-space: pre-wrap; 
+                            background-color: #f8f9fa;
+                            color: #24292e;
+                            line-height: 1.5;
+                        }
+                        .error { 
+                            color: #d32f2f; 
+                            background-color: #ffebee;
+                            padding: 5px;
+                            border-radius: 4px;
+                            margin: 5px 0;
+                        }
+                        #output {
+                            overflow-y: auto;
+                            max-height: 100%;
+                        }
+                        table {
+                            border-collapse: collapse;
+                            width: 100%;
+                            margin: 10px 0;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f2f2f2;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                            margin: 10px 0;
+                        }
                     </style>
                 </head>
-                <body id="output">正在执行Python代码，请稍候...</body>
+                <body><div id="output">正在执行Python代码，请稍候...</div></body>
                 </html>
             `;
 
@@ -2588,17 +2877,123 @@ function createExecutionModal() {
                 sandbox.onload = resolve;
             });
 
-            // 执行代码前重置输出
+            // iframe的output元素
             const outputElement = sandbox.contentDocument.getElementById('output');
             outputElement.textContent = '';
+            
+            // 设置全局output元素引用，以便handleStdout和handleStderr函数使用
+            window.pyodideOutputElement = outputElement;
+            
+            // 添加显示帮助函数
+            await pyodide.runPythonAsync(`
+                import sys
+                import io
+                import base64
+                from js import document, pyodideOutputElement
 
+                # 显示图表和数据帮助函数
+                def show_matplotlib_figure(fig=None, clear=True):
+                    """显示matplotlib图表"""
+                    import matplotlib.pyplot as plt
+                    from js import pyodideOutputElement
+                    
+                    # 如果没有传入图表，使用当前图表
+                    if fig is None:
+                        fig = plt.gcf()
+                        
+                    # 转为base64
+                    buf = io.BytesIO()
+                    fig.savefig(buf, format='png')
+                    buf.seek(0)
+                    img_str = base64.b64encode(buf.read()).decode('utf-8')
+                    
+                    # 添加到输出
+                    img_tag = f'<img src="data:image/png;base64,{img_str}" />'
+                    if hasattr(pyodideOutputElement, 'innerHTML'):
+                        pyodideOutputElement.innerHTML += img_tag
+                    
+                    # 清除当前图表
+                    if clear:
+                        plt.clf()
+                    
+                def show_dataframe(df, max_rows=20):
+                    """显示Pandas DataFrame为HTML表格"""
+                    from js import pyodideOutputElement
+                    
+                    # 转为HTML
+                    html = df.head(max_rows).to_html()
+                    
+                    # 添加更多行信息
+                    if len(df) > max_rows:
+                        html += f"<p>只显示前{max_rows}行，总共{len(df)}行</p>"
+                    
+                    # 添加到输出
+                    if hasattr(pyodideOutputElement, 'innerHTML'):
+                        pyodideOutputElement.innerHTML += html
+                
+                # 添加到全局命名空间
+                globals()['show_plot'] = show_matplotlib_figure
+                globals()['show_df'] = show_dataframe
+                
+                # 修改Pandas的显示行为
+                try:
+                    import pandas as pd
+                    pd.set_option('display.max_rows', 20)
+                    
+                    # 添加表格输出方法
+                    original_repr_html = pd.DataFrame._repr_html_
+                    def enhanced_repr_html(self):
+                        # 限制输出行数
+                        if len(self) <= 20:
+                            return original_repr_html(self)
+                        else:
+                            return self.head(20)._repr_html_() + f"<p>只显示前20行，总共{len(self)}行</p>"
+                        
+                    # 使用猴子补丁替换方法
+                    pd.DataFrame._repr_html_ = enhanced_repr_html
+                except:
+                    pass
+            `);
+            
             // 设置超时
             const timeoutPromise = new Promise((_, reject) => {
                 setTimeout(() => reject(new Error("执行超时")), 30000);
             });
 
-            // 执行Python代码
-            const executionPromise = pyodide.runPythonAsync(code).then(result => {
+            // 在代码前添加辅助代码 - 用于自动显示matplotlib图表
+            const enhancedCode = `
+    # 捕获输出的帮助函数
+    def _run_user_code():
+        # 自动显示matplotlib图表
+        try:
+            import matplotlib.pyplot as plt
+            original_show = plt.show
+            def auto_show(*args, **kwargs):
+                show_plot(plt.gcf())
+                return original_show(*args, **kwargs)
+            plt.show = auto_show
+        except:
+            pass
+            
+        # 用户代码开始执行
+        ${code}
+        # 用户代码执行结束
+        
+        # 检查是否有未显示的图表
+        try:
+            import matplotlib.pyplot as plt
+            if plt.get_fignums():  # 如果有打开的图表
+                # 显示但不清除，避免重复显示
+                show_plot(plt.gcf(), clear=False)
+        except:
+            pass
+
+    # 执行用户代码
+    _run_user_code()
+    `;
+
+            // 直接执行用户代码
+            const executionPromise = pyodide.runPythonAsync(enhancedCode).then(result => {
                 if (result !== undefined) {
                     const resultStr = String(result);
                     if (resultStr) {
@@ -2618,13 +3013,26 @@ function createExecutionModal() {
             
             const outputElement = sandbox.contentDocument.getElementById('output');
             if (outputElement) {
-                outputElement.innerHTML += `<div class="error">执行错误: ${error.message || error}</div>`;
+                let errorMessage = error.message || String(error);
+                
+                // 格式化Python错误
+                if (errorMessage.includes('Traceback')) {
+                    // 保持原始格式，但添加颜色
+                    errorMessage = errorMessage.replace(/\n/g, '<br>').replace(/\s{2,}/g, match => '&nbsp;'.repeat(match.length));
+                }
+                
+                outputElement.innerHTML += `<div class="error">执行错误: ${errorMessage}</div>`;
             }
             
-            updateStatus(statusBar, `执行出错: ${error.message || error}`, "error");
+            updateStatus(statusBar, `执行出错`, "error");
             return false;
         } finally {
             isPythonRunning = false;
+            // 确保输入容器被隐藏
+            const inputContainer = document.getElementById('input-container');
+            if (inputContainer) {
+                inputContainer.style.display = 'none';
+            }
         }
     }
 
@@ -2666,12 +3074,43 @@ function createExecutionModal() {
     function updateStatus(element, message, type) {
         element.textContent = message;
         element.className = type ? `status-${type}` : '';
+        
+        // 根据类型设置颜色
+        switch(type) {
+            case 'running':
+                element.style.color = '#2196F3';
+                break;
+            case 'success':
+                element.style.color = '#4CAF50';
+                break;
+            case 'error':
+                element.style.color = '#F44336';
+                break;
+            default:
+                element.style.color = '#757575';
+        }
     }
 
     // 追加状态信息
     function appendStatus(element, message, type = '') {
         const line = document.createElement('div');
         line.textContent = message;
+        
+        // 根据类型设置样式
+        switch(type) {
+            case 'running':
+                line.style.color = '#2196F3';
+                break;
+            case 'success':
+                line.style.color = '#4CAF50';
+                break;
+            case 'error':
+                line.style.color = '#F44336';
+                break;
+            default:
+                line.style.color = '#757575';
+        }
+        
         if (type) line.className = `status-${type}`;
         element.appendChild(line);
         element.scrollTop = element.scrollHeight;
@@ -2907,227 +3346,965 @@ function createExecutionModal() {
 //     });
 // }
 
+// --- 首先，确保你已经定义了 throttle 函数 ---
+// (如果脚本里还没有，请添加这个函数)
+function throttle(func, limit) {
+    let inThrottle;
+    let lastFunc;
+    let lastRan;
+    return function(...args) {
+        const context = this;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    }
+}
+// --- Make sure the 'throttle' function is defined before this ---
+/* Example throttle function:
+function throttle(func, limit) {
+    let inThrottle;
+    let lastFunc;
+    let lastRan;
+    return function(...args) {
+        const context = this;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    }
+}
+*/
+
+// --- Replace your existing handleStreamResponse function with this ---
 
 
+      // --- 完整 readStream 函数 (基于 split('\n') 版本，修正 contentReceivedInChunk 作用域) ---
 
-function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =false) {
+// --- 首先，确保你已经定义了 throttle 函数 ---
+// (如果脚本里还没有，请添加这个函数)
+// function throttle(func, limit) {
+//     let inThrottle;
+//     let lastFunc;
+//     let lastRan;
+//     return function(...args) {
+//         const context = this;
+//         if (!lastRan) {
+//             func.apply(context, args);
+//             lastRan = Date.now();
+//         } else {
+//             clearTimeout(lastFunc);
+//             lastFunc = setTimeout(function() {
+//                 if ((Date.now() - lastRan) >= limit) {
+//                     func.apply(context, args);
+//                     lastRan = Date.now();
+//                 }
+//             }, limit - (Date.now() - lastRan));
+//         }
+//     }
+// }
+
+
+// --- 替换你脚本中现有的 handleStreamResponse 函数 ---
+function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask = false) {
     return new Promise((resolve, reject) => {
-        let aiMessage = '🤖：';
-        let reasoningMessage = '';
+        let accumulatedAiText = ''; // 用于累积AI主要回复文本
+        let accumulatedReasoningText = ''; // 用于累积思考过程文本
         let isReasoningReceived = false;
-        let isReasoningFinished = false;
-        let isStopped = false; // 新增：停止标志
-        let reasoningTitleDiv; // 用于显示 "思考内容：" 的元素
+        let isStopped = false;
+        let reasoningTitleDiv = null; // 引用“思考内容”标题元素
 
-        aiMsgDiv.innerHTML = '';
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'ds-chat-message ds-ai-message';
+        const RENDER_THROTTLE_MS = 150; // 渲染节流间隔 (毫秒, 可调整)
 
+        // --- DOM 元素准备 ---
+        aiMsgDiv.innerHTML = ''; // 清空AI消息容器
+        aiMsgDiv.className = 'ds-chat-message ds-ai-message'; // 设置基础 class
+
+        // 创建思考过程内容的容器
         const reasoningDiv = document.createElement('div');
         reasoningDiv.className = 'ds-reasoning-content';
         reasoningDiv.style.display = 'none'; // 初始隐藏
-         aiMsgDiv.appendChild(reasoningDiv);
-         aiMsgDiv.appendChild(contentDiv);
+        aiMsgDiv.appendChild(reasoningDiv);
 
+        // 创建主要回复内容的容器
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'ds-message-content'; // 这个类可能控制样式和光标
+        contentDiv.style.whiteSpace = 'break-spaces'; // 保证换行符有效
+        aiMsgDiv.appendChild(contentDiv);
+
+        // --- 停止按钮 ---
         const stopButton = document.createElement('button');
         stopButton.className = 'ds-stop-button';
-           stopButton.innerHTML = `
-    <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <rect x="7" y="7" width="3" height="10" rx="1"/>
-        <rect x="14" y="7" width="3" height="10" rx="1"/>
-    </svg>
-`;
+        stopButton.innerHTML = `
+            <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect x="7" y="7" width="3" height="10" rx="1"/>
+                <rect x="14" y="7" width="3" height="10" rx="1"/>
+            </svg>
+        `;
         stopButton.title = '点击停止AI输出';
-        chatWindow.appendChild(stopButton);
+        chatWindow.appendChild(stopButton); // 添加到 chatWindow 以便定位
 
-        // 停止按钮点击事件
-        stopButton.addEventListener('click', () => {
+        const stopHandler = () => {
+            if (isStopped) return;
             isStopped = true;
-            startButton.style.display = 'flex';
+            console.log("停止按钮被点击");
             stopButton.remove();
-            aiMsgDiv.innerHTML = 'AI输出中止！！！'; // 清空容器
-            config.chatHistory.push({ role: 'system', content: 'user中断了对话输出....'});
-                        //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+            if (reader) {
+                try {
+                    // 尝试取消流读取 (如果API支持)
+                    reader.cancel('用户停止');
+                } catch (e) { console.warn("无法取消流:", e); }
+            }
+            aiMsgDiv.innerHTML = '<span style="color:red; font-weight:bold;">AI输出已由用户中止！</span>';
+            config.chatHistory.push({ role: 'system', content: '用户中断了对话输出....'});
             GM_setValue('chatHistory', config.chatHistory);
-            resolve(); // 提前结束Promise
-        });
-                        const decoder = new TextDecoder();
-                        let buffer = '';
+            //config.fullConversation.push({role:'system', content: '用户中断输出', timestamp: new Date().toISOString()});
+            //GM_setValue('fullConversation', config.fullConversation);
+            startButton.style.display = 'flex'; // 恢复发送按钮
+            resolve(); // 解决Promise
+        };
+        stopButton.addEventListener('click', stopHandler);
 
-                        // 检查 response 是否为包含实际响应的对象
-                        if (response && response.response) {
-                            response = response.response;
+
+        // --- 核心渲染更新函数 (包含解析、高亮、按钮添加) ---
+        function updateRenderedContent() {
+            if (isStopped) return; // 如果已停止，不执行渲染
+
+            console.time("本次节流渲染");
+
+            // 1. 渲染主要内容
+            try {
+                console.time("marked.parse (AI)");
+                // 解析累积的文本
+                const html = marked.parse(accumulatedAiText);
+                console.timeEnd("marked.parse (AI)");
+
+                console.time("innerHTML (AI)");
+                contentDiv.innerHTML = html; // 更新DOM
+                console.timeEnd("innerHTML (AI)");
+
+                console.time("highlight.js (AI)");
+                // **关键优化：只高亮新增的或未高亮的**
+                contentDiv.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+                     try {
+                        hljs.highlightElement(block);
+                     } catch (highlightError) {
+                         console.error("Highlight.js错误:", highlightError, "Block:", block);
+                         // 避免因单个块高亮失败导致整个渲染中断
+                     }
+                });
+                console.timeEnd("highlight.js (AI)");
+
+                console.time("添加按钮 (AI)");
+                addCopyButtonsToCodeBlocks(contentDiv); // 添加复制按钮
+                contentDiv.querySelectorAll('pre').forEach(pre => Add_codebutton(pre)); // 添加执行按钮
+                console.timeEnd("添加按钮 (AI)");
+
+            } catch (e) {
+                console.error("渲染AI主要内容时出错:", e);
+                contentDiv.innerHTML = "<p style='color:red'>渲染出错</p>"; // 显示错误
+            }
+
+            // 2. 渲染思考过程 (如果收到过)
+            if (isReasoningReceived) {
+                 try {
+                    console.time("marked.parse (Reasoning)");
+                    const reasoningHtml = marked.parse(accumulatedReasoningText);
+                    console.timeEnd("marked.parse (Reasoning)");
+
+                    console.time("innerHTML (Reasoning)");
+                    reasoningDiv.innerHTML = reasoningHtml;
+                    reasoningDiv.style.display = 'block'; // 确保显示
+                    console.timeEnd("innerHTML (Reasoning)");
+
+                    console.time("highlight.js (Reasoning)");
+                    // **关键优化：只高亮新增的或未高亮的**
+                    reasoningDiv.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+                        try {
+                            hljs.highlightElement(block);
+                        } catch (highlightError) {
+                            console.error("Highlight.js错误 (Reasoning):", highlightError, "Block:", block);
                         }
+                    });
+                    console.timeEnd("highlight.js (Reasoning)");
 
-                        // 检查响应状态
-                        if (!response || !response.ok) {
-                            const status = response ? response.status : 'undefined';
-                            const statusText = response ? response.statusText : 'undefined';
-                            console.error('响应状态错误:', status, statusText);
-                            reject(new Error(`响应状态错误: ${status} ${statusText}`));
-                            return;
-                        }
+                    console.time("添加按钮 (Reasoning)");
+                    addCopyButtonsToCodeBlocks(reasoningDiv);
+                    reasoningDiv.querySelectorAll('pre').forEach(pre => Add_codebutton(pre));
+                    console.timeEnd("添加按钮 (Reasoning)");
 
-                        const reader = response.body ?.getReader();
-                        if (!reader) {
-                            console.error('无法获取响应流的读取器');
-                            reject(new Error('无法获取响应流的读取器'));
-                            return;
-                        }
+                 } catch (e) {
+                     console.error("渲染思考过程时出错:", e);
+                     reasoningDiv.innerHTML = "<p style='color:red'>渲染出错</p>";
+                 }
+            }
 
-                        function readStream() {
-                        if (isStopped) return; // 如果已停止，不再继续读取
-                            reader.read().then(({ done, value }) => {
-                                if (done) {
-                                    console.log('流读取完成');
-                        stopButton.remove(); // 完成后移除停止按钮
-                        // 计算并显示token数量
-                    const aiTokens = countTokens(aiMessage.slice(3)+reasoningMessage);
-                    console.log("AI输入的思考token数量:" ,countTokens(reasoningMessage));
-                    const tokenInfo = document.createElement('div');
-                    tokenInfo.className = 'ds-token-info';
-                    tokenInfo.innerHTML = `<small>AIinput:${aiTokens} tokens</small>`;
-                    aiMsgDiv.appendChild(tokenInfo);
-                    
-                    // 更新累计token统计
-                    updateConversationTokenCount();
+            // 3. 智能滚动
+            const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 150; // 阈值可以调整
+            if (isNearBottom) {
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
 
+            console.timeEnd("本次节流渲染");
+        }
+
+        // --- 创建节流版的渲染函数 ---
+        const throttledUpdateRenderedContent = throttle(updateRenderedContent, RENDER_THROTTLE_MS);
+
+
+        // --- 读取流 ---
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let reader; // 在try-catch外部声明
+
+        try {
+            // 检查 response 是否为包含实际响应的对象
+            if (response && response.response && typeof response.response.body?.getReader === 'function') {
+                response = response.response;
+            } else if (!response || typeof response.body?.getReader !== 'function') {
+                 throw new Error('无效的响应对象或无法获取响应流的读取器');
+            }
+
+            // 检查响应状态
+            if (!response.ok) {
+                throw new Error(`响应状态错误: ${response.status} ${response.statusText}`);
+            }
+
+            reader = response.body.getReader();
+
+        } catch (error) {
+            console.error("处理响应或获取Reader时出错:", error);
+            stopButton.remove();
+            startButton.style.display = 'flex';
+            aiMsgDiv.innerHTML = `<span style="color:red; font-weight:bold;">处理响应失败: ${error.message}</span>`;
+            // 移除思考中提示
+            if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+                 thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+            }
+            reject(error);
+            return; // 提前退出
+        }
+
+
+        function readStream() {
+            if (isStopped) {
+                 console.log("readStream: 已停止，退出读取循环。");
+                 return;
+            }
+
+            reader.read().then(({ done, value }) => {
+                if (isStopped) { // 再次检查，因为 read() 是异步的
+                     console.log("readStream.then: 已停止，丢弃数据块。");
+                     return;
+                }
+
+                if (done) {
+                    console.log('流读取完成');
+                    stopButton.remove(); // 完成后移除停止按钮
+                    startButton.style.display = 'flex'; // 恢复发送按钮
+
+                    // --- 最后一次强制渲染，确保所有内容都显示 ---
+                    updateRenderedContent(); // 直接调用，不等节流
+
+                    // --- 后续处理 (Token计算, 历史记录等) ---
+                    try {
+                        const aiTokens = countTokens(accumulatedAiText + accumulatedReasoningText);
+                        const tokenInfo = document.createElement('div');
+                        tokenInfo.className = 'ds-token-info';
+                        tokenInfo.innerHTML = `<small>AI Response: ${aiTokens} tokens</small>`;
+                        aiMsgDiv.appendChild(tokenInfo);
+                        updateConversationTokenCount(); // 更新总计
 
                         const aiResponse = {
-                        role: 'assistant',
-                        content: aiMessage.slice(3), // 去掉"🤖："
-                        timestamp: new Date().toISOString(),
-                        hasReasoning: isReasoningReceived,
-                        reasoningContent: isReasoningReceived ? reasoningMessage : null
-                    };
-                    config.fullConversation.push(aiResponse);
-                        GM_setValue('fullConversation', config.fullConversation);
-                                    if (!isSummaryTask && aiMessage.trim()) {
-                        config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
-                        //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
-                        GM_setValue('chatHistory', config.chatHistory);
-                            //console.log(config.fullConversation);
-                      // GM_setValue('fullConversation',config.fullConversation);
-                    }
-                    // 如果是总结任务，只添加简化的用户消息
-                    else if (isSummaryTask) {
-                        //config.chatHistory.push({ role: 'user', content: '正在总结当前网页...' });
-                        config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
-                        //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
-                        GM_setValue('chatHistory', config.chatHistory);
-                       // GM_setValue('fullConversation',config.fullConversation);
-                    }
-                   // addCopyButtonsToCodeBlocks(aiMsgDiv);
-                    //Add_codebutton();
-                    if (isReasoningReceived) {
-                        if (!reasoningTitleDiv) {
-                            reasoningTitleDiv = document.createElement('div');
-                            reasoningTitleDiv.className = 'ds-reasoning-title';
-                            reasoningTitleDiv.innerText = '思考内容：';
-                            aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
-                        }
-                        if (thinkingMsgDiv.parentNode) {
-                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-                        }
-                    } else {
-                        // 若未接收到思考内容，移除提示
-                        if (thinkingMsgDiv.parentNode) {
-                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-                            reasoningTitleDiv = document.createElement('div');
-                            reasoningTitleDiv.className = 'ds-reasoning-title';
-                            reasoningTitleDiv.innerText = '注意:该模型没有思考内容';
-                            aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+                            role: 'assistant',
+                            content: accumulatedAiText, // 使用累积的文本
+                            timestamp: new Date().toISOString(),
+                            hasReasoning: isReasoningReceived,
+                            reasoningContent: isReasoningReceived ? accumulatedReasoningText : null,
+                            tokens: aiTokens // 存储计算的token
+                        };
 
+                        // 保存完整对话
+                        config.fullConversation.push(aiResponse);
+                        GM_setValue('fullConversation', config.fullConversation);
+
+
+                        // 根据任务类型决定如何保存历史 (只存 assistant 的 content)
+                        if (!isSummaryTask && accumulatedAiText.trim()) {
+                             config.chatHistory.push({ role: 'assistant', content: accumulatedAiText });
+                             GM_setValue('chatHistory', config.chatHistory);
+                        } else if (isSummaryTask) {
+                            // 总结任务可能不需要保存到短期历史，或者保存简化版
+                             config.chatHistory.push({ role: 'assistant', content: accumulatedAiText }); // 示例
+                             GM_setValue('chatHistory', config.chatHistory);
                         }
+
+                         // 处理思考内容标题的最终状态
+                        if (isReasoningReceived) {
+                            if (!reasoningTitleDiv && reasoningDiv.parentNode) { // 确保父节点存在
+                                reasoningTitleDiv = document.createElement('div');
+                                reasoningTitleDiv.className = 'ds-reasoning-title';
+                                reasoningTitleDiv.innerText = '思考内容：';
+                                aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+                            }
+                        }
+                        // 移除"思考中..."提示
+                         if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+                             thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+                         }
+                          if (!isReasoningReceived && !document.querySelector('.ds-reasoning-title')) { // 如果没收到过思考内容，且没有标题
+                                const noReasoningTitle = document.createElement('div');
+                                noReasoningTitle.className = 'ds-reasoning-title';
+                                noReasoningTitle.innerText = '注意:该模型没有思考内容';
+                                aiMsgDiv.insertBefore(noReasoningTitle, reasoningDiv); // 放在reasoningDiv之前
+                          }
+
+
+                    } catch (finalizationError) {
+                        console.error("流结束后处理失败:", finalizationError);
                     }
-                    resolve();
+
+                    resolve(); // 正常结束
                     return;
                 }
 
+                // --- 处理接收到的数据块 ---
                 try {
                     buffer += decoder.decode(value, { stream: true });
                 } catch (decodeError) {
-                    stopButton.remove(); // 出错时也移除停止按钮
-                    startButton.style.display = 'flex';
                     console.error('解码响应流时出错:', decodeError);
-                    reject(decodeError);
-                    return;
+                    // 可以在这里决定是否停止或尝试继续
                 }
 
                 const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
+                buffer = lines.pop() || ''; // 保留下一次可能不完整的行
 
+                let contentReceived = false;
                 for (const line of lines) {
                     if (!line.trim() || line === 'data: [DONE]') continue;
                     if (line.startsWith('data: ')) {
                         try {
                             const data = JSON.parse(line.slice(6));
-                            // console.log('解析到的数据:', data); // 打印解析到的数据，方便调试
                             if (data.choices?.[0]?.delta?.content) {
-                                const newContent = data.choices[0].delta.content;
-                                aiMessage += newContent;
-                                contentDiv.innerHTML = marked.parse(aiMessage);
-                                contentDiv.querySelectorAll('pre code').forEach((block) => {
-                                    hljs.highlightElement(block);
-                                });
-                                addCopyButtonsToCodeBlocks(contentDiv);
-                                //Add_codebutton();
-                                // 示例：只在用户当前已经接近底部时自动滚动
-const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-if (isNearBottom) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
+                                accumulatedAiText += data.choices[0].delta.content;
+                                contentReceived = true;
                             }
                             if (data.choices?.[0]?.delta?.reasoning_content) {
-                                //console.log(data.choices?.[0]?.delta?.reasoning_content);
-                                const newReasoningContent = data.choices[0].delta.reasoning_content;
-                                reasoningMessage += newReasoningContent;
-                                reasoningDiv.innerHTML = marked.parse(reasoningMessage);
-                                reasoningDiv.querySelectorAll('pre code').forEach((block) => {
-                                    hljs.highlightElement(block);
-                                });
-                                addCopyButtonsToCodeBlocks(reasoningDiv);
-                               // Add_codebutton();
-                                 reasoningDiv.style.display = 'block'; // 就是缺少这一句！
-                                // 示例：只在用户当前已经接近底部时自动滚动
-const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-if (isNearBottom) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
-                                isReasoningReceived = true;
-                                isReasoningFinished = false;
-                                thinkingMsgDiv.className = 'ds-reasoning-title';
-                                thinkingMsgDiv.innerText = '思考中......';
-                            } else {
-                                if (isReasoningReceived && !isReasoningFinished) {
-                                    reasoningTitleDiv = document.createElement('div');
-                                    reasoningTitleDiv.className = 'ds-reasoning-title';
-                                    reasoningTitleDiv.innerText = '思考内容：';
-                                    aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
-                                    if (thinkingMsgDiv.parentNode) {
-                                        thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-                                    }
-                                    isReasoningFinished = true;
+                                accumulatedReasoningText += data.choices[0].delta.reasoning_content;
+                                if (!isReasoningReceived) {
+                                    isReasoningReceived = true;
+                                    // 可以在这里首次显示 "思考中..." 或更新状态
+                                    if (thinkingMsgDiv) thinkingMsgDiv.innerText = '思考中...';
                                 }
+                                contentReceived = true;
                             }
                         } catch (parseError) {
-                           stopButton.remove(); // 出错时也移除停止按钮
                             console.warn('解析响应数据失败:', parseError, '行内容:', line);
                         }
                     }
                 }
 
+                // 如果收到了新内容，调用节流的渲染函数
+                if (contentReceived) {
+                    throttledUpdateRenderedContent();
+                }
+
+                // 继续读取下一块
                 readStream();
+
             }).catch(error => {
-                stopButton.remove(); // 出错时也移除停止按钮
-                console.error('读取流时出错:', error);
-                reject(error);
+                // 处理读取错误
+                if (!isStopped) { // 只有在非用户主动停止时才报告错误
+                     console.error('读取流时出错:', error);
+                     stopButton.remove();
+                     startButton.style.display = 'flex';
+                     aiMsgDiv.innerHTML += `<br><span style="color:red; font-weight:bold;">读取流时出错: ${error.message}</span>`;
+                     // 移除思考中提示
+                     if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+                          thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+                     }
+                     reject(error);
+                } else {
+                    console.log("流读取因用户停止而出错，已处理。");
+                    resolve(); // 用户停止导致的错误也算解决
+                }
             });
         }
 
+        // 启动流读取
         readStream();
+
     });
 }
+// --- End of handleStreamResponse function ---
+
+// // --- 替换你脚本中现有的 handleStreamResponse 函数 ---
+// function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask = false) {
+//     return new Promise((resolve, reject) => {
+//         let accumulatedAiText = ''; // 用于累积AI主要回复文本
+//         let accumulatedReasoningText = ''; // 用于累积思考过程文本
+//         let isReasoningReceived = false;
+//         let isStopped = false;
+//         let reasoningTitleDiv = null; // 引用“思考内容”标题元素
+
+//         const RENDER_THROTTLE_MS = 150; // 渲染节流间隔 (毫秒, 可调整)
+
+//         // --- DOM 元素准备 ---
+//         aiMsgDiv.innerHTML = ''; // 清空AI消息容器
+//         aiMsgDiv.className = 'ds-chat-message ds-ai-message'; // 设置基础 class
+
+//         // 创建思考过程内容的容器
+//         const reasoningDiv = document.createElement('div');
+//         reasoningDiv.className = 'ds-reasoning-content';
+//         reasoningDiv.style.display = 'none'; // 初始隐藏
+//         aiMsgDiv.appendChild(reasoningDiv);
+
+//         // 创建主要回复内容的容器
+//         const contentDiv = document.createElement('div');
+//         contentDiv.className = 'ds-message-content'; // 这个类可能控制样式和光标
+//         contentDiv.style.whiteSpace = 'break-spaces'; // 保证换行符有效
+//         aiMsgDiv.appendChild(contentDiv);
+
+//         // --- 停止按钮 ---
+//         const stopButton = document.createElement('button');
+//         stopButton.className = 'ds-stop-button';
+//         stopButton.innerHTML = `
+//             <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+//                 <rect x="7" y="7" width="3" height="10" rx="1"/>
+//                 <rect x="14" y="7" width="3" height="10" rx="1"/>
+//             </svg>
+//         `;
+//         stopButton.title = '点击停止AI输出';
+//         chatWindow.appendChild(stopButton); // 添加到 chatWindow 以便定位
+
+//         const stopHandler = () => {
+//             if (isStopped) return;
+//             isStopped = true;
+//             console.log("停止按钮被点击");
+//             stopButton.remove();
+//             if (reader) {
+//                 try {
+//                     // 尝试取消流读取 (如果API支持)
+//                     reader.cancel('用户停止');
+//                 } catch (e) { console.warn("无法取消流:", e); }
+//             }
+//             aiMsgDiv.innerHTML = '<span style="color:red; font-weight:bold;">AI输出已由用户中止！</span>';
+//             config.chatHistory.push({ role: 'system', content: '用户中断了对话输出....'});
+//             GM_setValue('chatHistory', config.chatHistory);
+//             //config.fullConversation.push({role:'system', content: '用户中断输出', timestamp: new Date().toISOString()});
+//             //GM_setValue('fullConversation', config.fullConversation);
+//             startButton.style.display = 'flex'; // 恢复发送按钮
+//             resolve(); // 解决Promise
+//         };
+//         stopButton.addEventListener('click', stopHandler);
+
+
+//         // --- 核心渲染更新函数 (包含解析、高亮、按钮添加) ---
+//         function updateRenderedContent() {
+//             if (isStopped) return; // 如果已停止，不执行渲染
+
+//             console.time("本次节流渲染");
+
+//             // 1. 渲染主要内容
+//             try {
+//                 console.time("marked.parse (AI)");
+//                 // 解析累积的文本
+//                 const html = marked.parse(accumulatedAiText);
+//                 console.timeEnd("marked.parse (AI)");
+
+//                 console.time("innerHTML (AI)");
+//                 contentDiv.innerHTML = html; // 更新DOM
+//                 console.timeEnd("innerHTML (AI)");
+
+//                 console.time("highlight.js (AI)");
+//                 // **关键优化：只高亮新增的或未高亮的**
+//                 contentDiv.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+//                      try {
+//                         hljs.highlightElement(block);
+//                      } catch (highlightError) {
+//                          console.error("Highlight.js错误:", highlightError, "Block:", block);
+//                          // 避免因单个块高亮失败导致整个渲染中断
+//                      }
+//                 });
+//                 console.timeEnd("highlight.js (AI)");
+
+//                 console.time("添加按钮 (AI)");
+//                 addCopyButtonsToCodeBlocks(contentDiv); // 添加复制按钮
+//                 contentDiv.querySelectorAll('pre').forEach(pre => Add_codebutton(pre)); // 添加执行按钮
+//                 console.timeEnd("添加按钮 (AI)");
+
+//             } catch (e) {
+//                 console.error("渲染AI主要内容时出错:", e);
+//                 contentDiv.innerHTML = "<p style='color:red'>渲染出错</p>"; // 显示错误
+//             }
+
+//             // 2. 渲染思考过程 (如果收到过)
+//             if (isReasoningReceived) {
+//                  try {
+//                     console.time("marked.parse (Reasoning)");
+//                     const reasoningHtml = marked.parse(accumulatedReasoningText);
+//                     console.timeEnd("marked.parse (Reasoning)");
+
+//                     console.time("innerHTML (Reasoning)");
+//                     reasoningDiv.innerHTML = reasoningHtml;
+//                     reasoningDiv.style.display = 'block'; // 确保显示
+//                     console.timeEnd("innerHTML (Reasoning)");
+
+//                     console.time("highlight.js (Reasoning)");
+//                     // **关键优化：只高亮新增的或未高亮的**
+//                     reasoningDiv.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+//                         try {
+//                             hljs.highlightElement(block);
+//                         } catch (highlightError) {
+//                             console.error("Highlight.js错误 (Reasoning):", highlightError, "Block:", block);
+//                         }
+//                     });
+//                     console.timeEnd("highlight.js (Reasoning)");
+
+//                     console.time("添加按钮 (Reasoning)");
+//                     addCopyButtonsToCodeBlocks(reasoningDiv);
+//                     reasoningDiv.querySelectorAll('pre').forEach(pre => Add_codebutton(pre));
+//                     console.timeEnd("添加按钮 (Reasoning)");
+
+//                  } catch (e) {
+//                      console.error("渲染思考过程时出错:", e);
+//                      reasoningDiv.innerHTML = "<p style='color:red'>渲染出错</p>";
+//                  }
+//             }
+
+//             // 3. 智能滚动
+//             const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 150; // 阈值可以调整
+//             if (isNearBottom) {
+//                 chatContent.scrollTop = chatContent.scrollHeight;
+//             }
+
+//             console.timeEnd("本次节流渲染");
+//         }
+
+//         // --- 创建节流版的渲染函数 ---
+//         const throttledUpdateRenderedContent = throttle(updateRenderedContent, RENDER_THROTTLE_MS);
+
+
+//         // --- 读取流 ---
+//         const decoder = new TextDecoder();
+//         let buffer = '';
+//         let reader; // 在try-catch外部声明
+
+//         try {
+//             // 检查 response 是否为包含实际响应的对象
+//             if (response && response.response && typeof response.response.body?.getReader === 'function') {
+//                 response = response.response;
+//             } else if (!response || typeof response.body?.getReader !== 'function') {
+//                  throw new Error('无效的响应对象或无法获取响应流的读取器');
+//             }
+
+//             // 检查响应状态
+//             if (!response.ok) {
+//                 throw new Error(`响应状态错误: ${response.status} ${response.statusText}`);
+//             }
+
+//             reader = response.body.getReader();
+
+//         } catch (error) {
+//             console.error("处理响应或获取Reader时出错:", error);
+//             stopButton.remove();
+//             startButton.style.display = 'flex';
+//             aiMsgDiv.innerHTML = `<span style="color:red; font-weight:bold;">处理响应失败: ${error.message}</span>`;
+//             // 移除思考中提示
+//             if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+//                  thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//             }
+//             reject(error);
+//             return; // 提前退出
+//         }
+
+
+//         function readStream() {
+//             if (isStopped) {
+//                  console.log("readStream: 已停止，退出读取循环。");
+//                  return;
+//             }
+
+//             reader.read().then(({ done, value }) => {
+//                 if (isStopped) { // 再次检查，因为 read() 是异步的
+//                      console.log("readStream.then: 已停止，丢弃数据块。");
+//                      return;
+//                 }
+
+//                 if (done) {
+//                     console.log('流读取完成');
+//                     stopButton.remove(); // 完成后移除停止按钮
+//                     startButton.style.display = 'flex'; // 恢复发送按钮
+
+//                     // --- 最后一次强制渲染，确保所有内容都显示 ---
+//                     updateRenderedContent(); // 直接调用，不等节流
+
+//                     // --- 后续处理 (Token计算, 历史记录等) ---
+//                     try {
+//                         const aiTokens = countTokens(accumulatedAiText + accumulatedReasoningText);
+//                         const tokenInfo = document.createElement('div');
+//                         tokenInfo.className = 'ds-token-info';
+//                         tokenInfo.innerHTML = `<small>AI Response: ${aiTokens} tokens</small>`;
+//                         aiMsgDiv.appendChild(tokenInfo);
+//                         updateConversationTokenCount(); // 更新总计
+
+//                         const aiResponse = {
+//                             role: 'assistant',
+//                             content: accumulatedAiText, // 使用累积的文本
+//                             timestamp: new Date().toISOString(),
+//                             hasReasoning: isReasoningReceived,
+//                             reasoningContent: isReasoningReceived ? accumulatedReasoningText : null,
+//                             tokens: aiTokens // 存储计算的token
+//                         };
+
+//                         // 保存完整对话
+//                         config.fullConversation.push(aiResponse);
+//                         GM_setValue('fullConversation', config.fullConversation);
+
+
+//                         // 根据任务类型决定如何保存历史 (只存 assistant 的 content)
+//                         if (!isSummaryTask && accumulatedAiText.trim()) {
+//                              config.chatHistory.push({ role: 'assistant', content: accumulatedAiText });
+//                              GM_setValue('chatHistory', config.chatHistory);
+//                         } else if (isSummaryTask) {
+//                             // 总结任务可能不需要保存到短期历史，或者保存简化版
+//                              config.chatHistory.push({ role: 'assistant', content: '网页总结已生成。' }); // 示例
+//                              GM_setValue('chatHistory', config.chatHistory);
+//                         }
+
+//                          // 处理思考内容标题的最终状态
+//                         if (isReasoningReceived) {
+//                             if (!reasoningTitleDiv && reasoningDiv.parentNode) { // 确保父节点存在
+//                                 reasoningTitleDiv = document.createElement('div');
+//                                 reasoningTitleDiv.className = 'ds-reasoning-title';
+//                                 reasoningTitleDiv.innerText = '思考内容：';
+//                                 aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+//                             }
+//                         }
+//                         // 移除"思考中..."提示
+//                          if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+//                              thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                          }
+//                           if (!isReasoningReceived && !document.querySelector('.ds-reasoning-title')) { // 如果没收到过思考内容，且没有标题
+//                                 const noReasoningTitle = document.createElement('div');
+//                                 noReasoningTitle.className = 'ds-reasoning-title';
+//                                 noReasoningTitle.innerText = '注意:该模型没有思考内容';
+//                                 aiMsgDiv.insertBefore(noReasoningTitle, reasoningDiv); // 放在reasoningDiv之前
+//                           }
+
+
+//                     } catch (finalizationError) {
+//                         console.error("流结束后处理失败:", finalizationError);
+//                     }
+
+//                     resolve(); // 正常结束
+//                     return;
+//                 }
+
+//                 // --- 处理接收到的数据块 ---
+//                 try {
+//                     buffer += decoder.decode(value, { stream: true });
+//                 } catch (decodeError) {
+//                     console.error('解码响应流时出错:', decodeError);
+//                     // 可以在这里决定是否停止或尝试继续
+//                 }
+
+//                 const lines = buffer.split('\n');
+//                 buffer = lines.pop() || ''; // 保留下一次可能不完整的行
+
+//                 let contentReceived = false;
+//                 for (const line of lines) {
+//                     if (!line.trim() || line === 'data: [DONE]') continue;
+//                     if (line.startsWith('data: ')) {
+//                         try {
+//                             const data = JSON.parse(line.slice(6));
+//                             if (data.choices?.[0]?.delta?.content) {
+//                                 accumulatedAiText += data.choices[0].delta.content;
+//                                 contentReceived = true;
+//                             }
+//                             if (data.choices?.[0]?.delta?.reasoning_content) {
+//                                 accumulatedReasoningText += data.choices[0].delta.reasoning_content;
+//                                 if (!isReasoningReceived) {
+//                                     isReasoningReceived = true;
+//                                     // 可以在这里首次显示 "思考中..." 或更新状态
+//                                     if (thinkingMsgDiv) thinkingMsgDiv.innerText = '思考中...';
+//                                 }
+//                                 contentReceived = true;
+//                             }
+//                         } catch (parseError) {
+//                             console.warn('解析响应数据失败:', parseError, '行内容:', line);
+//                         }
+//                     }
+//                 }
+
+//                 // 如果收到了新内容，调用节流的渲染函数
+//                 if (contentReceived) {
+//                     throttledUpdateRenderedContent();
+//                 }
+
+//                 // 继续读取下一块
+//                 readStream();
+
+//             }).catch(error => {
+//                 // 处理读取错误
+//                 if (!isStopped) { // 只有在非用户主动停止时才报告错误
+//                      console.error('读取流时出错:', error);
+//                      stopButton.remove();
+//                      startButton.style.display = 'flex';
+//                      aiMsgDiv.innerHTML += `<br><span style="color:red; font-weight:bold;">读取流时出错: ${error.message}</span>`;
+//                      // 移除思考中提示
+//                      if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+//                           thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                      }
+//                      reject(error);
+//                 } else {
+//                     console.log("流读取因用户停止而出错，已处理。");
+//                     resolve(); // 用户停止导致的错误也算解决
+//                 }
+//             });
+//         }
+
+//         // 启动流读取
+//         readStream();
+
+//     });
+// }
+
+
+// function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =false) {
+//     return new Promise((resolve, reject) => {
+//         let aiMessage = '🤖：';
+//         let reasoningMessage = '';
+//         let isReasoningReceived = false;
+//         let isReasoningFinished = false;
+//         let isStopped = false; // 新增：停止标志
+//         let reasoningTitleDiv; // 用于显示 "思考内容：" 的元素
+
+//         aiMsgDiv.innerHTML = '';
+//         const contentDiv = document.createElement('div');
+//         contentDiv.className = 'ds-chat-message ds-ai-message';
+
+//         const reasoningDiv = document.createElement('div');
+//         reasoningDiv.className = 'ds-reasoning-content';
+//         reasoningDiv.style.display = 'none'; // 初始隐藏
+//          aiMsgDiv.appendChild(reasoningDiv);
+//          aiMsgDiv.appendChild(contentDiv);
+
+//         const stopButton = document.createElement('button');
+//         stopButton.className = 'ds-stop-button';
+//            stopButton.innerHTML = `
+//     <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+//         <rect x="7" y="7" width="3" height="10" rx="1"/>
+//         <rect x="14" y="7" width="3" height="10" rx="1"/>
+//     </svg>
+// `;
+//         stopButton.title = '点击停止AI输出';
+//         chatWindow.appendChild(stopButton);
+
+//         // 停止按钮点击事件
+//         stopButton.addEventListener('click', () => {
+//             isStopped = true;
+//             startButton.style.display = 'flex';
+//             stopButton.remove();
+//             aiMsgDiv.innerHTML = 'AI输出中止！！！'; // 清空容器
+//             config.chatHistory.push({ role: 'system', content: 'user中断了对话输出....'});
+//                         //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+//             GM_setValue('chatHistory', config.chatHistory);
+//             resolve(); // 提前结束Promise
+//         });
+//                         const decoder = new TextDecoder();
+//                         let buffer = '';
+
+//                         // 检查 response 是否为包含实际响应的对象
+//                         if (response && response.response) {
+//                             response = response.response;
+//                         }
+
+//                         // 检查响应状态
+//                         if (!response || !response.ok) {
+//                             const status = response ? response.status : 'undefined';
+//                             const statusText = response ? response.statusText : 'undefined';
+//                             console.error('响应状态错误:', status, statusText);
+//                             reject(new Error(`响应状态错误: ${status} ${statusText}`));
+//                             return;
+//                         }
+
+//                         const reader = response.body ?.getReader();
+//                         if (!reader) {
+//                             console.error('无法获取响应流的读取器');
+//                             reject(new Error('无法获取响应流的读取器'));
+//                             return;
+//                         }
+
+//                         function readStream() {
+//                         if (isStopped) return; // 如果已停止，不再继续读取
+//                             reader.read().then(({ done, value }) => {
+//                                 if (done) {
+//                                     console.log('流读取完成');
+//                         stopButton.remove(); // 完成后移除停止按钮
+//                         // 计算并显示token数量
+//                     const aiTokens = countTokens(aiMessage.slice(3)+reasoningMessage);
+//                     console.log("AI输入的思考token数量:" ,countTokens(reasoningMessage));
+//                     const tokenInfo = document.createElement('div');
+//                     tokenInfo.className = 'ds-token-info';
+//                     tokenInfo.innerHTML = `<small>AIinput:${aiTokens} tokens</small>`;
+//                     aiMsgDiv.appendChild(tokenInfo);
+                    
+//                     // 更新累计token统计
+//                     updateConversationTokenCount();
+
+
+//                         const aiResponse = {
+//                         role: 'assistant',
+//                         content: aiMessage.slice(3), // 去掉"🤖："
+//                         timestamp: new Date().toISOString(),
+//                         hasReasoning: isReasoningReceived,
+//                         reasoningContent: isReasoningReceived ? reasoningMessage : null
+//                     };
+//                     config.fullConversation.push(aiResponse);
+//                         GM_setValue('fullConversation', config.fullConversation);
+//                                     if (!isSummaryTask && aiMessage.trim()) {
+//                         config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
+//                         //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+//                         GM_setValue('chatHistory', config.chatHistory);
+//                             //console.log(config.fullConversation);
+//                       // GM_setValue('fullConversation',config.fullConversation);
+//                     }
+//                     // 如果是总结任务，只添加简化的用户消息
+//                     else if (isSummaryTask) {
+//                         //config.chatHistory.push({ role: 'user', content: '正在总结当前网页...' });
+//                         config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
+//                         //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+//                         GM_setValue('chatHistory', config.chatHistory);
+//                        // GM_setValue('fullConversation',config.fullConversation);
+//                     }
+//                    // addCopyButtonsToCodeBlocks(aiMsgDiv);
+//                     //Add_codebutton();
+//                     if (isReasoningReceived) {
+//                         if (!reasoningTitleDiv) {
+//                             reasoningTitleDiv = document.createElement('div');
+//                             reasoningTitleDiv.className = 'ds-reasoning-title';
+//                             reasoningTitleDiv.innerText = '思考内容：';
+//                             aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+//                         }
+//                         if (thinkingMsgDiv.parentNode) {
+//                             thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                         }
+//                     } else {
+//                         // 若未接收到思考内容，移除提示
+//                         if (thinkingMsgDiv.parentNode) {
+//                             thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                             reasoningTitleDiv = document.createElement('div');
+//                             reasoningTitleDiv.className = 'ds-reasoning-title';
+//                             reasoningTitleDiv.innerText = '注意:该模型没有思考内容';
+//                             aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+
+//                         }
+//                     }
+//                     resolve();
+//                     return;
+//                 }
+
+//                 try {
+//                     buffer += decoder.decode(value, { stream: true });
+//                 } catch (decodeError) {
+//                     stopButton.remove(); // 出错时也移除停止按钮
+//                     startButton.style.display = 'flex';
+//                     console.error('解码响应流时出错:', decodeError);
+//                     reject(decodeError);
+//                     return;
+//                 }
+
+//                 const lines = buffer.split('\n');
+//                 buffer = lines.pop() || '';
+
+//                 for (const line of lines) {
+//                     if (!line.trim() || line === 'data: [DONE]') continue;
+//                     if (line.startsWith('data: ')) {
+//                         try {
+//                             const data = JSON.parse(line.slice(6));
+//                             // console.log('解析到的数据:', data); // 打印解析到的数据，方便调试
+//                             if (data.choices?.[0]?.delta?.content) {
+//                                 const newContent = data.choices[0].delta.content;
+//                                 aiMessage += newContent;
+//                                 contentDiv.innerHTML = marked.parse(aiMessage);
+//                                 contentDiv.querySelectorAll('pre code').forEach((block) => {
+//                                     hljs.highlightElement(block);
+//                                 });
+//                                 addCopyButtonsToCodeBlocks(contentDiv);
+//                                 //Add_codebutton();
+//                                 // 示例：只在用户当前已经接近底部时自动滚动
+// const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+// if (isNearBottom) {
+//     chatContent.scrollTop = chatContent.scrollHeight;
+// }
+//                             }
+//                             if (data.choices?.[0]?.delta?.reasoning_content) {
+//                                 //console.log(data.choices?.[0]?.delta?.reasoning_content);
+//                                 const newReasoningContent = data.choices[0].delta.reasoning_content;
+//                                 reasoningMessage += newReasoningContent;
+//                                 reasoningDiv.innerHTML = marked.parse(reasoningMessage);
+//                                 reasoningDiv.querySelectorAll('pre code').forEach((block) => {
+//                                     hljs.highlightElement(block);
+//                                 });
+//                                 addCopyButtonsToCodeBlocks(reasoningDiv);
+//                                // Add_codebutton();
+//                                  reasoningDiv.style.display = 'block'; // 就是缺少这一句！
+//                                 // 示例：只在用户当前已经接近底部时自动滚动
+// const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+// if (isNearBottom) {
+//     chatContent.scrollTop = chatContent.scrollHeight;
+// }
+//                                 isReasoningReceived = true;
+//                                 isReasoningFinished = false;
+//                                 thinkingMsgDiv.className = 'ds-reasoning-title';
+//                                 thinkingMsgDiv.innerText = '思考中......';
+//                             } else {
+//                                 if (isReasoningReceived && !isReasoningFinished) {
+//                                     reasoningTitleDiv = document.createElement('div');
+//                                     reasoningTitleDiv.className = 'ds-reasoning-title';
+//                                     reasoningTitleDiv.innerText = '思考内容：';
+//                                     aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+//                                     if (thinkingMsgDiv.parentNode) {
+//                                         thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                                     }
+//                                     isReasoningFinished = true;
+//                                 }
+//                             }
+//                         } catch (parseError) {
+//                            stopButton.remove(); // 出错时也移除停止按钮
+//                             console.warn('解析响应数据失败:', parseError, '行内容:', line);
+//                         }
+//                     }
+//                 }
+
+//                 readStream();
+//             }).catch(error => {
+//                 stopButton.remove(); // 出错时也移除停止按钮
+//                 console.error('读取流时出错:', error);
+//                 reject(error);
+//             });
+//         }
+
+//         readStream();
+//     });
+// }
 
 
 
@@ -3477,6 +4654,74 @@ if (isNearBottom) {
 //         hljs.highlightElement(pre.querySelector('code'));
 //     });
 // }
+
+
+
+    // function addCopyButtonsToCodeBlocks(container) {
+    //     // 遍历所有 pre 元素（不仅仅是已高亮的）
+    //     container.querySelectorAll('pre').forEach(pre => {
+    //         // 强制添加 hljs 类确保样式应用
+    //         if (!pre.classList.contains('hljs')) {
+    //             pre.classList.add('hljs');
+    //         }
+
+    //         // 如果不存在代码元素则自动创建
+    //         if (!pre.querySelector('code')) {
+    //             const code = document.createElement('code');
+    //             code.textContent = pre.textContent;
+    //             pre.innerHTML = '';
+    //             pre.appendChild(code);
+    //         }
+
+    //         // 移除已存在的复制按钮
+    //         const existingButton = pre.querySelector('.copy-code-btn');
+    //         if (existingButton) {
+    //             existingButton.remove();
+    //         }
+
+    //         // 创建新的复制按钮
+    //         const btnContainer = document.createElement('div');
+    //         btnContainer.className = 'code-buttons-container';
+    //         btnContainer.style.position = 'relative';
+                   
+    //         const copyButton = document.createElement('button');
+    //         copyButton.className = 'copy-code-btn';
+    //         copyButton.textContent = '复制';
+
+    //         // 绑定复制事件（带重试机制）
+    //         copyButton.addEventListener('click', () => {
+    //             const code = pre.querySelector('code').textContent;
+    //             navigator.clipboard.writeText(code).then(() => {
+    //                 // 显示成功提示
+    //                 const successMessage = document.createElement('div');
+    //                 successMessage.className = 'copy-success';
+    //                 successMessage.textContent = '复制成功';
+    //                 pre.appendChild(successMessage);
+
+    //                 // 2秒后淡出移除
+    //                 setTimeout(() => {
+    //                     successMessage.style.opacity = '0';
+    //                     setTimeout(() => {
+    //                         pre.removeChild(successMessage);
+    //                     }, 500);
+    //                 }, 1500);
+    //             }).catch(err => {
+    //                 console.error('复制失败: ', err);
+    //                 // 可选：添加错误提示
+    //             });
+    //         });
+
+    //         // 添加按钮到代码块
+    //         pre.parentNode.insertBefore(btnContainer, pre);
+    //         btnContainer.appendChild(copyButton);
+    //         Add_codebutton(pre);
+
+
+
+    //         // 强制重新高亮代码（解决时序问题）
+    //         hljs.highlightElement(pre.querySelector('code'));
+    //     });
+    // }
     function addCopyButtonsToCodeBlocks(container) {
         // 遍历所有 pre 元素（不仅仅是已高亮的）
         container.querySelectorAll('pre').forEach(pre => {
@@ -3543,7 +4788,146 @@ if (isNearBottom) {
         });
     }
 
-
+    // function addCopyButtonsToCodeBlocks(container) {
+    //     // 确保 container 是有效的 DOM 元素
+    //     if (!container || typeof container.querySelectorAll !== 'function') {
+    //         console.warn("addCopyButtonsToCodeBlocks: 无效的容器元素", container);
+    //         return;
+    //     }
+    
+    //     container.querySelectorAll('pre').forEach(pre => {
+    //         // 检查是否已处理过 (通过 data-buttons-added 属性)
+    //         if (pre.hasAttribute('data-buttons-added')) {
+    //             // 如果已添加，也许只需要检查并重新高亮（如果 hljs 类丢失）
+    //              let codeElement = pre.querySelector('code');
+    //              if (codeElement && !codeElement.classList.contains('hljs')) {
+    //                  try {
+    //                     hljs.highlightElement(codeElement);
+    //                  } catch(e) { console.error("重新高亮错误 (已标记)", e); }
+    //              }
+    //             return; // 跳过已处理的 <pre>
+    //         }
+    
+    //         // --- 确保基础结构正确 ---
+    //         // 强制添加 hljs 类到 <pre> (如果需要，但通常加到 <code> 上)
+    //         // if (!pre.classList.contains('hljs')) {
+    //         //     pre.classList.add('hljs');
+    //         // }
+    
+    //         // 确保 <code> 元素存在
+    //         let codeElement = pre.querySelector('code');
+    //         if (!codeElement) {
+    //             codeElement = document.createElement('code');
+    //             codeElement.textContent = pre.textContent; // 从 <pre> 获取代码文本
+    //             pre.innerHTML = ''; // 清空 <pre>
+    //             pre.appendChild(codeElement);
+    //         }
+    //          // 给 code 元素添加 hljs 类 (标准做法)
+    //         if (!codeElement.classList.contains('hljs')) {
+    //            // 尝试根据 pre 的 class 推断语言，例如 class="language-python"
+    //            const langMatch = pre.className.match(/language-(\S+)/);
+    //            const lang = langMatch ? langMatch[1] : null;
+    //            if (lang && hljs.getLanguage(lang)) {
+    //                codeElement.classList.add('language-' + lang);
+    //            }
+    //            codeElement.classList.add('hljs'); // 添加基础 hljs 类
+    //         }
+    
+    
+    //         // --- 创建按钮容器 (只创建一个) ---
+    //         const btnContainer = document.createElement('div');
+    //         btnContainer.className = 'code-buttons-container';
+    //         // 在 CSS 中定义 .code-buttons-container 的样式，例如：
+    //         // position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 1;
+    
+    //         let buttonsAdded = false; // 标记是否添加了任何按钮
+    
+    //         // 1. 创建并添加复制按钮
+    //         try {
+    //             const copyButton = document.createElement('button');
+    //             copyButton.className = 'copy-code-btn'; // 使用你 CSS 中定义的类名
+    //             copyButton.textContent = '复制';
+    //             copyButton.addEventListener('click', (e) => {
+    //                 e.stopPropagation(); // 阻止事件冒泡
+    //                 const codeToCopy = codeElement.textContent;
+    //                 navigator.clipboard.writeText(codeToCopy).then(() => {
+    //                     const successMessage = document.createElement('div');
+    //                     successMessage.className = 'copy-success'; // 使用你 CSS 中定义的类名
+    //                     successMessage.textContent = '复制成功';
+    //                     successMessage.style.position = 'absolute'; // 简单定位示例
+    //                     successMessage.style.top = '0';
+    //                     successMessage.style.right = '50px'; // 示例位置
+    //                     btnContainer.appendChild(successMessage); // 添加到按钮容器
+    //                     setTimeout(() => {
+    //                         if (successMessage.parentNode) {
+    //                            successMessage.remove();
+    //                         }
+    //                     }, 2000);
+    //                 }).catch(err => {
+    //                     console.error('复制失败:', err);
+    //                     // 可以考虑添加一个错误提示
+    //                 });
+    //             });
+    //             btnContainer.appendChild(copyButton);
+    //             buttonsAdded = true;
+    //         } catch (e) {
+    //              console.error("创建复制按钮时出错:", e);
+    //         }
+    
+    
+    //         // 2. 创建并添加运行按钮 (如果适用)
+    //         try {
+    //             const codeType = detectCodeType(codeElement.textContent);
+    //             if (codeType === 'python' || codeType === 'html') {
+    //                 const runBtn = document.createElement('button');
+    //                 runBtn.className = 'code-execute-btn'; // 使用你 CSS 中定义的类名
+    //                 runBtn.textContent = '运行';
+    //                 runBtn.onclick = function(e) {
+    //                     e.stopPropagation(); // 阻止事件冒泡
+    //                     executeCode(codeElement.textContent, codeType);
+    //                 };
+    //                 btnContainer.appendChild(runBtn); // 添加到【同一个】容器
+    //                 buttonsAdded = true;
+    //             }
+    //         } catch (e) {
+    //              console.error("创建运行按钮时出错:", e);
+    //         }
+    
+    
+    //         // --- 插入按钮容器 (仅当有按钮被添加时) ---
+    //         if (buttonsAdded) {
+    //             // 插入前再次检查容器是否【已经存在】(双重保险)
+    //             // 这里的检查依赖于你的 HTML 结构，如果按钮容器应该在 pre 之前，就这样检查
+    //             // 如果按钮容器应该在 pre 内部的顶部/底部，你需要修改检查和插入逻辑
+    //             if (!pre.previousElementSibling || !pre.previousElementSibling.classList.contains('code-buttons-container')) {
+    //                  if (pre.parentNode) {
+    //                      pre.parentNode.insertBefore(btnContainer, pre); // 示例：插入到 pre 之前
+    //                      // 【标记】pre 元素，表示按钮已处理
+    //                      pre.setAttribute('data-buttons-added', 'true');
+    //                  } else {
+    //                      console.warn("<pre> 元素没有父节点，无法插入按钮容器。");
+    //                  }
+    //             } else {
+    //                  console.warn("按钮容器已存在于 <pre> 之前，跳过插入。");
+    //                  // 即使跳过插入，也标记为已处理
+    //                  pre.setAttribute('data-buttons-added', 'true');
+    //             }
+    //         } else {
+    //              // 如果没有按钮被添加（例如，代码类型不支持运行，且复制按钮创建失败）
+    //              // 仍然标记为已处理，避免下次重复检查
+    //              pre.setAttribute('data-buttons-added', 'true');
+    //         }
+    
+    //         // --- 执行高亮 (放在最后，在DOM结构稳定后) ---
+    //         try {
+    //             // 只在尚未高亮时执行
+    //             // if (!codeElement.classList.contains('hljs')) { // hljs 内部可能已经添加了
+    //                  hljs.highlightElement(codeElement); // 尝试高亮
+    //             // }
+    //         } catch (e) { console.error("高亮错误:", e); }
+    //     });
+    // }
+    
 // 添加总结网页按钮点击事件
 summarizeBtn.addEventListener('click', async () => {
     if (!config.apiKey) {
@@ -3986,5 +5370,136 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 2000); // 延迟2秒初始化
 });
+
+// 显示Python示例代码
+function showPythonExamples() {
+    // 创建示例弹窗
+    const examplesModal = document.createElement('div');
+    examplesModal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 1010;
+        max-width: 80%;
+        max-height: 80%;
+        overflow-y: auto;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    `;
+    
+    examplesModal.innerHTML = `
+        <span style="position: absolute; right: 15px; top: 15px; cursor: pointer; font-size: 20px;">&times;</span>
+        <h3 style="margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Python 代码示例</h3>
+        
+        <div style="margin-bottom: 20px;">
+            <p><strong>示例1: 基础数据操作</strong></p>
+            <div style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; margin-bottom: 10px;">
+# 列表和循环操作
+numbers = [1, 2, 3, 4, 5]
+squares = [n**2 for n in numbers]
+print(f"原始数字: {numbers}")
+print(f"平方结果: {squares}")
+
+# 字典操作
+student = {"name": "张三", "age": 20, "scores": [85, 90, 92]}
+print(f"学生信息: {student}")
+print(f"学生姓名: {student['name']}")
+
+# 循环计算
+total = 0
+for i in range(1, 11):
+    total += i
+    print(f"添加 {i}, 当前和为 {total}")
+            </div>
+            <button id="run-example1" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">运行此示例</button>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <p><strong>示例2: 数据可视化</strong></p>
+            <div style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; margin-bottom: 10px;">
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 生成数据
+x = np.linspace(0, 10, 100)
+y1 = np.sin(x)
+y2 = np.cos(x)
+
+# 创建图表
+plt.figure(figsize=(10, 6))
+plt.plot(x, y1, 'b-', label='sin(x)')
+plt.plot(x, y2, 'r--', label='cos(x)')
+plt.xlabel('X 轴')
+plt.ylabel('Y 轴')
+plt.title('正弦和余弦曲线')
+plt.legend()
+plt.grid(True)
+
+# 显示图表
+plt.show()
+            </div>
+            <button id="run-example2" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">运行此示例</button>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <p><strong>示例3: 数据分析</strong></p>
+            <div style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; margin-bottom: 10px;">
+import pandas as pd
+import numpy as np
+
+# 创建示例数据
+data = {
+    'name': ['张三', '李四', '王五', '赵六', '钱七'],
+    'age': [22, 35, 28, 41, 30],
+    'salary': [5000, 8000, 6500, 9000, 7200],
+    'department': ['技术', '销售', '技术', '市场', '销售']
+}
+
+# 创建DataFrame
+df = pd.DataFrame(data)
+print("原始数据:")
+show_df(df)  # 使用自定义函数显示为HTML表格
+
+# 按部门分组计算平均工资
+dept_avg = df.groupby('department').agg({
+    'salary': ['mean', 'min', 'max'],
+    'age': 'mean'
+})
+print("\\n按部门统计:")
+show_df(dept_avg)
+            </div>
+            <button id="run-example3" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">运行此示例</button>
+        </div>
+    `;
+    
+    document.body.appendChild(examplesModal);
+    
+    // 关闭按钮事件
+    examplesModal.querySelector('span').addEventListener('click', () => {
+        examplesModal.remove();
+    });
+    
+    // 示例运行事件
+    document.getElementById('run-example1').addEventListener('click', () => {
+        const code = document.getElementById('run-example1').previousElementSibling.textContent;
+        examplesModal.remove();
+        executeCode(code, 'python');
+    });
+    
+    document.getElementById('run-example2').addEventListener('click', () => {
+        const code = document.getElementById('run-example2').previousElementSibling.textContent;
+        examplesModal.remove();
+        executeCode(code, 'python');
+    });
+    
+    document.getElementById('run-example3').addEventListener('click', () => {
+        const code = document.getElementById('run-example3').previousElementSibling.textContent;
+        examplesModal.remove();
+        executeCode(code, 'python');
+    });
+}
 
 
