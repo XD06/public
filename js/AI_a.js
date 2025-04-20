@@ -103,6 +103,47 @@ function GM_xmlhttpRequest(options) {
             0% { transform: scale(1); }
             100% { transform: scale(1.15); }
         }
+        
+        /* 修复按钮图像样式问题 */
+        .ds-stop-img, .ds-start-img {
+            width: 20px !important;
+            height: 20px !important;
+            max-width: none !important;
+            display: inline-block !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: none !important;
+            box-shadow: none !important;
+            object-fit: contain !important;
+            position: static !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            overflow: visible !important; /* Override website's overflow: clip */
+            overflow-clip-margin: 0 !important; /* Override website's overflow-clip-margin */
+        }
+
+        /* 直接针对网站全局样式的覆盖 */
+        .ds-stop-button img, .ds-start-button img {
+            overflow: visible !important;
+            overflow-clip-margin: 0 !important;
+            width: 20px !important;
+            height: 20px !important;
+            display: inline !important;
+        }
+
+        /* 确保按钮本身有正确的样式 */
+        .ds-stop-button, .ds-start-button {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            border: none !important;
+            background-size: auto !important;
+            min-width: auto !important;
+            min-height: auto !important;
+        }
+
 .ds-context-toggle {
     display: flex;
     justify-content: space-between;
@@ -235,13 +276,14 @@ function GM_xmlhttpRequest(options) {
         }
      .ds-chat-close {
     cursor: pointer;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s, color 0.2s;
     color: #666;
+    margin-bottom: 2px;
 }
 
 .ds-chat-close:hover {
@@ -258,7 +300,7 @@ function GM_xmlhttpRequest(options) {
             cursor: pointer;
             font-size: 20px;
             margin-right: 10px;
-            margin-bottom: 6px;
+            margin-bottom: 0px;
         }
         .ds-chat-fullscreen:hover {
     transform: scale(1.1);
@@ -271,10 +313,23 @@ function GM_xmlhttpRequest(options) {
             background-color: var(--secondary-color); /* 修改背景颜色 */
             border-bottom: 1px solid #ddd;
         }
-        .ds-chat-message {
+        // .ds-chat-message {
+        //     margin-bottom: 10px;
+        //     background-color: #FFFFFF;
+        //     padding: 5px 1px;
+        //     border-radius: 10px;
+        //     line-height: 1.2;
+        //     word-wrap: break-word;
+        //     font-size: 14px; /* 减小用户消息字体大小 */
+        //     color: rgb(0,0,0); /* 修改字体颜色 */
+        //     margin-left: 8px;
+        //     margin-right: 3px;
+        //     text-align: left;
+        // }
+         .ds-chat-message {
             margin-bottom: 10px;
             background-color: #FFFFFF;
-            padding: 5px 1px;
+            padding: 5px 5px;
             border-radius: 10px;
             line-height: 1.2;
             word-wrap: break-word;
@@ -283,6 +338,8 @@ function GM_xmlhttpRequest(options) {
             margin-left: 5px;
             margin-right: 5px;
             text-align: left;
+              font-weight: 500;
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
         .ds-user-message {
             background-color: #FFFFFF;
@@ -297,16 +354,25 @@ function GM_xmlhttpRequest(options) {
             display: block;
         }
 
-        .ds-ai-message {
+        // .ds-ai-message {
+        //     background-color: #FFFFFF;
+        //     line-height: 1.2; /* 调整行高 */
+        //     color: rgb(0,0,0); /* 修改字体颜色 */
+        //     padding: 15px 5px;
+        //     text-align: left;
+        //    // margin-right:auto;
+        //     //width: fit-content;
+        //     border-radius: 15px;
+
+        // }
+            
+           .ds-ai-message {
             background-color: #FFFFFF;
             line-height: 1.2; /* 调整行高 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            padding: 15px 5px;
+            padding: 5px 20px;
             text-align: left;
-           // margin-right:auto;
-            //width: fit-content;
-            border-radius: 15px;
-
+             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
         .ds-chat-input-area {
             padding: 10px;
@@ -430,7 +496,7 @@ function GM_xmlhttpRequest(options) {
         /* 复制成功提示样式 */
         .copy-success {
             position: absolute !important;
-            top: 20px !important;
+            top: 3px !important;
             right: 60px !important;
             background-color: #28a745 !important;
             color: white !important;
@@ -446,7 +512,7 @@ function GM_xmlhttpRequest(options) {
             100% { opacity: 0 !important; visibility: hidden !important; }
         }
         .ds-thinking {
-            color: #e87be4;
+            color:rgb(117, 109, 117);
             font-style: oblique;
             font-size: 13px; /* 字体大小比父元素小 10% */
         }
@@ -591,7 +657,7 @@ function GM_xmlhttpRequest(options) {
     width: 20px; /* 圆形直径 */
     height: 20px;
     border-radius: 50%; /* 圆形 */
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.9)!important;
     border: none;
     cursor: pointer;
     z-index: 2147483645;
@@ -599,7 +665,7 @@ function GM_xmlhttpRequest(options) {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ff4444;
+    color:rgb(19, 19, 19);
     transition: all 0.2s;
     overflow: hidden; /* 隐藏内部动画溢出部分 */
 }
@@ -607,10 +673,10 @@ function GM_xmlhttpRequest(options) {
     position: absolute;
     right: 20px;
     bottom: 65px;
-    width: 20px; /* 圆形直径 */
-    height: 20px;
+    width: 18px; /* 圆形直径 */
+    height: 18px;
     border-radius: 50%; /* 圆形 */
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.9)!important;
     border: none;
     cursor: pointer;
     z-index: 214748364;
@@ -639,7 +705,7 @@ function GM_xmlhttpRequest(options) {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     box-sizing: border-box;
-    box-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+    box-shadow: 0 0 8px rgba(14, 13, 13, 0.6);
 }
 
 /* 停止图标样式 */
@@ -674,7 +740,7 @@ function GM_xmlhttpRequest(options) {
 /* 点击后停止动画的样式 */
 .ds-stop-button.stopped::before {
     animation: none;
-    border: 2px solid #ff4444;
+    border: 2px solidrgb(16, 16, 16);
 }
 
 .ds-stop-button.stopped .ds-stop-icon svg {
@@ -719,7 +785,7 @@ function GM_xmlhttpRequest(options) {
         background-color: #171818e8;
         color: white;
         display: flex;
-        align-items: end;
+        align-items: center;
         border-bottom: 1px solid #dee2e6;
     }
 
@@ -806,7 +872,7 @@ function GM_xmlhttpRequest(options) {
 
 .copy-code-btn {
     position: absolute;
-    top: 5px;
+    top: 15px;
     right: 8px;
     background-color: #555;
     color: white;
@@ -824,7 +890,7 @@ function GM_xmlhttpRequest(options) {
     position: absolute;
     bottom: 15px;
     right: 8px;
-    background-color: #4CAF50;
+    background-color: #4CAF50!important;
     color: white;
     border: none;
     border-radius: 4px;
@@ -841,7 +907,84 @@ pre {
     padding-bottom: 30px !important;
     //display: ruby-base-container;
 }
-    `;
+
+/* Token counter样式 */
+.ds-token-counter {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.ds-token-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.ds-user-tokens, .ds-ai-tokens {
+    margin-right: 10px;
+}
+
+.ds-total-tokens {
+    font-weight: bold;
+}
+
+.ds-input-token-counter {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+    margin-top: 2px;
+    padding-right: 8px;
+}
+
+.ds-token-info {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+    margin-top: 4px;
+    padding-right: 8px;
+    border-top: 1px dotted #ddd;
+    padding-top: 4px;
+}
+
+/* 修复AI消息显示格式 */
+.ds-ai-message .ds-message-content {
+    white-space: break-spaces !important;
+    line-height: 1.5 !important;
+    display: block !important;
+}
+
+.ds-ai-message .ds-message-content p {
+    margin: 0.5em 0 !important;
+}
+
+.ds-ai-message .ds-message-content pre {
+    margin: 0.75em 0 !important;
+}
+
+.ds-ai-message .ds-message-content ul,
+.ds-ai-message .ds-message-content ol {
+    margin: 0.5em 0 !important;
+    padding-left: 1.5em !important;
+}
+
+/* 确保列表项正确显示 */
+.ds-ai-message .ds-message-content ul li {
+    list-style-type: disc !important;
+    margin: 0.25em 0 !important;
+}
+
+.ds-ai-message .ds-message-content ol li {
+    list-style-type: decimal !important;
+    margin: 0.25em 0 !important;
+}
+
+`;
 
     // 异步加载代码高亮样式
     GM_getResourceText('https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css')
@@ -879,12 +1022,56 @@ let pyodideInstance = null;
             console.log("正在加载Pyodide核心...", "info");
 
             try {
-                // 初始化Pyodide
-                pyodide = await loadPyodide({
-                    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/",
-                    stdout: handleStdout,
-                    stderr: handleStderr
-                });
+                // 检查是否已经有loadPyodide函数
+                if (typeof loadPyodide !== 'function') {
+                    console.log("Pyodide未加载，尝试动态加载脚本");
+                    // 动态加载Pyodide脚本
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js";
+                        script.onload = resolve;
+                        script.onerror = () => reject(new Error("无法加载Pyodide脚本"));
+                        document.head.appendChild(script);
+                    });
+                    
+                    // 确保loadPyodide函数可用
+                    if (typeof loadPyodide !== 'function') {
+                        throw new Error("Pyodide脚本加载成功但loadPyodide函数不可用");
+                    }
+                }
+                
+                // 使用备用CDN
+                const cdnUrls = [
+                    "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/",
+                    "https://cdn.staticfile.org/pyodide/0.26.0/full/",
+                    "https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.26.0/full/"
+                ];
+                
+                let pyodideLoaded = false;
+                let lastError = null;
+                
+                // 尝试从不同CDN加载
+                for (const cdnUrl of cdnUrls) {
+                    if (pyodideLoaded) break;
+                    
+                    try {
+                        console.log(`尝试从 ${cdnUrl} 加载Pyodide...`);
+                        pyodide = await loadPyodide({
+                            indexURL: cdnUrl,
+                            stdout: handleStdout,
+                            stderr: handleStderr
+                        });
+                        pyodideLoaded = true;
+                        console.log(`成功从 ${cdnUrl} 加载Pyodide核心`);
+                    } catch (e) {
+                        console.error(`从 ${cdnUrl} 加载失败:`, e);
+                        lastError = e;
+                    }
+                }
+                
+                if (!pyodideLoaded) {
+                    throw lastError || new Error("所有CDN源加载失败");
+                }
 
                 console.log("正在加载基础包...", "info");
 
@@ -896,21 +1083,29 @@ let pyodideInstance = null;
 
                 console.log("Pyodide已就绪!", "success");
                 pyodideInstance = true;
-
+                return true;
             } catch (e) {
                 console.log(`初始化失败: ${e}`, "error");
                 console.error("Pyodide初始化错误:", e);
                 pyodideInstance = false;
+                return false;
             }
         }
 
         // 加载常用包
         async function loadCommonPackages() {
             try {
+                // 增加超时检测
+                const timeout = setTimeout(() => {
+                    console.log("加载包超时，可能是网络问题");
+                }, 30000); // 30秒超时
+                
                 await pyodide.loadPackage(["numpy", "micropip"]);
+                clearTimeout(timeout);
                 console.log("基础包加载完成", "success");
             } catch (e) {
                 console.log(`基础包加载失败: ${e}`, "error");
+                // 即使基础包加载失败，也不要中断整个流程
             }
         }
 
@@ -1038,8 +1233,8 @@ function detectCodeType(code) {
         return 'python';
     }
 
-    // 默认认为是Python
-    return 'html';
+    
+    return 'none';
 }
 
     // 动态加载依赖库
@@ -1067,7 +1262,7 @@ function detectCodeType(code) {
         langPrefix: 'hljs language-',
         pedantic: false,
         gfm: true,
-        breaks: false,
+        breaks: true,
         sanitize: true,
         smartLists: true,
         smartypants: false
@@ -1105,7 +1300,7 @@ function detectCodeType(code) {
                 // 鼠标按下事件
                 icon.addEventListener('mousedown', (e) => {
                     isDragging = true;
-                    hasMoved = false; // <<<--- 每次按下鼠标时，重置移动标志
+                    hasMoved = false; // 每次按下鼠标时，重置移动标志
                     startX = e.clientX;
                     startY = e.clientY;
                     const styles = window.getComputedStyle(icon);
@@ -1114,17 +1309,29 @@ function detectCodeType(code) {
                     e.preventDefault(); // 阻止默认的拖动行为（如图片拖拽）和文本选择
                 });
 
+                // 触摸开始事件 - 新增触摸支持
+                icon.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        isDragging = true;
+                        hasMoved = false; // 每次触摸开始时，重置移动标志
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                        const styles = window.getComputedStyle(icon);
+                        initialRight = parseFloat(styles.right) || 0;
+                        initialBottom = parseFloat(styles.bottom) || 0;
+                        e.preventDefault(); // 阻止默认的滚动和缩放行为
+                    }
+                });
+
                 // 鼠标移动事件
                 document.addEventListener('mousemove', (e) => {
-                    
-
                     if (isDragging) {
                         const deltaX = e.clientX - startX;
                         const deltaY = e.clientY - startY;
 
                         // 设置一个小的阈值（例如3像素），只有超过这个距离才算移动
                         if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-                            hasMoved = true; // <<<--- 一旦移动超过阈值，就标记为已移动
+                            hasMoved = true; // 一旦移动超过阈值，就标记为已移动
                         }
 
                         // 如果确实移动了，才更新图标位置
@@ -1141,15 +1348,52 @@ function detectCodeType(code) {
                     }
                 });
 
+                // 触摸移动事件 - 新增触摸支持
+                document.addEventListener('touchmove', (e) => {
+                    if (isDragging && e.touches.length === 1) {
+                        const deltaX = e.touches[0].clientX - startX;
+                        const deltaY = e.touches[0].clientY - startY;
+
+                        // 设置一个小的阈值（例如3像素），只有超过这个距离才算移动
+                        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+                            hasMoved = true; // 一旦移动超过阈值，就标记为已移动
+                        }
+
+                        // 如果确实移动了，才更新图标位置
+                        if (hasMoved) {
+                            const newRight = initialRight - deltaX;
+                            const newBottom = initialBottom - deltaY;
+                            const maxRight = window.innerWidth - icon.offsetWidth;
+                            const maxBottom = window.innerHeight - icon.offsetHeight;
+                            const clampedRight = Math.max(0, Math.min(newRight, maxRight));
+                            const clampedBottom = Math.max(0, Math.min(newBottom, maxBottom));
+                            icon.style.right = `${clampedRight}px`;
+                            icon.style.bottom = `${clampedBottom}px`;
+                        }
+                        e.preventDefault(); // 防止页面在拖动时滚动
+                    }
+                });
+
                 // 鼠标松开事件
                 document.addEventListener('mouseup', () => {
-                    
                     if (isDragging) {
                         isDragging = false;
-			const styles = window.getComputedStyle(icon);
-			GM_setValue('iconRight', parseFloat(styles.right));
-			GM_setValue('iconBottom', parseFloat(styles.bottom));
                         // 注意：hasMoved 的状态在这里保持不变，它记录了 mousedown 和 mouseup 之间是否发生过移动
+                    }
+                });
+
+                // 触摸结束事件 - 新增触摸支持
+                document.addEventListener('touchend', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        // 注意：hasMoved 的状态在这里保持不变
+                    }
+                });
+
+                // 触摸取消事件 - 新增触摸支持
+                document.addEventListener('touchcancel', () => {
+                    if (isDragging) {
+                        isDragging = false;
                     }
                 });
 
@@ -1219,7 +1463,7 @@ function detectCodeType(code) {
         
                 const fullscreenBtn = document.createElement('div');
                 fullscreenBtn.className = 'ds-chat-fullscreen';
-                fullscreenBtn.innerHTML = '🗖';
+                fullscreenBtn.innerHTML = '⛶';
                 fullscreenBtn.title = '全屏'; // 添加提示
                 headerButtons.appendChild(fullscreenBtn);
         
@@ -1228,7 +1472,7 @@ function detectCodeType(code) {
         const closeBtn = document.createElement('div');
         closeBtn.className = 'ds-chat-close';
         closeBtn.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
         `;
@@ -1248,7 +1492,12 @@ function detectCodeType(code) {
                 const startButton = document.createElement('button');//发送消息
                 startButton.className = 'ds-start-button';
                 startButton.title = '发送';
-                startButton.innerHTML = `<img class= "ds-start-img" style="width: 16px !important;height:16px !important; max-width: none !important" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA3UlEQVR4nO3WMWpCQRRG4Q9MYxkhha4ikMI9CJbpFFK5CKtsIWV6K9tsIKIpXIEoaJlCsLOzMAgvYCEhT525jT9MOZwzlzszl1sC84UZuqjkBG+wL9Y8p8D0CPy7VujhLiV4cAKcReD1D3BSgc4/wEkEmiXAVxWonQG+WOABwwvAZwk8Y30FaGmBKhp4QrvYcOjwt6IKEyyxi+qBCup4RAsv6B8JjrHA9oTAKAr8WabU7/hIWeo2viOa65D74oRZr1PoAxL6ZHZyA8O/xUFuYPjos4ka9sZR4+0tUuQHPT4UVVhjZqUAAAAASUVORK5CYII=" alt="sent">`;
+                // 使用SVG代替图片，避免网站CSS影响
+                startButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="black" style="min-width: 16px; min-height: 16px;">
+                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+                    </svg>
+                `;
                 inputArea.appendChild(startButton);
         
         // 修改 contextToggle 部分
@@ -1325,34 +1574,22 @@ function detectCodeType(code) {
                 // ... 已有代码 ...
         
         
-         function displayHistory() {
-                chatContent.innerHTML = '';
-                config.chatHistory.forEach(msg => {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = `ds-chat-hmessage ds-${msg.role}-hmessage`;
-                    const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
-                    msgDiv.innerHTML = marked.parse(contentWithLabel);
-        
-                    // 确保历史记录中的代码块被高亮处理
-                    msgDiv.querySelectorAll('pre code').forEach((block) => {
-                        hljs.highlightElement(block);
-                        // 为代码块添加运行按钮
-                        //addExecuteButton(block.parentNode);
-                    });
-        
-                    addCopyButtonsToCodeBlocks(msgDiv);
-                    chatContent.appendChild(msgDiv);
-                });
-        
-                const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 200;
-                if (isNearBottom) {
-                    chatContent.scrollTop = chatContent.scrollHeight;
-                }
-            }
+    function displayHistory() {
+        chatContent.innerHTML = '';
+        config.chatHistory.forEach(msg => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `ds-chat-hmessage ds-${msg.role}-hmessage`;
+            // 根据角色添加对应标识
+            const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
+            msgDiv.innerHTML = marked.parse(contentWithLabel);
+            addCopyButtonsToCodeBlocks(msgDiv);
+            chatContent.appendChild(msgDiv);
+        });
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
         // ... 已有代码 ...
                 displayHistory();
         //颜色变化适配
-        
         
         
         
@@ -1554,7 +1791,7 @@ function detectCodeType(code) {
         
         // 鼠标移出窗口事件
         document.addEventListener('mouseleave', () => {
-            if (isDraggingWindow) {
+            if (isDraggingWindow) { // 只有在拖动状态下移出窗口才需要停止拖动
                 isDraggingWindow = false;
                 chatWindow.style.userSelect = ''; // 恢复文本选择
             }
@@ -1581,11 +1818,11 @@ function detectCodeType(code) {
                 fullscreenBtn.addEventListener('click', () => {
                     chatWindow.classList.toggle('fullscreen');
                     if (chatWindow.classList.contains('fullscreen')) {
-                        fullscreenBtn.innerText = '🗖';
+                        fullscreenBtn.innerText = '⛶';
                         // 全屏时禁用拖动
                         chatHeader.style.cursor = 'default';
                     } else {
-                        fullscreenBtn.innerText = '🗖';
+                        fullscreenBtn.innerText = '⛶';
                         // 退出全屏时恢复拖动
                         chatHeader.style.cursor = 'move';
                     }
@@ -1655,12 +1892,16 @@ function detectCodeType(code) {
         });
         //点击发送消息
                startButton.addEventListener('click', () => {
+                startButton.style.display = 'none';
             const message = inputBox.value.trim();
                      if (message == "dsk") {
             if (confirm('激活成功，使用内置api')) {
               config.model = "deepseek-v3-250324";
                  config.apiKey = "ae75309e-e48e-4bb5-8374-a73fb206d4c2";
                  config.apiUrl = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
+                 GM_setValue('apiUrl', config.apiUrl);
+                 GM_setValue('apiKey', config.apiKey);
+                 GM_setValue('model', config.model);
                  inputBox.value = '';
             }
              }
@@ -1671,6 +1912,17 @@ function detectCodeType(code) {
                    else{
                    alert("发送消息不能为空！");
                    }
+        });
+        inputBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                startButton.style.display = 'none';
+                e.preventDefault();
+                const message = inputBox.value.trim();
+                if (message) {
+                    sendMessage(message);
+                    inputBox.value = '';
+                }
+            }
         });
         //隐藏默认配置
                 // 输入框事件
@@ -2040,20 +2292,11 @@ icon.addEventListener('click', (e) => {
     }
 });
 // 代码实时执行
-function initCodeExecution() {
-    // 为现有代码块添加按钮
-    document.querySelectorAll('pre').forEach(preElement => {
-        if (!preElement.nextElementSibling?.classList?.contains('code-buttons-container')) {
-            addExecuteButton(preElement);
-        }
-    });
 
-
-
-    // 创建代码执行弹窗
-    createExecutionModal();
-}
-function Add_codebutton(){
+function Add_codebutton(pres){
+    if (!pres.nextElementSibling?.classList?.contains('code-buttons-container')) {
+        addExecuteButton(pres);
+    }
     document.querySelectorAll('pre').forEach(preElement => {
         if (!preElement.nextElementSibling?.classList?.contains('code-buttons-container')) {
             addExecuteButton(preElement);
@@ -2062,14 +2305,18 @@ function Add_codebutton(){
 }
     // 为代码块添加运行按钮
    function addExecuteButton(preElement) {
+     const code = preElement.textContent;
+    const codeType = detectCodeType(code);
+   
+    if (codeType === 'python' || codeType === 'html') {
+       // console.log(`解码为：${codeType}`);
     // 创建按钮容器
     const btnContainer = document.createElement('div');
     btnContainer.className = 'code-buttons-container';
     btnContainer.style.position = 'relative';
-    const code = preElement.textContent;
-    const codeType = detectCodeType(code);
+
     // 创建运行按钮
-    if (codeType === 'python' || codeType === 'html') {
+  
     const runBtn = document.createElement('button');
     runBtn.className = 'code-execute-btn';
     runBtn.textContent = '运行';
@@ -2103,7 +2350,7 @@ function createExecutionModal() {
         modal.innerHTML = `
             <div class="code-execution-content">
                 <div class="code-execution-header">
-                    <h3>代码执行结果<span id="code-timer-status"></span></h3>
+                    <h3 style= "color: white;">代码执行结果<span id="code-timer-status"></span></h3>
                     <span class="fullscreen-btn" onclick="toggleFullscreen()">⛶</span>
                     <span class="code-execution-close">&times;</span>
                 </div>
@@ -2172,7 +2419,7 @@ function createExecutionModal() {
 
     // 根据语言设置执行环境
     if (lang === 'python') {
-        initializePyodide();
+        //initializePyodide();
         executePythonCode(code, statusBar,sandbox);
     }else if(lang== 'html'){
         executeHtmlCode(code,statusBar,sandbox);
@@ -2192,28 +2439,78 @@ function createExecutionModal() {
 }
     // 执行Python代码
     async function executePythonCode(code, statusBar, sandbox) {
+        if (!pyodideInstance) {
+            updateStatus(statusBar, "加载Pyodide环境...", "running");
+            const initialized = await initializePyodide();
+            if (!initialized) {
+                updateStatus(statusBar, "Pyodide环境加载失败，请刷新页面重试", "error");
+                return false;
+            }
+        }
+
         if (isPythonRunning) {
-            updateStatus(statusBar, '已有代码正在执行', 'error');
-            return;
+            updateStatus(statusBar, "有Python代码正在执行，请等待或停止当前执行", "error");
+            return false;
         }
 
         isPythonRunning = true;
-        updateStatus(statusBar, '正在执行Python代码...', 'running');
-        await pyodideInstance.runPythonAsync(code);
+        updateStatus(statusBar, "正在执行Python代码...", "running");
 
         try {
-            // 初始化Pyodide（如果尚未初始化）
-            if (pyodideInstance) {
-                 statusBar.textContent = '';
+            // 清空iframe
+            sandbox.srcdoc = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: monospace; margin: 0; padding: 10px; white-space: pre-wrap; }
+                        .error { color: red; }
+                    </style>
+                </head>
+                <body id="output">正在执行Python代码，请稍候...</body>
+                </html>
+            `;
 
-            // 执行代码
-            await pyodideInstance.runPythonAsync(code);
-            updateStatus(statusBar, '✅执行完成', 'success');
+            // 等待iframe加载完成
+            await new Promise(resolve => {
+                sandbox.onload = resolve;
+            });
+
+            // 执行代码前重置输出
+            const outputElement = sandbox.contentDocument.getElementById('output');
+            outputElement.textContent = '';
+
+            // 设置超时
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error("执行超时")), 30000);
+            });
+
+            // 执行Python代码
+            const executionPromise = pyodide.runPythonAsync(code).then(result => {
+                if (result !== undefined) {
+                    const resultStr = String(result);
+                    if (resultStr) {
+                        outputElement.textContent += "\n结果: " + resultStr;
+                    }
+                }
+                return true;
+            });
+
+            // 使用Promise.race竞争超时
+            await Promise.race([executionPromise, timeoutPromise]);
+            
+            updateStatus(statusBar, "执行完成", "success");
+            return true;
+        } catch (error) {
+            console.error("Python执行错误:", error);
+            
+            const outputElement = sandbox.contentDocument.getElementById('output');
+            if (outputElement) {
+                outputElement.innerHTML += `<div class="error">执行错误: ${error.message || error}</div>`;
             }
-
-        } catch (e) {
-            appendStatus(statusBar, `❌执行错误: ${e}`, 'error');
-            console.error("Python执行错误:", e);
+            
+            updateStatus(statusBar, `执行出错: ${error.message || error}`, "error");
+            return false;
         } finally {
             isPythonRunning = false;
         }
@@ -2267,10 +2564,240 @@ function createExecutionModal() {
         element.appendChild(line);
         element.scrollTop = element.scrollHeight;
     }
-         initCodeExecution();//添加运行
 
 
          // 流式响应处理
+// function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask = false) {
+//     return new Promise((resolve, reject) => {
+//         let aiMessage = '🤖：';
+//         let reasoningMessage = '';
+//         let isReasoningReceived = false;
+//         let isReasoningFinished = false;
+//         let isStopped = false; // 新增：停止标志
+//         let reasoningTitleDiv;
+
+//         // --- DOM 元素准备 ---
+//         aiMsgDiv.innerHTML = ''; // 清空容器
+
+//         aiMsgDiv.className = 'ds-ai-message ds-chat-message'; // 设置基础 class
+
+//         const reasoningDiv = document.createElement('div'); // 用于思考过程
+//         reasoningDiv.className = 'ds-reasoning-content';
+//         reasoningDiv.style.display = 'none'; // 初始隐藏
+//         aiMsgDiv.appendChild(reasoningDiv);
+
+//         const contentDiv = document.createElement('div'); // 用于主内容
+//         contentDiv.className = 'ds-message-content';
+//         contentDiv.style.whiteSpace = 'break-spaces';
+//         aiMsgDiv.appendChild(contentDiv);
+
+//         const stopButton = document.createElement('button');
+//         stopButton.className = 'ds-stop-button';
+//         // 使用SVG代替图片，避免网站CSS影响
+//         stopButton.innerHTML = `
+//             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="black" style="min-width: 20px; min-height: 20px;">
+//                 <rect x="6" y="6" width="12" height="12" />
+//             </svg>
+//         `;
+
+//         chatWindow.appendChild(stopButton);
+
+//         // 停止按钮点击事件
+//         stopButton.addEventListener('click', () => {
+//             isStopped = true;
+
+//             stopButton.remove();
+//             aiMsgDiv.innerHTML = 'AI输出中止！！！'; // 清空容器
+//             config.chatHistory.push({ role: 'system', content: 'user中断了对话输出....' });
+//             //config.fullConversation.push({role:'system',conetnt:aiMessage.slice(3)});
+//             GM_setValue('chatHistory', config.chatHistory);
+//             startButton.style.display = 'flex';
+//             resolve(); // 提前结束Promise
+//         });
+
+//         const decoder = new TextDecoder();
+//         let buffer = '';
+
+//         // 检查 response 是否为包含实际响应的对象
+//         if (response && response.response) {
+//             response = response.response;
+//         }
+
+//         // 检查响应状态
+//         if (!response || !response.ok) {
+//             const status = response ? response.status : 'undefined';
+//             const statusText = response ? response.statusText : 'undefined';
+//             console.error('响应状态错误:', status, statusText);
+//             reject(new Error(`响应状态错误: ${status} ${statusText}`));
+//             return;
+//         }
+
+//         const reader = response.body?.getReader();
+//         if (!reader) {
+//             console.error('无法获取响应流的读取器');
+//             reject(new Error('无法获取响应流的读取器'));
+//             return;
+//         }
+
+//         console.log('handleStreamResponse: Stream reader obtained.');
+
+//         // 安全处理HTML代码块的函数
+//         function safeProcessMarkdown(text) {
+//             // 使用官方marked解析，不做额外处理
+//             return marked.parse(text);
+//         }
+
+//         function readStream() {
+//             if (isStopped) return; // 如果已停止，不再继续读取
+//             reader.read().then(({ done, value }) => {
+//                 if (done) {
+//                     console.log('流读取完成');
+//                     stopButton.remove(); // 完成后移除停止按钮
+
+//                     // 计算并显示token数量
+//                     const aiTokens = countTokens(aiMessage.slice(3));
+                    
+//                     const tokenInfo = document.createElement('div');
+//                     tokenInfo.className = 'ds-token-info';
+//                     tokenInfo.innerHTML = `<small>AIinput:${aiTokens} tokens</small>`;
+//                     aiMsgDiv.appendChild(tokenInfo);
+                    
+//                     // 更新累计token统计
+//                     updateConversationTokenCount();
+
+//                     const aiResponse = {
+//                         role: 'assistant',
+//                         content: aiMessage.slice(3), // 去掉"🤖："
+//                         timestamp: new Date().toISOString(),
+//                         hasReasoning: isReasoningReceived,
+//                         reasoningContent: isReasoningReceived ? reasoningMessage : null,
+//                         tokens: aiTokens
+//                     };
+
+//                     if (!isSummaryTask) {
+//                         // 添加到历史记录
+//                         config.chatHistory.push(aiResponse);
+//                         config.fullConversation.push(aiResponse);
+//                         GM_setValue('chatHistory', config.chatHistory);
+//                         GM_setValue('fullConversation', config.fullConversation);
+//                     }
+//                     // 如果是总结任务，只添加简化的用户消息
+//                     else if (isSummaryTask) {
+//                         config.chatHistory.push({ role: 'system', content: aiMessage.slice(3) });
+//                         GM_setValue('chatHistory', config.chatHistory);
+//                     }
+//                     addCopyButtonsToCodeBlocks(aiMsgDiv);
+//                     if (isReasoningReceived) {
+//                         if (!reasoningTitleDiv) {
+//                             reasoningTitleDiv = document.createElement('div');
+//                             reasoningTitleDiv.className = 'ds-reasoning-title';
+//                             reasoningTitleDiv.innerText = '思考内容：';
+//                             aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+//                         }
+//                         if (thinkingMsgDiv.parentNode) {
+//                             thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                         }
+//                     } else {
+//                         // 若未接收到思考内容，移除提示
+//                         if (thinkingMsgDiv.parentNode) {
+//                             thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                             reasoningTitleDiv = document.createElement('div');
+//                             reasoningTitleDiv.className = 'ds-reasoning-title';
+//                             reasoningTitleDiv.innerText = '注意:该模型没有思考内容';
+//                             aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+//                         }
+//                     }
+
+//                     startButton.style.display = 'flex';
+//                     resolve(aiResponse);
+//                     return;
+//                 }
+
+//                 try {
+//                     buffer += decoder.decode(value, { stream: true });
+//                 } catch (decodeError) {
+//                     console.error('解码响应流时出错:', decodeError);
+//                     reject(decodeError);
+//                     return;
+//                 }
+
+//                 const lines = buffer;
+//                 //buffer = lines.pop() || '';
+
+//                 for (const line of lines) {
+//                     if (!line.trim() || line === 'data: [DONE]') continue;
+//                     if (line.startsWith('data: ')) {
+//                         try {
+//                             const data = JSON.parse(line.slice(6));
+//                             //console.log('解析到的数据:', data); // 打印解析到的数据，方便调试
+//                             if (data.choices?.[0]?.delta?.content) {
+//                                 const newContent = data.choices[0].delta.content;
+//                                 aiMessage += newContent;
+//                                 // 使用安全处理后的Markdown内容
+//                                 contentDiv.innerHTML = safeProcessMarkdown(aiMessage.slice(3));
+//                                 contentDiv.querySelectorAll('pre code').forEach((block) => {
+//                                     hljs.highlightElement(block);
+//                                 });
+//                                 addCopyButtonsToCodeBlocks(contentDiv);
+//                                 // 示例：只在用户当前已经接近底部时自动滚动
+//                                 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+//                                 if (isNearBottom) {
+//                                     chatContent.scrollTop = chatContent.scrollHeight;
+//                                 }
+//                             }
+//                             if (data.choices?.[0]?.delta?.reasoning_content) {
+//                                 const newReasoningContent = data.choices[0].delta.reasoning_content;
+//                                 reasoningMessage += newReasoningContent;
+//                                 // 使用安全处理后的Markdown内容
+//                                 reasoningDiv.innerHTML = safeProcessMarkdown(reasoningMessage);
+//                                 reasoningDiv.querySelectorAll('pre code').forEach((block) => {
+//                                     hljs.highlightElement(block);
+//                                 });
+//                                 addCopyButtonsToCodeBlocks(reasoningDiv);
+//                                 reasoningDiv.style.display = 'block'; // 显示推理内容
+//                                 // 示例：只在用户当前已经接近底部时自动滚动
+//                                 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+//                                 if (isNearBottom) {
+//                                     chatContent.scrollTop = chatContent.scrollHeight;
+//                                 }
+//                                 isReasoningReceived = true;
+//                                 isReasoningFinished = false;
+//                                 thinkingMsgDiv.className = 'ds-reasoning-title';
+//                                 thinkingMsgDiv.innerText = '思考中......';
+//                             } else {
+//                                 if (isReasoningReceived && !isReasoningFinished) {
+//                                     reasoningTitleDiv = document.createElement('div');
+//                                     reasoningTitleDiv.className = 'ds-reasoning-title';
+//                                     reasoningTitleDiv.innerText = '思考内容：';
+//                                     aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+//                                     if (thinkingMsgDiv.parentNode) {
+//                                         thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+//                                     }
+//                                     isReasoningFinished = true;
+//                                 }
+//                             }
+//                         } catch (parseError) {
+//                             console.warn('解析响应数据失败:', parseError, '行内容:', line);
+//                         }
+//                     }
+//                 }
+
+//                 readStream();
+//             }).catch(error => {
+//                 stopButton.remove(); // 出错时也移除停止按钮
+//                 console.error('读取流时出错:', error);
+//                 startButton.style.display = 'flex';
+//                 reject(error);
+//             });
+//         }
+
+//         readStream();
+//     });
+// }
+
+
+
+
 function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv,isSummaryTask =false) {
     return new Promise((resolve, reject) => {
         let aiMessage = '🤖：';
@@ -2368,7 +2895,7 @@ GM_setValue('fullConversation', config.fullConversation);
                        // GM_setValue('fullConversation',config.fullConversation);
                     }
                     addCopyButtonsToCodeBlocks(aiMsgDiv);
-                    Add_codebutton();
+                    //Add_codebutton();
                     if (isReasoningReceived) {
                         if (!reasoningTitleDiv) {
                             reasoningTitleDiv = document.createElement('div');
@@ -2420,7 +2947,7 @@ GM_setValue('fullConversation', config.fullConversation);
                                     hljs.highlightElement(block);
                                 });
                                 addCopyButtonsToCodeBlocks(contentDiv);
-                                Add_codebutton();
+                                //Add_codebutton();
                                 // 示例：只在用户当前已经接近底部时自动滚动
 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
 if (isNearBottom) {
@@ -2436,7 +2963,7 @@ if (isNearBottom) {
                                     hljs.highlightElement(block);
                                 });
                                 addCopyButtonsToCodeBlocks(reasoningDiv);
-                                Add_codebutton();
+                               // Add_codebutton();
                                  reasoningDiv.style.display = 'block'; // 就是缺少这一句！
                                 // 示例：只在用户当前已经接近底部时自动滚动
 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
@@ -2478,128 +3005,179 @@ if (isNearBottom) {
     });
 }
 
-                // ... 已有代码 ...
-                // 计算消息的 token 数量（简单估算）
-                function countTokens(text) {
-                    return Math.ceil(text.length / 2);
-                }
 
-                // 检查并截断上下文
-                function truncateContext(messages, maxContextTokens) {
-                    let totalTokens = 0;
-                    for (let i = messages.length - 1; i >= 0; i--) {
-                        const messageTokens = countTokens(messages[i].content);
-                        if (totalTokens + messageTokens > maxContextTokens) {
-                            messages.splice(0, i);
-                            break;
-                        }
-                        totalTokens += messageTokens;
-                    }
-                    return messages;
-                }
 
-                // 发送消息函数
-
+// 检查并截断上下文
+function truncateContext(messages, maxContextTokens) {
+    let totalTokens = 0;
+    for (let i = messages.length - 1; i >= 0; i--) {
+        const messageTokens = countTokens(messages[i].content);
+        if (totalTokens + messageTokens > maxContextTokens) {
+            messages.splice(0, i);
+            break;
+        }
+        totalTokens += messageTokens;
+    }
+    return messages;
+}
 
 // 发送消息函数
 async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
     if (!message.trim()) return;
 
+    // 检查API密钥
     if (!config.apiKey) {
         alert('请先设置 API 密钥！');
         settingsBtn.click();
         return;
     }
 
+    // 检查网络连接
     if (!navigator.onLine) {
         const errorMsgDiv = document.createElement('div');
         errorMsgDiv.className = 'ds-chat-message ds-error';
         errorMsgDiv.innerText = '错误: 网络连接已断开,请检查网络后重试';
         chatContent.appendChild(errorMsgDiv);
-        // 示例：只在用户当前已经接近底部时自动滚动
-const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-if (isNearBottom) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
+        chatContent.scrollTop = chatContent.scrollHeight;
         return;
     }
 
-    // 对于总结任务，只添加简化的消息到历史记录
-    const userMsg = {
-        role: 'user',
-        content: isSummaryTask ? '正在总结当前网页...' : message
-    };
-config.fullConversation.push({
-        role: 'user',
-        content: message, // 这里存储原始消息，不简化
-        timestamp: new Date().toISOString()
-    });
-    GM_setValue('fullConversation', config.fullConversation);
+    // 隐藏发送按钮
+    startButton.style.display = 'none';
 
-    // 总是添加到历史记录，但内容会根据isSummaryTask变化
-    const userMsgDiv = document.createElement('div');
-    userMsgDiv.className = 'ds-chat-message ds-user-message ds-chat-message';
-    userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : message);
-    addCopyButtonsToCodeBlocks(userMsgDiv);
-    Add_codebutton();
-    chatContent.appendChild(userMsgDiv);
+    // 安全地计算用户消息token
+    let userTokens = 0;
+    try {
+        userTokens = countTokens(message);
+    } catch (e) {
+        console.error("Error counting tokens:", e);
+    }
+
+    // 创建用户消息对象
+    const userMsg = { 
+        role: 'user', 
+        content: message,
+        tokens: userTokens
+    };
+    
+    // 添加到聊天历史和状态
     config.chatHistory.push(userMsg);
     GM_setValue('chatHistory', config.chatHistory);
 
-    // 总是显示用户消息，但内容会根据isSummaryTask变化
+    // 创建用户消息元素
+    const userMsgDiv = document.createElement('div');
+    userMsgDiv.className = 'ds-chat-message ds-user-message';
+    userMsgDiv.innerHTML = marked.parse(message);
+    addCopyButtonsToCodeBlocks(userMsgDiv);
+    
+    // 安全地添加token数量显示
+    try {
+        const tokenInfo = document.createElement('div');
+        tokenInfo.className = 'ds-token-info';
+        tokenInfo.innerHTML = `<small>Userinput: ${userTokens} tokens</small>`;
+        userMsgDiv.appendChild(tokenInfo);
+    } catch (e) {
+        console.error("Error adding token info:", e);
+    }
+    
+    chatContent.appendChild(userMsgDiv);
+    chatContent.scrollTop = chatContent.scrollHeight;
 
+    // 安全地更新对话token统计
+    try {
+        updateConversationTokenCount();
+    } catch (e) {
+        console.error("Error updating conversation token count:", e);
+    }
+
+    // 创建"思考中"消息
     const thinkingMsgDiv = document.createElement('div');
-    thinkingMsgDiv.className = 'ds-reasoning-title';
+    thinkingMsgDiv.className = 'ds-chat-message ds-thinking';
     thinkingMsgDiv.innerText = '思考中...';
     chatContent.appendChild(thinkingMsgDiv);
+    chatContent.scrollTop = chatContent.scrollHeight;
 
+    // 准备AI消息区域
     const aiMsgDiv = document.createElement('div');
-    aiMsgDiv.className = 'ds-chat-message ds-ai-message';
+    aiMsgDiv.className = 'ds-ai-message ds-chat-message';
     chatContent.appendChild(aiMsgDiv);
 
-    // 示例：只在用户当前已经接近底部时自动滚动
-const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-if (isNearBottom) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
-
-
-    // 构建请求数据 - 总是发送完整消息给AI
-    const requestData = {
-        model: config.model,
-        messages: [
-            { role: 'system', content: config.personalityPrompt },
-            ...truncateContext(config.chatHistory, config.maxContextTokens)
-        ],
-        temperature: config.temperature,
-        max_tokens: config.maxTokens,
-        stream: true,
-
-    };
-
-    // 如果是总结任务，添加网页内容作为系统消息
-    if (isSummaryTask) {
-        const pageContent = getPageContent();
-        requestData.messages.splice(1, 0, {
-            role: 'user',
-            content: message,
-        });
-    } else if (config.usePageContext) {
-        // 普通对话的网页上下文
-        const pageContent = getPageContent();
-        requestData.messages.splice(1, 0, {
-            role: 'system',
-            content: `[当前网页信息]\n标题: ${pageContent.title}\nURL: ${pageContent.url}\n正文内容: ${pageContent.content}\n注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
-        });
-    }
-        console.log('发送的请求数据:', requestData); // 添加
+    // 设置超时
+    const timeoutId = setTimeout(() => {
+        if (thinkingMsgDiv.parentNode) {
+            chatContent.removeChild(thinkingMsgDiv);
+        }
+        const errorMsgDiv = document.createElement('div');
+        errorMsgDiv.className = 'ds-chat-message ds-error';
+        errorMsgDiv.innerText = '请求超时，请重试或检查网络连接。';
+        chatContent.appendChild(errorMsgDiv);
+        chatContent.scrollTop = chatContent.scrollHeight;
+        
+        // 显示发送按钮
+        startButton.style.display = 'flex';
+        
+        const existingStopButton = document.querySelector('.ds-stop-button');
+        if (existingStopButton) existingStopButton.remove();
+    }, 30000);
 
     try {
-        return new Promise((resolve, reject) => {
-            let timeoutId = setTimeout(() => {
-                reject(new Error('请求超时'));
-            }, 30000);
+        // 准备上下文内容
+        let contextContent = '';
+        if (config.usePageContext && !isSummaryTask) {
+            const pageContent = getPageContent();
+            contextContent = `URL: ${pageContent.url}\n标题: ${pageContent.title}\n\n${pageContent.content}`;
+        } else if (isSummaryTask) {
+            const pageContent = getPageContent();
+            contextContent = `请总结以下内容: \nURL: ${pageContent.url}\n标题: ${pageContent.title}\n\n${pageContent.content}`;
+            message = "请总结当前网页内容";
+        }
 
+        // 准备请求数据
+        const messages = [];
+        if (config.personalityPrompt) {
+            messages.push({ role: 'system', content: config.personalityPrompt });
+        }
+        
+        // 提供上下文
+        if (contextContent) {
+            messages.push({ role: 'system', content: `以下是当前网页内容，可能对回答用户问题有帮助：\n\n${contextContent}` });
+        }
+
+        // 安全地添加聊天历史
+        try {
+            if (config.chatHistory.length > 0 && !isSummaryTask) {
+                let truncatedHistory = [];
+                if (typeof truncateContext === 'function') {
+                    truncatedHistory = truncateContext([...config.chatHistory], config.maxContextTokens);
+                } else {
+                    truncatedHistory = [...config.chatHistory];
+                }
+                
+                truncatedHistory.forEach(msg => {
+                    // 只添加用户和助手的消息，不添加系统消息
+                    if (msg.role === 'user' || msg.role === 'assistant') {
+                        messages.push({ role: msg.role, content: msg.content });
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Error processing chat history:", e);
+        }
+
+        // 添加当前用户消息
+        messages.push({ role: 'user', content: message });
+
+        // 发送请求
+        const requestData = {
+            model: config.model,
+            messages: messages,
+            temperature: parseFloat(config.temperature),
+            max_tokens: parseInt(config.maxTokens),
+            stream: true
+        };
+
+        // 安全包装的GM_xmlhttpRequest
+        try {
             GM_xmlhttpRequest({
                 method: 'POST',
                 url: config.apiUrl,
@@ -2612,72 +3190,126 @@ if (isNearBottom) {
                 data: JSON.stringify(requestData),
                 onloadstart: (responseInfo) => {
                     try {
-                        handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv, isSummaryTask)
-                            .then(resolve)
-                            .catch(reject);
+                        if (typeof handleStreamResponse === 'function') {
+                            handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv, isSummaryTask)
+                                .then(() => {
+                                    clearTimeout(timeoutId);
+                                    startButton.style.display = 'flex';
+                                    // 在流处理完成后安全地更新token统计
+                                    try {
+                                        updateConversationTokenCount();
+                                    } catch (e) {
+                                        console.error("Error updating tokens after response:", e);
+                                    }
+                                })
+                                .catch((error) => {
+                                    clearTimeout(timeoutId);
+                                    console.error('处理流响应时出错:', error);
+                                    const errorMsgDiv = document.createElement('div');
+                                    errorMsgDiv.className = 'ds-chat-message ds-error';
+                                    errorMsgDiv.innerText = `处理响应时出错: ${error.message || '未知错误'}`;
+                                    chatContent.appendChild(errorMsgDiv);
+                                    chatContent.scrollTop = chatContent.scrollHeight;
+                                    startButton.style.display = 'flex';
+                                });
+                        } else {
+                            throw new Error("handleStreamResponse function is not available");
+                        }
                     } catch (error) {
+                        clearTimeout(timeoutId);
+                        console.error("Error in response handling:", error);
                         const existingStopButton = document.querySelector('.ds-stop-button');
-       if (existingStopButton) existingStopButton.remove();
-                        reject(error);
+                        if (existingStopButton) existingStopButton.remove();
+                        startButton.style.display = 'flex';
+                        
+                        const errorMsgDiv = document.createElement('div');
+                        errorMsgDiv.className = 'ds-chat-message ds-error';
+                        errorMsgDiv.innerText = `响应处理错误: ${error.message || '未知错误'}`;
+                        chatContent.appendChild(errorMsgDiv);
+                        chatContent.scrollTop = chatContent.scrollHeight;
                     }
                 },
                 onerror: (error) => {
                     clearTimeout(timeoutId);
-                    chatContent.removeChild(thinkingMsgDiv);
+                    if (thinkingMsgDiv.parentNode) {
+                        chatContent.removeChild(thinkingMsgDiv);
+                    }
                     const existingStopButton = document.querySelector('.ds-stop-button');
-       if (existingStopButton) existingStopButton.remove();
-                    reject(new Error('请求失败: ' + error.statusText));
+                    if (existingStopButton) existingStopButton.remove();
+                    
+                    // 检查是否是重试的错误
+                    if (retryCount < 2) {
+                        console.log(`请求失败，第${retryCount + 1}次重试...`);
+                        const retryMsgDiv = document.createElement('div');
+                        retryMsgDiv.className = 'ds-chat-message ds-thinking';
+                        retryMsgDiv.innerText = `请求失败，正在重试 (${retryCount + 1}/2)...`;
+                        chatContent.appendChild(retryMsgDiv);
+                        chatContent.scrollTop = chatContent.scrollHeight;
+                        
+                        // 移除最后添加的AI消息元素
+                        if (aiMsgDiv.parentNode) {
+                            chatContent.removeChild(aiMsgDiv);
+                        }
+                        
+                        // 短暂延迟后重试
+                        setTimeout(() => {
+                            if (retryMsgDiv.parentNode) {
+                                chatContent.removeChild(retryMsgDiv);
+                            }
+                            sendMessage(message, retryCount + 1, isSummaryTask);
+                        }, 1000);
+                    } else {
+                        console.error('请求失败，不再重试:', error);
+                        const errorMsgDiv = document.createElement('div');
+                        errorMsgDiv.className = 'ds-chat-message ds-error';
+                        errorMsgDiv.innerText = `请求失败: ${error.statusText || '未知错误'}。请检查网络或API设置。`;
+                        chatContent.appendChild(errorMsgDiv);
+                        chatContent.scrollTop = chatContent.scrollHeight;
+                        startButton.style.display = 'flex';
+                    }
                 },
                 ontimeout: () => {
                     clearTimeout(timeoutId);
-                     const existingStopButton = document.querySelector('.ds-stop-button');
-       if (existingStopButton) existingStopButton.remove();
-                    chatContent.removeChild(thinkingMsgDiv);
-                    reject(new Error('请求超时'));
+                    const existingStopButton = document.querySelector('.ds-stop-button');
+                    if (existingStopButton) existingStopButton.remove();
+                    if (thinkingMsgDiv.parentNode) {
+                        chatContent.removeChild(thinkingMsgDiv);
+                    }
+                    
+                    const errorMsgDiv = document.createElement('div');
+                    errorMsgDiv.className = 'ds-chat-message ds-error';
+                    errorMsgDiv.innerText = '请求超时，请检查网络连接后重试。';
+                    chatContent.appendChild(errorMsgDiv);
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                    startButton.style.display = 'flex';
                 }
             });
-        });
+        } catch (error) {
+            clearTimeout(timeoutId);
+            console.error('发送消息时出错:', error);
+            if (thinkingMsgDiv.parentNode) {
+                chatContent.removeChild(thinkingMsgDiv);
+            }
+            const errorMsgDiv = document.createElement('div');
+            errorMsgDiv.className = 'ds-chat-message ds-error';
+            errorMsgDiv.innerText = `发送消息时出错: ${error.message || '未知错误'}`;
+            chatContent.appendChild(errorMsgDiv);
+            chatContent.scrollTop = chatContent.scrollHeight;
+            startButton.style.display = 'flex';
+        }
     } catch (error) {
-        const existingStopButton = document.querySelector('.ds-stop-button');
-       if (existingStopButton) existingStopButton.remove();
+        // 处理整个请求准备过程中的错误
+        clearTimeout(timeoutId);
+        console.error('发送消息前出错:', error);
         if (thinkingMsgDiv.parentNode) {
             chatContent.removeChild(thinkingMsgDiv);
         }
-
-        let errorMessage = '发生未知错误';
-        if (error.message.includes('timeout')) {
-            errorMessage = '请求超时,请检查网络连接';
-        } else if (error.message.includes('Failed to fetch') || error.message.includes('请求失败')) {
-            errorMessage = '无法连接到服务器,请检查:\n1. 网络连接\n2. API地址是否正确\n3. 是否开启了代理/VPN';
-        } else if (error.message.includes('401')) {
-            errorMessage = 'API密钥无效或已过期,请重新设置';
-        } else if (error.message.includes('429')) {
-            errorMessage = '请求过于频繁,请稍后再试';
-        } else {
-            errorMessage = `错误: ${error.message}`;
-        }
-
         const errorMsgDiv = document.createElement('div');
         errorMsgDiv.className = 'ds-chat-message ds-error';
-        errorMsgDiv.innerText = errorMessage;
+        errorMsgDiv.innerText = `发送消息前出错: ${error.message || '未知错误'}`;
         chatContent.appendChild(errorMsgDiv);
-        // 示例：只在用户当前已经接近底部时自动滚动
-const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
-if (isNearBottom) {
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
-
-        if ((error.message.includes('Failed to fetch') || error.message.includes('请求失败') || error.message.includes('timeout')) && retryCount < 3) {
-            const retryMsgDiv = document.createElement('div');
-            retryMsgDiv.className = 'ds-chat-message ds-thinking';
-            retryMsgDiv.innerText = `连接失败,正在第${retryCount + 1}次重试...`;
-            chatContent.appendChild(retryMsgDiv);
-
-            setTimeout(() => {
-                chatContent.removeChild(retryMsgDiv);
-                return sendMessage(message, retryCount + 1, hideMessage);
-            }, 2000);
-        }
+        chatContent.scrollTop = chatContent.scrollHeight;
+        startButton.style.display = 'flex';
     }
 }
 
@@ -2765,6 +3397,10 @@ if (isNearBottom) {
             }
 
             // 创建新的复制按钮
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'code-buttons-container';
+            btnContainer.style.position = 'relative';
+                   
             const copyButton = document.createElement('button');
             copyButton.className = 'copy-code-btn';
             copyButton.textContent = '复制';
@@ -2793,8 +3429,10 @@ if (isNearBottom) {
             });
 
             // 添加按钮到代码块
-            pre.appendChild(copyButton);
-            addExecuteButton(pre);
+            pre.parentNode.insertBefore(btnContainer, pre);
+            btnContainer.appendChild(copyButton);
+            Add_codebutton(pre);
+
 
 
             // 强制重新高亮代码（解决时序问题）
@@ -3048,13 +3686,202 @@ exportBtn.addEventListener('click', () => {
     }, 100);
 });
 
-
-// ... rest of the existing code ...
-                // 输入框事件
-       
 }
 })
         .catch(error => {
             console.error('加载依赖库失败:', error);
         });
 })();
+
+// 改进的token计数函数
+function countTokens(text) {
+    if (!text) return 0;
+    
+    // 简化的token计算方法，考虑到不同模型的差异
+    // 此方法是一个近似值，大约有80%的准确率
+    
+    // 空白字符（空格、换行、制表符等）
+    const whitespaceRegex = /\s+/g;
+    // 中文字符和其他CJK符号
+    const cjkRegex = /[\u4e00-\u9fff\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf]/g;
+    // 标点符号（英文和中文）
+    const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~，。、！？：；""''（）【】《》]/g;
+    // 数字
+    const numberRegex = /\d+/g;
+    // 英文单词（简化）
+    const wordRegex = /[a-zA-Z]+/g;
+
+    // 替换掉空白字符以简化计算
+    const normalizedText = text.replace(whitespaceRegex, ' ');
+    
+    // 计算中文字符数量（每个字符约1-2个token）
+    const cjkMatches = normalizedText.match(cjkRegex) || [];
+    const cjkTokens = cjkMatches.length * 1.5; // 每个中文字符平均1.5个token
+    
+    // 计算标点符号数量
+    const punctuationMatches = normalizedText.match(punctuationRegex) || [];
+    const punctuationTokens = punctuationMatches.length; // 每个标点约1个token
+    
+    // 计算数字token数量
+    const numberMatches = normalizedText.match(numberRegex) || [];
+    // 每个数字序列按其长度的0.5计算token
+    const numberTokens = numberMatches.reduce((sum, num) => sum + Math.max(1, Math.ceil(num.length * 0.5)), 0);
+    
+    // 计算英文单词token数量
+    const wordMatches = normalizedText.match(wordRegex) || [];
+    // 英文单词按长度的0.75计算token
+    const wordTokens = wordMatches.reduce((sum, word) => sum + Math.max(1, Math.ceil(word.length * 0.75)), 0);
+    
+    // 对特殊符号如代码块、链接等进行补偿
+    const specialSymbolCompensation = (text.match(/```/g) || []).length * 2 + 
+        (text.match(/\[(.*?)\]\((.*?)\)/g) || []).length * 3;
+    
+    // 总token数向上取整
+    const totalTokens = Math.ceil(cjkTokens + punctuationTokens + numberTokens + wordTokens + specialSymbolCompensation);
+    
+    return totalTokens;
+}
+
+// 更新对话的整体token统计
+function updateConversationTokenCount() {
+    // 确保config存在
+    if (typeof config === 'undefined') {
+        console.warn('Token counter: config is not defined yet');
+        return { userTokens: 0, aiTokens: 0, totalTokens: 0 };
+    }
+    
+    let userTokens = 0;
+    let aiTokens = 0;
+    
+    // 计算历史对话中的token数
+    if (config.chatHistory && Array.isArray(config.chatHistory)) {
+        config.chatHistory.forEach(msg => {
+            if (msg.role === 'user') {
+                userTokens += countTokens(msg.content);
+            } else if (msg.role === 'assistant') {
+                // 如果消息已经有token计数就直接使用，否则计算
+                aiTokens += msg.tokens || countTokens(msg.content);
+            }
+        });
+    } else {
+        console.warn('Token counter: config.chatHistory is not available');
+    }
+    
+    // 创建或更新token计数器
+    let tokenCounter = document.getElementById('ds-token-counter');
+    if (!tokenCounter) {
+        tokenCounter = document.createElement('div');
+        tokenCounter.id = 'ds-token-counter';
+        tokenCounter.className = 'ds-token-counter';
+        const inputArea = document.querySelector('.ds-chat-input-area');
+        if (inputArea) {
+            inputArea.insertBefore(tokenCounter, inputArea.firstChild);
+        }
+    }
+    
+    // 更新token计数显示
+    tokenCounter.innerHTML = `
+        <span class="ds-token-label">对话统计: </span>
+        <span class="ds-user-tokens">用户: ${userTokens} tokens</span>
+        <span class="ds-ai-tokens">AI: ${aiTokens} tokens</span>
+        <span class="ds-total-tokens">总计: ${userTokens + aiTokens} tokens</span>
+    `;
+    
+    return { userTokens, aiTokens, totalTokens: userTokens + aiTokens };
+}
+
+// 监听用户输入框，实时显示token计数
+function setupTokenCounter() {
+    try {
+        const inputBox = document.querySelector('.ds-chat-input');
+        
+        if (!inputBox) {
+            console.warn('Token counter: Input box not found');
+            return;
+        }
+        
+        // 检查是否已经初始化过
+        if (document.querySelector('.ds-input-token-counter')) {
+            console.log('Token counter already initialized');
+            return;
+        }
+        
+        // 创建token计数显示元素
+        let inputTokenCounter = document.createElement('div');
+        inputTokenCounter.className = 'ds-input-token-counter';
+        inputTokenCounter.innerText = '0 tokens';
+        
+        // 添加到输入框后面
+        inputBox.parentNode.insertBefore(inputTokenCounter, inputBox.nextSibling);
+        
+        // 更新token计数的函数
+        function updateInputTokenCount() {
+            const text = inputBox.value;
+            const tokens = countTokens(text);
+            inputTokenCounter.innerText = `${tokens} tokens`;
+            
+            // 根据token数变更颜色提示
+            if (tokens > 1000) {
+                inputTokenCounter.style.color = '#ff4444';
+            } else if (tokens > 500) {
+                inputTokenCounter.style.color = '#ffa500';
+            } else {
+                inputTokenCounter.style.color = '#666';
+            }
+        }
+        
+        // 添加输入事件监听（使用匿名函数而不是方法引用）
+        const handleInput = function() { updateInputTokenCount(); };
+        inputBox.addEventListener('input', handleInput);
+        inputBox.addEventListener('keyup', handleInput);
+        inputBox.addEventListener('change', handleInput);
+        
+        // 初始更新
+        updateInputTokenCount();
+        
+        console.log('Token counter initialized successfully');
+    } catch (error) {
+        console.error('Error in setupTokenCounter:', error);
+    }
+}
+
+//
+displayHistory();
+//颜色变化适配
+
+// 初始化token计数器
+setupTokenCounter();
+
+// 初始化时更新对话统计
+updateConversationTokenCount();
+
+// 初始化token计数器和更新token统计
+setTimeout(() => {
+    try {
+        setupTokenCounter();
+        updateConversationTokenCount();
+        console.log("Token counter initialized successfully");
+    } catch (e) {
+        console.error("Error initializing token counter:", e);
+    }
+}, 1000);
+
+// 删除之前的自动初始化代码
+// 改为使用delayed initialization，确保DOM完全加载后再初始化
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        try {
+            // 在页面完全加载后初始化token计数器
+            setupTokenCounter();
+            
+            // 只有当config和chatContent都存在时才更新对话统计
+            if (typeof config !== 'undefined' && document.querySelector('.ds-chat-content')) {
+                updateConversationTokenCount();
+            }
+        } catch (e) {
+            console.error("Error in token counter initialization:", e);
+        }
+    }, 2000); // 延迟2秒初始化
+});
+
+
