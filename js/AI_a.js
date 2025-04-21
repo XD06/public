@@ -1002,7 +1002,7 @@ pre {
 .ds-ai-message h6 {
     margin-top: auto!important;
     margin-bottom: auto!important;
-    display: inline-table!important;
+    display: inline-grid!important;
 }
 
 /* 关键：减小列表项内部 <p> 的距 */
@@ -1412,7 +1412,7 @@ function detectCodeType(code) {
                         !cleanedCode.includes(';');
     
     if (hasPythonHeuristics) {
-        return 'python';
+        return 'html';
     }
     
     // 默认使用Python，因为在线环境中Python更为常用
@@ -2655,7 +2655,7 @@ function Add_codebutton(pres){
         e.stopPropagation();
         const code = preElement.textContent;
         const lang = detectCodeType(code);
-        executeCode(code, lang);
+        executeCode(code, 'html');
     };
 
     // 将按钮容器插入到pre元素后面
