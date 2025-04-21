@@ -259,7 +259,6 @@ function GM_xmlhttpRequest(options) {
             justify-content: space-between;
             align-items: center;
             border-radius: 15px 15px 0 0;
-            height: 40px;
         }
 
        .ds-chat-close,
@@ -437,7 +436,6 @@ function GM_xmlhttpRequest(options) {
             display: flex;
             align-items: center;
             font-size: 12px;
-            height: 10px;
         }
         .ds-context-toggle input {
             margin-right: 5px;
@@ -655,7 +653,7 @@ function GM_xmlhttpRequest(options) {
 .ds-stop-button {
     position: absolute;
     right: 20px;
-    bottom: 65px;
+    bottom: 90px;
     width: 20px; /* 圆形直径 */
     height: 20px;
     border-radius: 50%; /* 圆形 */
@@ -674,7 +672,7 @@ function GM_xmlhttpRequest(options) {
 .ds-start-button {
     position: absolute;
     right: 20px;
-    bottom: 65px;
+    bottom: 90px;
     width: 18px; /* 圆形直径 */
     height: 18px;
     border-radius: 50%; /* 圆形 */
@@ -683,7 +681,7 @@ function GM_xmlhttpRequest(options) {
     cursor: pointer;
     z-index: 214748364;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-   // display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: #ff4444;
@@ -876,7 +874,7 @@ function GM_xmlhttpRequest(options) {
 
 .copy-code-btn {
     position: absolute;
-    bottom: 15px;
+    top: 15px;
     right: 8px;
     background-color: #555;
     color: white;
@@ -893,7 +891,7 @@ function GM_xmlhttpRequest(options) {
 .code-execute-btn {
     position: absolute;
     bottom: 15px;
-    left: 8px;
+    right: 8px;
     background-color: #4CAF50!important;
     color: white;
     border: none;
@@ -902,38 +900,9 @@ function GM_xmlhttpRequest(options) {
     font-size: 12px;
     cursor: pointer;
     opacity: 1;
-    z-index: 10;
-}
-.copy-hcode-btn {
-    position: absolute;
-    top: 12px;
-    right: 8px;
-    background-color: #555;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.3s;
     z-index: 10;
 }
 
-.code-hexecute-btn {
-    position: absolute;
-    bottom: 15px;
-    left: 8px;
-    background-color: #4CAF50!important;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    opacity: 1;
-    z-index: 10;
-}
 pre {
     position: relative;
     padding-top: 30px !important;
@@ -973,7 +942,6 @@ pre {
     text-align: right;
     margin-top: 2px;
     padding-right: 8px;
-display: none;
 }
 
 .ds-token-info {
@@ -1034,9 +1002,7 @@ display: none;
 .ds-ai-message h6 {
     margin-top: auto!important;
     margin-bottom: auto!important;
-    // display: inline-grid!important;
-    display: grid;
-
+    display: inline-grid!important;
 }
 
 /* 关键：减小列表项内部 <p> 的距 */
@@ -1490,15 +1456,15 @@ function detectCodeType(code) {
         .then(() => {
             // 配置 marked 库
             marked.setOptions({
-                // highlight: function(code, lang) {
-                //     const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                //     try {
-                //         return hljs.highlight(code, { language }).value;
-                //     } catch (e) {
-                //         console.error("Highlighting error:", e);
-                //         return code; // Return original code on error
-                //     }
-                // },
+                highlight: function(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    try {
+                        return hljs.highlight(code, { language }).value;
+                    } catch (e) {
+                        console.error("Highlighting error:", e);
+                        return code; // Return original code on error
+                    }
+                },
                 langPrefix: 'hljs language-', // 类名前缀
                 pedantic: false,          // 容错 GFM
                 gfm: true,                // 启用 GFM (GitHub Flavored Markdown)
@@ -1508,27 +1474,6 @@ function detectCodeType(code) {
                 smartLists: true,         // 优化列表输出
                 smartypants: false        // 不转换标点
             });
-//             marked.setOptions({
-//     highlight: function(code, lang) {
-//         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-//         let highlightedCode;
-//         try {
-//             highlightedCode = hljs.highlight(code, { language, ignoreIllegals: true }).value;
-//         } catch (e) {
-//             console.error("Highlight.js error during marked processing:", e);
-//             highlightedCode = code; // 出错时返回原始代码
-//         }
-//         // **关键改动：** 返回一个带有特殊标记的完整 <pre> 结构
-//         // 这个 data-attribute 将用于后续精确查找
-//         return `<pre data-is-fenced-code="true"><code class="language-${language} hljs">${highlightedCode}</code></pre>`;
-//     },
-//     langPrefix: 'hljs language-', // 这个前缀实际上在上面的 highlight 函数中手动添加了
-//     pedantic: false,
-//     gfm: true,
-//     breaks: false, // 保持为 false，避免 GFM 的 <br> 影响代码块
-//     smartLists: true,
-//     smartypants: false
-// });
 
             // 检查是否已经存在图标
             if (!document.querySelector('.ds-chat-icon')) {
@@ -1953,7 +1898,7 @@ chatHeader.append(macButtons);
     //         // 根据角色添加对应标识
     //         const contentWithLabel = msg.role === 'user' ? `${msg.content}` : `🤖：${msg.content}`;
     //         msgDiv.innerHTML = marked.parse(contentWithLabel);
-    //         addButtonsToPre(msgDiv);
+    //         addCopyButtonsToCodeBlocks(msgDiv);
     //         chatContent.appendChild(msgDiv);
     //     });
     //     chatContent.scrollTop = chatContent.scrollHeight;
@@ -2352,7 +2297,7 @@ chatHeader.append(macButtons);
                 if (message) {
                     sendMessage(message);
                     inputBox.value = '';
-                   // startButton.style.display = 'flex';
+                    startButton.style.display = 'flex';
                 }
             }
         });
@@ -2746,7 +2691,7 @@ function Add_codebutton(pres){
     // 创建运行按钮
   
     const runBtn = document.createElement('button');
-    runBtn.className = 'code-hexecute-btn';
+    runBtn.className = 'code-execute-btn';
     runBtn.textContent = '运行';
     runBtn.onclick = function(e) {
         e.stopPropagation();
@@ -3445,6 +3390,57 @@ function createExecutionModal() {
 
 // --- 首先，确保你已经定义了 throttle 函数 ---
 // (如果脚本里还没有，请添加这个函数)
+function throttle(func, limit) {
+    let inThrottle;
+    let lastFunc;
+    let lastRan;
+    return function(...args) {
+        const context = this;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    }
+}
+// --- Make sure the 'throttle' function is defined before this ---
+/* Example throttle function:
+function throttle(func, limit) {
+    let inThrottle;
+    let lastFunc;
+    let lastRan;
+    return function(...args) {
+        const context = this;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    }
+}
+*/
+
+// --- Replace your existing handleStreamResponse function with this ---
+
+
+      // --- 完整 readStream 函数 (基于 split('\n') 版本，修正 contentReceivedInChunk 作用域) ---
+
+// --- 首先，确保你已经定义了 throttle 函数 ---
+// (如果脚本里还没有，请添加这个函数)
 // function throttle(func, limit) {
 //     let inThrottle;
 //     let lastFunc;
@@ -3467,32 +3463,6 @@ function createExecutionModal() {
 // }
 
 
-
-// --- 辅助函数：节流 (如果你的脚本里还没有，请添加) ---
-function throttle(func, limit) {
-    let inThrottle;
-    let lastFunc;
-    let lastRan;
-    return function(...args) {
-        const context = this;
-        if (!lastRan) {
-            func.apply(context, args);
-            lastRan = Date.now();
-        } else {
-            clearTimeout(lastFunc);
-            lastFunc = setTimeout(function() {
-                if ((Date.now() - lastRan) >= limit) {
-                    func.apply(context, args);
-                    lastRan = Date.now();
-                }
-            }, limit - (Date.now() - lastRan));
-        }
-    }
-}
-
-
-// --- 新的统一添加按钮的函数 ---
-
 // --- 替换你脚本中现有的 handleStreamResponse 函数 ---
 function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask = false) {
     return new Promise((resolve, reject) => {
@@ -3502,168 +3472,138 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
         let isStopped = false;
         let reasoningTitleDiv = null; // 引用“思考内容”标题元素
 
-        const RENDER_THROTTLE_MS = 150; // 渲染节流间隔 (毫秒)
+        const RENDER_THROTTLE_MS = 150; // 渲染节流间隔 (毫秒, 可调整)
 
         // --- DOM 元素准备 ---
         aiMsgDiv.innerHTML = ''; // 清空AI消息容器
         aiMsgDiv.className = 'ds-chat-message ds-ai-message'; // 设置基础 class
 
+        // 创建思考过程内容的容器
         const reasoningDiv = document.createElement('div');
         reasoningDiv.className = 'ds-reasoning-content';
         reasoningDiv.style.display = 'none'; // 初始隐藏
-        // 思考内容放在前面
         aiMsgDiv.appendChild(reasoningDiv);
 
+        // 创建主要回复内容的容器
         const contentDiv = document.createElement('div');
-        contentDiv.className = 'ds-message-content';
+        contentDiv.className = 'ds-message-content'; // 这个类可能控制样式和光标
         contentDiv.style.whiteSpace = 'break-spaces'; // 保证换行符有效
         aiMsgDiv.appendChild(contentDiv);
 
-
         // --- 停止按钮 ---
-        let stopButton = document.querySelector('.ds-stop-button'); // 尝试复用页面上已有的停止按钮
-        if (!stopButton) { // 如果没有，再创建
-             stopButton = document.createElement('button');
-             stopButton.className = 'ds-stop-button';
-             stopButton.innerHTML = `
-                 <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                     <rect x="7" y="7" width="3" height="10" rx="1"/>
-                     <rect x="14" y="7" width="3" height="10" rx="1"/>
-                 </svg>
-             `;
-             stopButton.title = '点击停止AI输出';
-             // 确保 chatWindow 存在
-             const chatWindow = document.querySelector('.ds-chat-window');
-             if(chatWindow) {
-                chatWindow.appendChild(stopButton);
-             } else {
-                 console.error("无法找到 .ds-chat-window 来添加停止按钮");
-             }
-        }
-        stopButton.style.display = 'flex'; // 确保按钮可见
+        const stopButton = document.createElement('button');
+        stopButton.className = 'ds-stop-button';
+        stopButton.innerHTML = `
+            <svg class="ds-stop-img" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect x="7" y="7" width="3" height="10" rx="1"/>
+                <rect x="14" y="7" width="3" height="10" rx="1"/>
+            </svg>
+        `;
+        stopButton.title = '点击停止AI输出';
+        chatWindow.appendChild(stopButton); // 添加到 chatWindow 以便定位
 
-        // 清除旧监听器并添加新监听器
         const stopHandler = () => {
             if (isStopped) return;
             isStopped = true;
             console.log("停止按钮被点击");
-            if (stopButton) stopButton.style.display = 'none'; // 隐藏而不是移除，方便复用
+            stopButton.remove();
             if (reader) {
                 try {
-                    reader.cancel('用户停止').catch(e => console.warn("取消流时出错:", e));
+                    // 尝试取消流读取 (如果API支持)
+                    reader.cancel('用户停止');
                 } catch (e) { console.warn("无法取消流:", e); }
             }
-            // 移除思考提示
-            if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
-                 thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-            }
-            // 更新AI消息区域内容
-            contentDiv.innerHTML = '<span style="color:red; font-weight:bold;">AI输出已由用户中止！</span>';
-            reasoningDiv.style.display = 'none'; // 隐藏思考区域
-
-            // 保存系统提示到历史记录
+            aiMsgDiv.innerHTML = '<span style="color:red; font-weight:bold;">AI输出已由用户中止！</span>';
             config.chatHistory.push({ role: 'system', content: '用户中断了对话输出....'});
             GM_setValue('chatHistory', config.chatHistory);
-
-            // 显示发送按钮
-            const startButton = document.querySelector('.ds-start-button');
-            if(startButton) startButton.style.display = 'flex';
-
+            //config.fullConversation.push({role:'system', content: '用户中断输出', timestamp: new Date().toISOString()});
+            //GM_setValue('fullConversation', config.fullConversation);
+            startButton.style.display = 'flex'; // 恢复发送按钮
             resolve(); // 解决Promise
         };
-        // 移除旧监听器 (如果存在)
-        stopButton.replaceWith(stopButton.cloneNode(true)); // 克隆替换是移除所有监听器的技巧
-        stopButton = document.querySelector('.ds-stop-button'); // 获取新克隆的按钮
-        stopButton.addEventListener('click', stopHandler); // 添加新监听器
+        stopButton.addEventListener('click', stopHandler);
 
 
-        // --- 核心渲染更新函数 ---
+        // --- 核心渲染更新函数 (包含解析、高亮、按钮添加) ---
         function updateRenderedContent() {
-            if (isStopped) return;
+            if (isStopped) return; // 如果已停止，不执行渲染
 
-            console.time("updateRenderedContent"); // 计时开始
-
-            let contentUpdated = false;
-            let reasoningUpdated = false;
+            console.time("本次节流渲染");
 
             // 1. 渲染主要内容
             try {
-                // 优化：只有在文本实际改变时才更新 DOM 和后续处理
-                if (contentDiv.innerHTML !== marked.parse(accumulatedAiText)) {
-                    console.time("render AI content");
-                    contentDiv.innerHTML = marked.parse(accumulatedAiText);
-                    contentUpdated = true;
-                    // 对新内容中的 pre 添加按钮并高亮
-                    contentDiv.querySelectorAll('pre').forEach(pre => {
-                        addButtonsToPre(pre); // 添加或更新按钮
-                        const codeElement = pre.querySelector('code');
-                        if (codeElement && !codeElement.classList.contains('hljs-added')) {
-                             try {
-                                 hljs.highlightElement(codeElement);
-                                 codeElement.classList.add('hljs-added'); // 标记已高亮
-                             } catch (e) { console.error("Highlight.js error (AI):", e); }
-                        }
-                    });
-                     console.timeEnd("render AI content");
-                }
+                console.time("marked.parse (AI)");
+                // 解析累积的文本
+                const html = marked.parse(accumulatedAiText);
+                console.timeEnd("marked.parse (AI)");
+
+                console.time("innerHTML (AI)");
+                contentDiv.innerHTML = html; // 更新DOM
+                console.timeEnd("innerHTML (AI)");
+
+                console.time("highlight.js (AI)");
+                // **关键优化：只高亮新增的或未高亮的**
+                contentDiv.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+                     try {
+                        hljs.highlightElement(block);
+                     } catch (highlightError) {
+                         console.error("Highlight.js错误:", highlightError, "Block:", block);
+                         // 避免因单个块高亮失败导致整个渲染中断
+                     }
+                });
+                console.timeEnd("highlight.js (AI)");
+
+                console.time("添加按钮 (AI)");
+                addCopyButtonsToCodeBlocks(contentDiv); // 添加复制按钮
+                contentDiv.querySelectorAll('pre').forEach(pre => Add_codebutton(pre)); // 添加执行按钮
+                console.timeEnd("添加按钮 (AI)");
+
             } catch (e) {
                 console.error("渲染AI主要内容时出错:", e);
-                contentDiv.innerHTML = "<p style='color:red'>内容渲染出错</p>";
+                contentDiv.innerHTML = "<p style='color:red'>渲染出错</p>"; // 显示错误
             }
 
             // 2. 渲染思考过程 (如果收到过)
             if (isReasoningReceived) {
-                try {
-                    // 优化：只有在文本实际改变时才更新 DOM
-                    if (reasoningDiv.innerHTML !== marked.parse(accumulatedReasoningText)) {
-                         console.time("render reasoning content");
-                        reasoningDiv.innerHTML = marked.parse(accumulatedReasoningText);
-                        reasoningUpdated = true;
-                        if (reasoningDiv.style.display === 'none') {
-                            reasoningDiv.style.display = 'block'; // 确保显示
+                 try {
+                    console.time("marked.parse (Reasoning)");
+                    const reasoningHtml = marked.parse(accumulatedReasoningText);
+                    console.timeEnd("marked.parse (Reasoning)");
+
+                    console.time("innerHTML (Reasoning)");
+                    reasoningDiv.innerHTML = reasoningHtml;
+                    reasoningDiv.style.display = 'block'; // 确保显示
+                    console.timeEnd("innerHTML (Reasoning)");
+
+                    console.time("highlight.js (Reasoning)");
+                    // **关键优化：只高亮新增的或未高亮的**
+                    reasoningDiv.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+                        try {
+                            hljs.highlightElement(block);
+                        } catch (highlightError) {
+                            console.error("Highlight.js错误 (Reasoning):", highlightError, "Block:", block);
                         }
-                         // 添加思考内容标题 (只加一次)
-                        if (!reasoningTitleDiv && reasoningDiv.parentNode) {
-                             reasoningTitleDiv = document.createElement('div');
-                             reasoningTitleDiv.className = 'ds-reasoning-title';
-                             reasoningTitleDiv.innerText = '思考内容：';
-                             // 插入到 reasoningDiv 之前
-                             aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
-                        }
-                        // 对新内容中的 pre 添加按钮并高亮
-                        reasoningDiv.querySelectorAll('pre').forEach(pre => {
-                            addButtonsToPre(pre);
-                             const codeElement = pre.querySelector('code');
-                             if (codeElement && !codeElement.classList.contains('hljs-added')) {
-                                try {
-                                    hljs.highlightElement(codeElement);
-                                     codeElement.classList.add('hljs-added');
-                                } catch (e) { console.error("Highlight.js error (Reasoning):", e); }
-                             }
-                        });
-                        console.timeEnd("render reasoning content");
-                    }
-                } catch (e) {
-                    console.error("渲染思考过程时出错:", e);
-                    reasoningDiv.innerHTML = "<p style='color:red'>思考内容渲染出错</p>";
-                    if (reasoningDiv.style.display === 'none') {
-                        reasoningDiv.style.display = 'block';
-                    }
-                }
+                    });
+                    console.timeEnd("highlight.js (Reasoning)");
+
+                    console.time("添加按钮 (Reasoning)");
+                    addCopyButtonsToCodeBlocks(reasoningDiv);
+                    reasoningDiv.querySelectorAll('pre').forEach(pre => Add_codebutton(pre));
+                    console.timeEnd("添加按钮 (Reasoning)");
+
+                 } catch (e) {
+                     console.error("渲染思考过程时出错:", e);
+                     reasoningDiv.innerHTML = "<p style='color:red'>渲染出错</p>";
+                 }
             }
 
-            // 3. 智能滚动 (仅当内容有更新时)
-             if (contentUpdated || reasoningUpdated) {
-                const chatContent = document.querySelector('.ds-chat-content');
-                if (chatContent) {
-                    const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 150; // 阈值可以调整
-                    if (isNearBottom) {
-                         // 使用平滑滚动效果更好
-                         chatContent.scrollTo({ top: chatContent.scrollHeight, behavior: 'smooth' });
-                    }
-                }
-             }
-             console.timeEnd("updateRenderedContent"); // 计时结束
+            // 3. 智能滚动
+            const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 150; // 阈值可以调整
+            if (isNearBottom) {
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
+
+            console.timeEnd("本次节流渲染");
         }
 
         // --- 创建节流版的渲染函数 ---
@@ -3673,124 +3613,131 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
         // --- 读取流 ---
         const decoder = new TextDecoder();
         let buffer = '';
-        let reader;
+        let reader; // 在try-catch外部声明
 
         try {
-            // 检查 response 合法性
+            // 检查 response 是否为包含实际响应的对象
             if (response && response.response && typeof response.response.body?.getReader === 'function') {
                 response = response.response;
             } else if (!response || typeof response.body?.getReader !== 'function') {
                  throw new Error('无效的响应对象或无法获取响应流的读取器');
             }
+
+            // 检查响应状态
             if (!response.ok) {
                 throw new Error(`响应状态错误: ${response.status} ${response.statusText}`);
             }
+
             reader = response.body.getReader();
 
         } catch (error) {
             console.error("处理响应或获取Reader时出错:", error);
-            if (stopButton) stopButton.style.display = 'none';
-            const startButton = document.querySelector('.ds-start-button');
-            if(startButton) startButton.style.display = 'flex';
+            stopButton.remove();
+            startButton.style.display = 'flex';
             aiMsgDiv.innerHTML = `<span style="color:red; font-weight:bold;">处理响应失败: ${error.message}</span>`;
+            // 移除思考中提示
             if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
                  thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
             }
             reject(error);
-            return;
+            return; // 提前退出
         }
 
-        // --- readStream 函数 ---
+
         function readStream() {
-            if (isStopped) return;
+            if (isStopped) {
+                 console.log("readStream: 已停止，退出读取循环。");
+                 return;
+            }
 
             reader.read().then(({ done, value }) => {
-                if (isStopped) return; // 再次检查
+                if (isStopped) { // 再次检查，因为 read() 是异步的
+                     console.log("readStream.then: 已停止，丢弃数据块。");
+                     return;
+                }
 
                 if (done) {
                     console.log('流读取完成');
-                    if (stopButton) stopButton.style.display = 'none'; // 隐藏停止按钮
+                    stopButton.remove(); // 完成后移除停止按钮
+                    startButton.style.display = 'flex'; // 恢复发送按钮
 
-                    // --- 最后一次强制渲染 ---
-                    updateRenderedContent(); // 不节流，确保最终内容渲染
+                    // --- 最后一次强制渲染，确保所有内容都显示 ---
+                    updateRenderedContent(); // 直接调用，不等节流
 
-                    // --- 后续处理 ---
+                    // --- 后续处理 (Token计算, 历史记录等) ---
                     try {
-                        // 移除思考中提示
-                        if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
-                            thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
-                        }
-
-                        // 处理没有思考内容的情况
-                         if (!isReasoningReceived && !reasoningTitleDiv && aiMsgDiv.contains(reasoningDiv)) {
-                            const noReasoningTitle = document.createElement('div');
-                            noReasoningTitle.className = 'ds-reasoning-title';
-                            noReasoningTitle.innerText = '注意: 该模型没有输出思考过程。';
-                            aiMsgDiv.insertBefore(noReasoningTitle, reasoningDiv);
-                         }
-
-
                         const aiTokens = countTokens(accumulatedAiText + accumulatedReasoningText);
-                        // 在aiMsgDiv内部查找或添加token信息区域
-                        let tokenInfo = aiMsgDiv.querySelector('.ds-token-info');
-                        if (!tokenInfo) {
-                             tokenInfo = document.createElement('div');
-                             tokenInfo.className = 'ds-token-info';
-                             // 将 tokenInfo 放在消息内容的末尾
-                             aiMsgDiv.appendChild(tokenInfo);
-                        }
-                         tokenInfo.innerHTML = `<small>AI Response: ${aiTokens} tokens</small>`;
-
+                        const tokenInfo = document.createElement('div');
+                        tokenInfo.className = 'ds-token-info';
+                        tokenInfo.innerHTML = `<small>AI Response: ${aiTokens} tokens</small>`;
+                        aiMsgDiv.appendChild(tokenInfo);
                         updateConversationTokenCount(); // 更新总计
 
-                        // 准备要保存的数据
                         const aiResponse = {
                             role: 'assistant',
-                            content: accumulatedAiText,
+                            content: accumulatedAiText, // 使用累积的文本
                             timestamp: new Date().toISOString(),
                             hasReasoning: isReasoningReceived,
                             reasoningContent: isReasoningReceived ? accumulatedReasoningText : null,
-                            tokens: aiTokens
+                            tokens: aiTokens // 存储计算的token
                         };
 
-                        // 保存完整对话记录
+                        // 保存完整对话
                         config.fullConversation.push(aiResponse);
                         GM_setValue('fullConversation', config.fullConversation);
 
-                        // 保存简短历史记录 (只存 assistant 的 content)
+
+                        // 根据任务类型决定如何保存历史 (只存 assistant 的 content)
                         if (!isSummaryTask && accumulatedAiText.trim()) {
                              config.chatHistory.push({ role: 'assistant', content: accumulatedAiText });
                              GM_setValue('chatHistory', config.chatHistory);
-                        } else if (isSummaryTask && accumulatedAiText.trim()) {
-                             // 总结任务也保存，方便查看结果
-                             config.chatHistory.push({ role: 'assistant', content: accumulatedAiText });
+                        } else if (isSummaryTask) {
+                            // 总结任务可能不需要保存到短期历史，或者保存简化版
+                             config.chatHistory.push({ role: 'assistant', content: accumulatedAiText }); // 示例
                              GM_setValue('chatHistory', config.chatHistory);
                         }
+
+                         // 处理思考内容标题的最终状态
+                        if (isReasoningReceived) {
+                            if (!reasoningTitleDiv && reasoningDiv.parentNode) { // 确保父节点存在
+                                reasoningTitleDiv = document.createElement('div');
+                                reasoningTitleDiv.className = 'ds-reasoning-title';
+                                reasoningTitleDiv.innerText = '思考内容：';
+                                aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
+                            }
+                        }
+                        // 移除"思考中..."提示
+                         if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
+                             thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
+                         }
+                          if (!isReasoningReceived && !document.querySelector('.ds-reasoning-title')) { // 如果没收到过思考内容，且没有标题
+                                const noReasoningTitle = document.createElement('div');
+                                noReasoningTitle.className = 'ds-reasoning-title';
+                                noReasoningTitle.innerText = '注意:该模型没有思考内容';
+                                aiMsgDiv.insertBefore(noReasoningTitle, reasoningDiv); // 放在reasoningDiv之前
+                          }
+
 
                     } catch (finalizationError) {
                         console.error("流结束后处理失败:", finalizationError);
                     }
 
-                    // 显示发送按钮
-                    const startButton = document.querySelector('.ds-start-button');
-                    if(startButton) startButton.style.display = 'flex';
-
                     resolve(); // 正常结束
                     return;
                 }
 
-                // --- 处理数据块 ---
-                let contentReceivedInChunk = false;
+                // --- 处理接收到的数据块 ---
                 try {
                     buffer += decoder.decode(value, { stream: true });
                 } catch (decodeError) {
                     console.error('解码响应流时出错:', decodeError);
-                    // 可以考虑是否在此处停止
+                    // 可以在这里决定是否停止或尝试继续
                 }
 
                 const lines = buffer.split('\n');
                 buffer = lines.pop() || ''; // 保留下一次可能不完整的行
 
+                let contentReceived = false;
                 for (const line of lines) {
                     if (!line.trim() || line === 'data: [DONE]') continue;
                     if (line.startsWith('data: ')) {
@@ -3798,16 +3745,16 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                             const data = JSON.parse(line.slice(6));
                             if (data.choices?.[0]?.delta?.content) {
                                 accumulatedAiText += data.choices[0].delta.content;
-                                contentReceivedInChunk = true;
+                                contentReceived = true;
                             }
                             if (data.choices?.[0]?.delta?.reasoning_content) {
                                 accumulatedReasoningText += data.choices[0].delta.reasoning_content;
                                 if (!isReasoningReceived) {
                                     isReasoningReceived = true;
-                                    // 更新思考状态提示
+                                    // 可以在这里首次显示 "思考中..." 或更新状态
                                     if (thinkingMsgDiv) thinkingMsgDiv.innerText = '思考中...';
                                 }
-                                contentReceivedInChunk = true;
+                                contentReceived = true;
                             }
                         } catch (parseError) {
                             console.warn('解析响应数据失败:', parseError, '行内容:', line);
@@ -3816,7 +3763,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                 }
 
                 // 如果收到了新内容，调用节流的渲染函数
-                if (contentReceivedInChunk) {
+                if (contentReceived) {
                     throttledUpdateRenderedContent();
                 }
 
@@ -3825,18 +3772,12 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
 
             }).catch(error => {
                 // 处理读取错误
-                if (!isStopped) {
+                if (!isStopped) { // 只有在非用户主动停止时才报告错误
                      console.error('读取流时出错:', error);
-                     if (stopButton) stopButton.style.display = 'none';
-                    const startButton = document.querySelector('.ds-start-button');
-                     if(startButton) startButton.style.display = 'flex';
-                     // 在现有 aiMsgDiv 中追加错误信息，而不是替换
-                     const errorSpan = document.createElement('span');
-                     errorSpan.style.color = 'red';
-                     errorSpan.style.fontWeight = 'bold';
-                     errorSpan.innerHTML = `<br>读取流时出错: ${error.message}`;
-                     contentDiv.appendChild(errorSpan);
-
+                     stopButton.remove();
+                     startButton.style.display = 'flex';
+                     aiMsgDiv.innerHTML += `<br><span style="color:red; font-weight:bold;">读取流时出错: ${error.message}</span>`;
+                     // 移除思考中提示
                      if (thinkingMsgDiv && thinkingMsgDiv.parentNode) {
                           thinkingMsgDiv.parentNode.removeChild(thinkingMsgDiv);
                      }
@@ -3853,6 +3794,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
 
     });
 }
+// --- End of handleStreamResponse function ---
 
 // // --- 替换你脚本中现有的 handleStreamResponse 函数 ---
 // function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask = false) {
@@ -4591,11 +4533,10 @@ if (isNearBottom) {
                             handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv, isSummaryTask)
                                 .then(() => {
                                     clearTimeout(timeoutId);
-                                    
+                                    startButton.style.display = 'flex';
                                     // 在流处理完成后安全地更新token统计
                                     try {
                                         updateConversationTokenCount();
-					startButton.style.display = 'flex';
                                     } catch (e) {
                                         console.error("Error updating tokens after response:", e);
                                     }
@@ -4717,118 +4658,114 @@ if (isNearBottom) {
 
 //               // 创建复制按钮
      
-function addButtonsToPre(preElement) {
-    if (!preElement || typeof preElement !== 'object') {
-        console.warn("addButtonsToPre: 无效的 pre 元素");
-        return;
-    }
+//   if (!pre.nextElementSibling?.classList?.contains('code-buttons-container')) {
+//         // 创建按钮容器
+//         const btnContainer = document.createElement('div');
+//         btnContainer.className = 'code-buttons-container';
+//         btnContainer.style.position = 'relative';
+//         const copyButton = document.createElement('button');
+//         copyButton.className = 'copy-code-btn';
+//         copyButton.textContent = '复制';
 
-    // 移除可能存在的旧按钮容器（防止意外重复）
-    const existingContainer = preElement.querySelector('.code-buttons-container');
-    if (existingContainer) {
-        existingContainer.remove();
-    }
+//         // 绑定复制事件（带重试机制）
+//         copyButton.addEventListener('click', () => {
+//             const code = pre.textContent;
+//             navigator.clipboard.writeText(code).then(() => {
+//                 // 显示成功提示
+//                 const successMessage = document.createElement('span');
+//                 successMessage.className = 'copy-success';
+//                 successMessage.textContent = '已复制!';
+//                 copyButton.parentNode.appendChild(successMessage);
 
-    // 确保 <code> 元素存在且包含代码
-    let codeElement = preElement.querySelector('code');
-    if (!codeElement) {
-        // 如果没有 <code>，但 <pre> 有文本，则创建 <code> 包裹它
-        const textContent = preElement.textContent;
-        if (textContent) {
-            codeElement = document.createElement('code');
-            // 尝试从 pre 的 class 中获取语言信息
-            const langMatch = preElement.className.match(/language-(\S+)/);
-            if (langMatch && langMatch[1]) {
-                codeElement.className = `language-${langMatch[1]}`;
-            }
-            codeElement.textContent = textContent;
-            preElement.innerHTML = ''; // 清空 pre
-            preElement.appendChild(codeElement);
-        } else {
-            // 如果 pre 里没内容，就不添加按钮了
-            return;
-        }
-    }
+//                 // 2秒后移除
+//                 setTimeout(() => {
+//                     successMessage.remove();
+//                 }, 2000);
+//             }).catch(err => {
+//                 console.error('复制失败: ', err);
+//             });
+//         });
 
-    // 确保 <pre> 有 hljs 基础类，方便样式统一
-    if (!preElement.classList.contains('hljs')) {
-        preElement.classList.add('hljs');
-    }
+//            // 将按钮容器插入到pre元素前面
+//         pre.parentNode.insertBefore(btnContainer, pre);
 
-    const codeText = codeElement.textContent;
-    if (!codeText) return; // 没有代码内容也不加按钮
+//         // 将复制按钮添加到容器顶部
+//         btnContainer.appendChild(copyButton);
 
-    // 创建【一个】按钮容器
-    const btnContainer = document.createElement('div');
-    btnContainer.className = 'code-buttons-container'; // 使用 CSS 控制样式和定位
-    // 建议 CSS: position: absolute; top: 5px; right: 5px; z-index: 10; display: flex; gap: 5px;
-    // (需要在你的 CSS 样式中定义 .code-buttons-container 和按钮的样式)
-
-    let buttonsAdded = false;
-
-    // 1. 添加“复制”按钮
-    try {
-        const copyButton = document.createElement('button');
-        copyButton.className = 'copy-code-btn'; // 定义你的复制按钮样式
-        copyButton.textContent = '复制';
-        copyButton.title = '复制代码';
-        copyButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // 阻止事件冒泡到 pre
-            navigator.clipboard.writeText(codeText).then(() => {
-                copyButton.textContent = '已复制!';
-                copyButton.style.backgroundColor = '#4CAF50'; // 成功时的背景色
-                copyButton.disabled = true;
-                setTimeout(() => {
-                    copyButton.textContent = '复制';
-                    copyButton.disabled = false;
-                 }, 2000);
-            }).catch(err => {
-                console.error('复制失败: ', err);
-                copyButton.textContent = '失败';
-                 setTimeout(() => { copyButton.textContent = '复制'; }, 2000);
-            });
-        });
-        btnContainer.appendChild(copyButton);
-        buttonsAdded = true;
-    } catch (e) {
-        console.error("创建复制按钮时出错:", e);
-    }
-
-    // 2. 添加“运行”按钮 (如果适用)
-    try {
-        const codeType = detectCodeType(codeText);
-        if (codeType === 'python' || codeType === 'html') {
-            const runBtn = document.createElement('button');
-            runBtn.className = 'code-execute-btn'; // 定义你的运行按钮样式
-            runBtn.textContent = '运行';
-            runBtn.title = `在线运行 ${codeType} 代码`;
-            runBtn.onclick = function(e) {
-                e.stopPropagation();
-                // 确保 executeCode 函数可用
-                if (typeof executeCode === 'function') {
-                    executeCode(codeText, codeType);
-                } else {
-                    console.error("executeCode 函数未定义！");
-                    alert("代码执行功能当前不可用。");
-                }
-            };
-            btnContainer.appendChild(runBtn); // 添加到【同一个】容器
-            buttonsAdded = true;
-        }
-    } catch (e) {
-        console.error("创建运行按钮时出错:", e);
-    }
-
-    // 只有当成功添加了至少一个按钮时，才将容器添加到 pre 元素
-    if (buttonsAdded) {
-        // 将容器添加到 pre 元素内部的起始位置，方便用 CSS 定位到右上角
-        preElement.prepend(btnContainer);
-    }
-}
+//         }
+   
+//         // 强制重新高亮代码（解决时序问题）
+//         hljs.highlightElement(pre.querySelector('code'));
+//     });
+// }
 
 
 
+    // function addCopyButtonsToCodeBlocks(container) {
+    //     // 遍历所有 pre 元素（不仅仅是已高亮的）
+    //     container.querySelectorAll('pre').forEach(pre => {
+    //         // 强制添加 hljs 类确保样式应用
+    //         if (!pre.classList.contains('hljs')) {
+    //             pre.classList.add('hljs');
+    //         }
 
+    //         // 如果不存在代码元素则自动创建
+    //         if (!pre.querySelector('code')) {
+    //             const code = document.createElement('code');
+    //             code.textContent = pre.textContent;
+    //             pre.innerHTML = '';
+    //             pre.appendChild(code);
+    //         }
+
+    //         // 移除已存在的复制按钮
+    //         const existingButton = pre.querySelector('.copy-code-btn');
+    //         if (existingButton) {
+    //             existingButton.remove();
+    //         }
+
+    //         // 创建新的复制按钮
+    //         const btnContainer = document.createElement('div');
+    //         btnContainer.className = 'code-buttons-container';
+    //         btnContainer.style.position = 'relative';
+                   
+    //         const copyButton = document.createElement('button');
+    //         copyButton.className = 'copy-code-btn';
+    //         copyButton.textContent = '复制';
+
+    //         // 绑定复制事件（带重试机制）
+    //         copyButton.addEventListener('click', () => {
+    //             const code = pre.querySelector('code').textContent;
+    //             navigator.clipboard.writeText(code).then(() => {
+    //                 // 显示成功提示
+    //                 const successMessage = document.createElement('div');
+    //                 successMessage.className = 'copy-success';
+    //                 successMessage.textContent = '复制成功';
+    //                 pre.appendChild(successMessage);
+
+    //                 // 2秒后淡出移除
+    //                 setTimeout(() => {
+    //                     successMessage.style.opacity = '0';
+    //                     setTimeout(() => {
+    //                         pre.removeChild(successMessage);
+    //                     }, 500);
+    //                 }, 1500);
+    //             }).catch(err => {
+    //                 console.error('复制失败: ', err);
+    //                 // 可选：添加错误提示
+    //             });
+    //         });
+
+    //         // 添加按钮到代码块
+    //         pre.parentNode.insertBefore(btnContainer, pre);
+    //         btnContainer.appendChild(copyButton);
+    //         Add_codebutton(pre);
+
+
+
+    //         // 强制重新高亮代码（解决时序问题）
+    //         hljs.highlightElement(pre.querySelector('code'));
+    //     });
+    // }
     function addCopyButtonsToCodeBlocks(container) {
         // 遍历所有 pre 元素（不仅仅是已高亮的）
         container.querySelectorAll('pre').forEach(pre => {
@@ -4846,7 +4783,7 @@ function addButtonsToPre(preElement) {
             }
 
             // 移除已存在的复制按钮
-            const existingButton = pre.querySelector('.copy-hcode-btn');
+            const existingButton = pre.querySelector('.copy-code-btn');
             if (existingButton) {
                 existingButton.remove();
             }
@@ -4857,7 +4794,7 @@ function addButtonsToPre(preElement) {
             btnContainer.style.position = 'relative';
                    
             const copyButton = document.createElement('button');
-            copyButton.className = 'copy-hcode-btn';
+            copyButton.className = 'copy-code-btn';
             copyButton.textContent = '复制';
 
             // 绑定复制事件（带重试机制）
