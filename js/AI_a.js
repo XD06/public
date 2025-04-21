@@ -1026,6 +1026,25 @@ pre {
      margin-top: 0.1em; /* 调整 li 本身的边距 (如果需要) */
      margin-bottom: 0.1em;
 }
+.mac-buttons { 
+    display: flex; 
+    gap: 6px; 
+    margin-right: 10px; 
+  }
+  .mac-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .close { background: #ff5f56; }
+  .minimize { background: #ffbd2e; }
+  .maximize { background: #28c940; }
+  .ds-chat-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
 
 `;
@@ -1736,10 +1755,22 @@ function detectCodeType(code) {
                 chatHeader.className = 'ds-chat-header';
                 chatWindow.appendChild(chatHeader);
         
-                const chatTitle = document.createElement('div');
-                chatTitle.className = 'ds-chat-title';
-                chatTitle.innerText = '🤖 AI assistant';
-                chatHeader.appendChild(chatTitle);
+                const macButtons = document.createElement('div');
+macButtons.className = 'mac-buttons';
+macButtons.innerHTML = `
+  <span class="mac-btn close"></span>
+  <span class="mac-btn minimize"></span>
+  <span class="mac-btn maximize"></span>
+`;
+
+// 创建标题
+const chatTitle = document.createElement('div');
+chatTitle.className = 'ds-chat-title';
+chatTitle.textContent = '🤖 AI assistant';
+
+// 清空 header 并添加新内容
+chatHeader.innerHTML = '';
+chatHeader.append(macButtons, chatTitle);
         
                 const headerButtons = document.createElement('div');
                 headerButtons.style.display = 'flex';
