@@ -536,7 +536,7 @@ function GM_xmlhttpRequest(options) {
             font-size: 12px;
         }
         .ds-chat-hmessage {
-            margin-bottom: 0px;
+            margin-bottom: 5px;
             background-color: #FFFFFF;
             padding: 5px 5px;
             margin-top: 10px;
@@ -1978,7 +1978,7 @@ chatHeader.append(macButtons);
         
                 const inputBox = document.createElement('textarea');
                 inputBox.className = 'ds-chat-input';
-                inputBox.placeholder = '输入你的问题...';
+                inputBox.placeholder = '请输入...';
                 inputBox.rows = 2;
                 inputBox.style.padding = '8px 10px';
                 inputArea.appendChild(inputBox);
@@ -3457,7 +3457,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                 // 优化：只有在文本实际改变时才更新 DOM 和后续处理
                 if (contentDiv.innerHTML !== marked.parse(accumulatedAiText)) {
                     console.time("render AI content");
-                    contentDiv.innerHTML = marked.parse(accumulatedAiText);
+                    contentDiv.innerHTML = "🤖："+marked.parse(accumulatedAiText);
                     contentUpdated = true;
                     // 对新内容中的 pre 添加按钮并高亮
                     contentDiv.querySelectorAll('pre:not([data-buttons-added])').forEach(pre => {
@@ -3492,7 +3492,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                         if (!reasoningTitleDiv && reasoningDiv.parentNode) {
                              reasoningTitleDiv = document.createElement('div');
                              reasoningTitleDiv.className = 'ds-reasoning-title';
-                             reasoningTitleDiv.innerText = '思考内容：';
+                             reasoningTitleDiv.innerText = '思考内容💭：';
                              // 插入到 reasoningDiv 之前
                              aiMsgDiv.insertBefore(reasoningTitleDiv, reasoningDiv);
                         }
@@ -3662,11 +3662,11 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                             config.fullConversation.forEach(msg => {
                                 const role = 'AI';
                                 const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
-                                conversationText += `${role} [${time}]:\n`;
+                                
                                 if (msg.role === 'assistant' && msg.hasReasoning && msg.reasoningContent) {
                                     conversationText += `  (Thinking: ${msg.reasoningContent.replace(/\n/g, '\n  ')})\n`;
                                 }
-                                conversationText = `${accumulatedAiText}\n\n`;
+                                conversationText = `${role} [${time}]:\n`+`${accumulatedAiText}\n\n`;
                             });
 
                             navigator.clipboard.writeText(conversationText.trim()).then(() => {
@@ -3827,18 +3827,91 @@ config.fullConversation.push({
         timestamp: new Date().toISOString()
     });
     GM_setValue('fullConversation', config.fullConversation);
+    const U_actionsDiv = document.createElement('div');
+    U_actionsDiv.className = 'ds-message-actions';
 
+    const U_triggerSpan = document.createElement('span');
+    U_triggerSpan.className = 'ds-actions-trigger';
+    U_triggerSpan.textContent = '...';
+    U_triggerSpan.title = '更多操作';
+
+    const copyConvButton = document.createElement('button');
+    copyConvButton.className = 'ds-copy-conversation-btn';
+    copyConvButton.textContent = 'copy';
+
+    U_actionsDiv.appendChild(U_triggerSpan);
+    U_actionsDiv.appendChild(copyConvButton);
+   
     // 总是添加到历史记录，但内容会根据isSummaryTask变化
     const userMsgDiv = document.createElement('div');
     userMsgDiv.className = 'ds-chat-message ds-user-message ds-chat-message';
-    userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : message);
+    userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : (message));
     //addCopyButtonsToCodeBlocks(userMsgDiv);
     //Add_codebutton();
-    chatContent.appendChild(userMsgDiv);
+
     config.chatHistory.push(userMsg);
     GM_setValue('chatHistory', config.chatHistory);
 
+
+    U_triggerSpan.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent triggering other clicks
+        const isVisible = copyConvButton.style.display !== 'none';
+        copyConvButton.style.display = isVisible ? 'none' : 'inline-block';
+    });
+
+    copyConvButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let conversationText = '';
+        config.fullConversation.forEach(msg => {
+            const role = 'user';
+            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
+            conversationText = `${role} [${time}]:\n`+`${message}\n\n`;
+        });
+
+        navigator.clipboard.writeText(conversationText.trim()).then(() => {
+            copyConvButton.textContent = '已copy!';
+            copyConvButton.style.backgroundColor = '#28a745';
+            setTimeout(() => {
+                copyConvButton.textContent = 'copy';
+                copyConvButton.style.backgroundColor = '#666';
+                copyConvButton.style.display = 'none'; // Hide after copying
+            }, 1500);
+        }).catch(err => {
+            console.error('copy对话失败:', err);
+            copyConvButton.textContent = '失败';
+            setTimeout(() => {
+                copyConvButton.textContent = 'copy';
+                copyConvButton.style.display = 'none';
+            }, 1500);
+        });
+    });
     // 总是显示用户消息，但内容会根据isSummaryTask变化
+    //chatContent.appendChild(userMsgDiv);
+    const userMessageContainer = document.createElement('div');
+    userMessageContainer.className = 'ds-user-message-container'; // 可自定义类名用于样式调整
+    userMessageContainer.style.display = 'flex';
+    userMessageContainer.style.justifyContent = 'flex-end'; // 让内容靠右
+   // userMessageContainer.style.alignItems = 'center'; // 垂直居中对齐
+
+    // 总是添加到历史记录，但内容会根据isSummaryTask变化
+
+    // 创建头像元素
+    const avatar = document.createElement('img');
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQElEQVR4nO2XQW6DMBBFX1gkh0jgCm2XcAXCrixyhybHbNoVvUpF9o6QBqmqWoUah7HVedLfRBj/DzNkDIZhhCQDCqACaqAV1fJbIddESQ40wOGGGrk2GlbA0wTj3zWsGdaq42N+1KO2+XyG+VE7LfPZxJqf0hOZRoAigPmDaLjX4lQBA5QaAfYBA9QaAdqAAdrUAzxrBEi+hKrUm7gIGCDXCJAFKqNGc0JNepQIMcw9EAErmSr/an5YE8U4PbKb2BP7GMrm1pGy/OFIWUrPRHukNAzDuA8b4AS8ARfA3VkX2esoe89iC3wsYNr9ok48eD95TfPuSwivN3GKwLwTvfgEeI/AuBOdfQL0ERh3oj71AJ//soSOERh3c5p4I58wbfMdsMaTrXKIbs4f2chaXuF5ocbugVfZ0/vJG4ZhsAhXSvn7fc8Yyv8AAAAASUVORK5CYII=";
+    avatar.alt = "user";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
+    //avatar.style.marginLeft = "10px"; 
+    avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
+    avatar.style.marginTop = "15px"; // 可以根据需要调整头像和消息块的间距
+    avatar.style.width = "30px"; // 可以根据需要调整宽度
+    avatar.style.height = "30px"; // 可以根据需要调整高度
+
+    // 将用户消息块和头像添加到容器
+    userMessageContainer.appendChild(userMsgDiv);
+    userMessageContainer.appendChild(avatar);
+
+    // 将容器添加到聊天内容区域
+    chatContent.appendChild(userMessageContainer);
 
     const thinkingMsgDiv = document.createElement('div');
     thinkingMsgDiv.className = 'ds-reasoning-title';
@@ -3887,7 +3960,7 @@ if (isNearBottom) {
         console.error("Error updating conversation token count:", e);
     }
 
-
+    userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内容之后
 
     // 构建请求数据 - 总是发送完整消息给AI
     const requestData = {
@@ -4125,7 +4198,7 @@ function addButtonsToPre(preElement) {
         const copyButton = document.createElement('button');
         copyButton.className = 'copy-code-btn'; // 定义你的copy按钮样式
         copyButton.textContent = 'copy';
-        copyButton.title = 'copy代码';
+        copyButton.title = '复制代码';
         copyButton.addEventListener('click', (e) => {
             e.stopPropagation(); // 阻止事件冒泡到 pre
             navigator.clipboard.writeText(codeText).then(() => {
@@ -4223,7 +4296,7 @@ function addButtonsToPre(preElement) {
                     // 显示成功提示
                     const successMessage = document.createElement('div');
                     successMessage.className = 'copy-success';
-                    successMessage.textContent = 'copy成功';
+                    successMessage.textContent = '复制成功';
                     pre.appendChild(successMessage);
 
                     // 2秒后淡出移除
