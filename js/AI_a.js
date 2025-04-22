@@ -251,7 +251,7 @@ function GM_xmlhttpRequest(options) {
         }
         .ds-chat-header {
             padding: 10px 15px;
-            background-color: var(--header-bg, #9a9e994f) !important;
+            background-color: #333333 !important;
              color: var(--header-text, #222) !important;
     transition: background-color 0.5s ease, color 0.3s ease;
     backdrop-filter: blur(5px);
@@ -314,23 +314,11 @@ function GM_xmlhttpRequest(options) {
             background-color: var(--secondary-color); /* 修改背景颜色 */
             border-bottom: 1px solid #ddd;
         }
-        // .ds-chat-message {
-        //     margin-bottom: 10px;
-        //     background-color: #FFFFFF;
-        //     padding: 5px 1px;
-        //     border-radius: 10px;
-        //     line-height: 1.2;
-        //     word-wrap: break-word;
-        //     font-size: 14px; /* 减小用户消息字体大小 */
-        //     color: rgb(0,0,0); /* 修改字体颜色 */
-        //     margin-left: 8px;
-        //     margin-right: 3px;
-        //     text-align: left;
-        // }
          .ds-chat-message {
             margin-bottom: 10px;
             background-color: #FFFFFF;
             padding: 5px 5px;
+            max-width: 100%;
             border-radius: 10px;
             line-height: 1.2;
             word-wrap: break-word;
@@ -341,40 +329,32 @@ function GM_xmlhttpRequest(options) {
             text-align: left;
               font-weight: 500;
     font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
-        }
-        .ds-user-message {
+}
+  .ds-user-message {
             background-color: #FFFFFF;
             color: rgb(0,0,0);
-          margin-left: auto;
+            margin-left: auto;
+            padding-bottom: 0px!important;
             margin-top: 10px;
-           // text-align: right;
-            padding: 1px 5px;
+            //text-align: right;
+            padding: 1px 10px;
             border-radius: 15px;
             height: auto;
             width: fit-content;
             display: block;
+            font-weight: 500;
+            font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
-
-        // .ds-ai-message {
-        //     background-color: #FFFFFF;
-        //     line-height: 1.2; /* 调整行高 */
-        //     color: rgb(0,0,0); /* 修改字体颜色 */
-        //     padding: 15px 5px;
-        //     text-align: left;
-        //    // margin-right:auto;
-        //     //width: fit-content;
-        //     border-radius: 15px;
-
-        // }
-            
-           .ds-ai-message {
+        .ds-ai-message {
+         padding-bottom: 0px!important;
             background-color: #FFFFFF;
             line-height: 1.2; /* 调整行高 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            padding: 5px 5px;
+            padding: 5px 20px;
             text-align: left;
              font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
+
         .ds-chat-input-area {
             padding: 10px;
             display: flex;
@@ -539,6 +519,7 @@ function GM_xmlhttpRequest(options) {
             margin-bottom: 5px;
             background-color: #FFFFFF;
             padding: 5px 5px;
+            max-width: 100%;
             margin-top: 10px;
             padding-bottom: 0px !important;
             border-radius: 10px;
@@ -690,11 +671,11 @@ function GM_xmlhttpRequest(options) {
     border: none;
     cursor: pointer;
     z-index: 214748364;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    //box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
    // display: flex;
     align-items: center;
     justify-content: center;
-    color: #ff4444;
+    color: black;
     transition: all 0.2s;
     overflow: hidden; /* 隐藏内部动画溢出部分 */
 }
@@ -1094,7 +1075,6 @@ display: none;
 .ds-ai-message ol,
 .ds-ai-message pre,
 .ds-ai-message blockquote,
-.ds-ai-message table, /* 也考虑表格 */
 .ds-ai-message h1,   /* 也考虑标题 */
 .ds-ai-message h2,
 .ds-ai-message h3,
@@ -1161,6 +1141,20 @@ display: none;
     text-align: right;
     margin-right: 5px;
 }
+    .ds-ai-message table{
+    margin-top: 0.1em; /* 列表项内的段落用更小的间距 */
+    margin-bottom: 0.1em;
+    display: inline-grid;
+    }
+       .ds-ai-hmessage table{
+    margin-top: 0.1em; /* 列表项内的段落用更小的间距 */
+    margin-bottom: 0.1em;
+        display: inline-grid;
+    }
+    .ds-user-message-container{
+    margin-left: 5px;}
+    .ds-user-hmessage-container{
+    margin-left: 5px;}
 `;
 
    
@@ -1935,13 +1929,21 @@ chatHeader.append(macButtons);
         
                 const startButton = document.createElement('button');//发送消息
                 startButton.className = 'ds-start-button';
-                startButton.title = '发送';
-                // 使用SVG代替图片，避免网站CSS影响
-                startButton.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="black" style="min-width: 16px; min-height: 16px;">
-                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-                    </svg>
-                `;
+		startButton.title = "发送";
+startButton.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="min-width: 16px; min-height: 16px; transition: transform 0.2s ease;">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+    </svg>
+`;
+// 添加悬停效果
+startButton.addEventListener('mouseover', () => {
+    startButton.querySelector('svg').style.transform = 'scale(1.1)';
+});
+startButton.addEventListener('mouseout', () => {
+    startButton.querySelector('svg').style.transform = 'scale(1)';
+});
+
+                
                 chatWindow.appendChild(startButton);
         
         // 修改 contextToggle 部分
@@ -2026,8 +2028,11 @@ chatHeader.append(macButtons);
             // 根据角色添加对应标识 - Keep original content for copy
             const originalContent = msg.content;
             const contentWithLabel = msg.role === 'user' ? `${originalContent}` : `🤖：${originalContent}`;
+            if(msg.role != 'user'){
             msgDiv.innerHTML = marked.parse(contentWithLabel);
-
+            }else{
+            msgDiv.innerHTML = contentWithLabel;
+            }
             // Add code buttons if any pre tags exist
             addCopyButtonsToCodeBlocks(msgDiv);
 
@@ -2082,10 +2087,40 @@ chatHeader.append(macButtons);
                         historyCopyMsgButton.style.display = 'none';
                     }, 1500);
                 });
-            });
+            }
+        );
             // --- End Add Copy Action to History Message ---
-
+if(msg.role != 'user'){
             chatContent.appendChild(msgDiv);
+}
+else{
+    const userMessageContainer = document.createElement('div');
+    userMessageContainer.className = 'ds-user-hmessage-container'; // 可自定义类名用于样式调整
+    userMessageContainer.style.display = 'flex';
+    userMessageContainer.style.justifyContent = 'flex-end'; // 让内容靠右
+   // userMessageContainer.style.alignItems = 'center'; // 垂直居中对齐
+
+    // 总是添加到历史记录，但内容会根据isSummaryTask变化
+
+    // 创建头像元素
+    const avatar = document.createElement('img');
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQElEQVR4nO2XQW6DMBBFX1gkh0jgCm2XcAXCrixyhybHbNoVvUpF9o6QBqmqWoUah7HVedLfRBj/DzNkDIZhhCQDCqACaqAV1fJbIddESQ40wOGGGrk2GlbA0wTj3zWsGdaq42N+1KO2+XyG+VE7LfPZxJqf0hOZRoAigPmDaLjX4lQBA5QaAfYBA9QaAdqAAdrUAzxrBEi+hKrUm7gIGCDXCJAFKqNGc0JNepQIMcw9EAErmSr/an5YE8U4PbKb2BP7GMrm1pGy/OFIWUrPRHukNAzDuA8b4AS8ARfA3VkX2esoe89iC3wsYNr9ok48eD95TfPuSwivN3GKwLwTvfgEeI/AuBOdfQL0ERh3oj71AJ//soSOERh3c5p4I58wbfMdsMaTrXKIbs4f2chaXuF5ocbugVfZ0/vJG4ZhsAhXSvn7fc8Yyv8AAAAASUVORK5CYII=";
+    avatar.alt = "user";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
+    //avatar.style.marginLeft = "10px"; 
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA4UlEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAAElFTkSuQmCC";
+    avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
+    avatar.style.marginTop = "10px"; // 可以根据需要调整头像和消息块的间距
+    avatar.style.width = "30px"; // 可以根据需要调整宽度
+    avatar.style.height = "30px"; // 可以根据需要调整高度
+
+    // 将用户消息块和头像添加到容器
+    userMessageContainer.appendChild(msgDiv);
+    userMessageContainer.appendChild(avatar);
+
+    // 将容器添加到聊天内容区域
+    chatContent.appendChild(userMessageContainer);
+}
         });
         chatContent.scrollTop = chatContent.scrollHeight;
     }
@@ -3428,7 +3463,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
             reasoningDiv.style.display = 'none'; // 隐藏思考区域
 
             // 保存系统提示到历史记录
-            config.chatHistory.push({ role: 'system', content: '用户中断了对话输出....'});
+            config.chatHistory.push({ role: 'assistant', content: '用户中断了对话输出....'});
             GM_setValue('chatHistory', config.chatHistory);
 
             // 显示发送按钮
@@ -3591,7 +3626,7 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                          if (!isReasoningReceived && !reasoningTitleDiv && aiMsgDiv.contains(reasoningDiv)) {
                             const noReasoningTitle = document.createElement('div');
                             noReasoningTitle.className = 'ds-reasoning-title';
-                            noReasoningTitle.innerText = '注意: 该模型没有输出思考过程。';
+                            noReasoningTitle.innerText = '注意: 该模型没有思考过程。';
                             aiMsgDiv.insertBefore(noReasoningTitle, reasoningDiv);
                          }
 
@@ -3844,7 +3879,7 @@ config.fullConversation.push({
    
     // 总是添加到历史记录，但内容会根据isSummaryTask变化
     const userMsgDiv = document.createElement('div');
-    userMsgDiv.className = 'ds-chat-message ds-user-message ds-chat-message';
+    userMsgDiv.className = 'ds-chat-message ds-user-message';
     userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : (message));
     //addCopyButtonsToCodeBlocks(userMsgDiv);
     //Add_codebutton();
@@ -3901,27 +3936,13 @@ config.fullConversation.push({
     avatar.alt = "user";
     //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
     //avatar.style.marginLeft = "10px"; 
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA4UlEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAAElFTkSuQmCC";
     avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
     avatar.style.marginTop = "15px"; // 可以根据需要调整头像和消息块的间距
     avatar.style.width = "30px"; // 可以根据需要调整宽度
     avatar.style.height = "30px"; // 可以根据需要调整高度
 
-    // 将用户消息块和头像添加到容器
-    userMessageContainer.appendChild(userMsgDiv);
-    userMessageContainer.appendChild(avatar);
-
-    // 将容器添加到聊天内容区域
-    chatContent.appendChild(userMessageContainer);
-
-    const thinkingMsgDiv = document.createElement('div');
-    thinkingMsgDiv.className = 'ds-reasoning-title';
-    thinkingMsgDiv.innerText = '思考中...';
-    chatContent.appendChild(thinkingMsgDiv);
-
-    const aiMsgDiv = document.createElement('div');
-    aiMsgDiv.className = 'ds-chat-message ds-ai-message';
-    chatContent.appendChild(aiMsgDiv);
-
+  
     // 示例：只在用户当前已经接近底部时自动滚动
 const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
 if (isNearBottom) {
@@ -3959,14 +3980,29 @@ if (isNearBottom) {
     } catch (e) {
         console.error("Error updating conversation token count:", e);
     }
+  // 将用户消息块和头像添加到容器
+  userMessageContainer.appendChild(userMsgDiv);
+  userMessageContainer.appendChild(avatar);
 
-    userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内容之后
+  // 将容器添加到聊天内容区域
+  chatContent.appendChild(userMessageContainer);
+
+  const thinkingMsgDiv = document.createElement('div');
+  thinkingMsgDiv.className = 'ds-reasoning-title';
+  thinkingMsgDiv.innerText = '思考中...';
+  chatContent.appendChild(thinkingMsgDiv);
+
+  const aiMsgDiv = document.createElement('div');
+  aiMsgDiv.className = 'ds-chat-message ds-ai-message';
+  chatContent.appendChild(aiMsgDiv);
+
+userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内容之后
 
     // 构建请求数据 - 总是发送完整消息给AI
     const requestData = {
         model: config.model,
         messages: [
-            { role: 'system', content: config.personalityPrompt },
+            { role: 'assistant', content: config.personalityPrompt },
             ...truncateContext(config.chatHistory, config.maxContextTokens)
         ],
         temperature: config.temperature,
@@ -3986,7 +4022,7 @@ if (isNearBottom) {
         // 普通对话的网页上下文
         const pageContent = getPageContent();
         requestData.messages.splice(1, 0, {
-            role: 'system',
+            role: 'assistant',
             content: `[当前网页信息]\n标题: ${pageContent.title}\nURL: ${pageContent.url}\n正文内容: ${pageContent.content}\n注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
         });
     }
