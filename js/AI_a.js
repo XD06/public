@@ -343,6 +343,7 @@ function GM_xmlhttpRequest(options) {
             width: fit-content;
             display: block;
             font-weight: 500;
+            max-width: 88%;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
         .ds-ai-message {
@@ -545,7 +546,7 @@ function GM_xmlhttpRequest(options) {
             height: auto;
             width: fit-content;
             display: block;
-		max-width: 85%;
+		    max-width: 88%;
             font-weight: 500;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
