@@ -545,7 +545,7 @@ function GM_xmlhttpRequest(options) {
             height: auto;
             width: fit-content;
             display: block;
-		max-width: 89%;
+		max-width: 85%;
             font-weight: 500;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
