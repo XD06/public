@@ -545,6 +545,7 @@ function GM_xmlhttpRequest(options) {
             height: auto;
             width: fit-content;
             display: block;
+		max-width: 89%;
             font-weight: 500;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
@@ -1274,8 +1275,7 @@ let pyodideInstance = null;
                 
                 // 预加载更多基础包
                 await pyodide.loadPackage([
-                    "pandas","numpy","micropip","matplotlib", 
-                    "scipy","scikit-learn","sympy"
+                    "pandas","numpy","micropip","matplotlib"
                 ]);
                 
                 clearTimeout(timeout);
@@ -1286,8 +1286,7 @@ let pyodideInstance = null;
                     await pyodide.runPythonAsync(`
                         import micropip
                         await micropip.install([
-                            'nltk', 'pillow', 'networkx', 'plotly',
-                            'requests', 'beautifulsoup4'
+                            'nltk', 'pillow','requests'
                         ])
                     `);
                     console.log("额外包安装完成");
@@ -1416,153 +1415,36 @@ let pyodideInstance = null;
     });
 }
 
-
 //检测代码类型
-function hasHtmlTags(code) {
-    // 检查常见的HTML标签，提高检测精度
-    const htmlTagRegex = /<([a-z][a-z0-9]*)(?:\s+[^>]*)?>|<\/[a-z][a-z0-9]*>|<!DOCTYPE\s+html|<html|<head|<body|<div|<p|<span|<img|<a\s|<ul|<li|<table|<script|<style|<link/i;
-    
-    // 对于更复杂的HTML检测
-    if (htmlTagRegex.test(code)) {
-        return true;
-    }
-    
-    // 检查是否包含多个HTML标签对，这样可以区分单个<>符号和真正的HTML
-    const openingTags = code.match(/<[a-z][a-z0-9]*(?:\s+[^>]*)?>/gi) || [];
-    const closingTags = code.match(/<\/[a-z][a-z0-9]*>/gi) || [];
-    
-    // 如果同时有开标签和闭标签，更可能是HTML
-    return openingTags.length > 0 && closingTags.length > 0;
-}
-
-// 检查CSS样式
-function hasCssStyles(code) {
-    // 检查CSS选择器或属性
-    const cssRegex = /{[^}]*:[^}]*}|\.\w+\s*\{|\#\w+\s*\{|@media\s|@keyframes\s/i;
-    return cssRegex.test(code);
-}
-
-// 检查JavaScript代码
-function hasJavaScriptCode(code) {
-    // 检查JS关键字和语法
-    const jsRegex = /\b(function|=>|var\s|let\s|const\s|console\.|document\.|window\.|\.addEventListener\()/;
-    return jsRegex.test(code);
-}
-
-// 检查Python特有语法
-function hasPythonSpecificSyntax(code) {
-    // 检查Python特有语法
-    const pythonRegex = /^(?:def\s|class\s|import\s|from\s|print\(|lambda\s|async\sdef\s|await\s|yield\s|with\s|as\s|try\s|except\s|finally\s|raise\s|elif\s|@\w+)/m;
-
-    // Python特有的函数和库
-    const pythonFunctions = /\b(?:len|range|enumerate|zip|dict|list|tuple|set|sum|min|max|sorted|filter|map|any|all|isinstance|issubclass|hasattr|getattr|setattr|delattr|globals|locals)\s*\(/;
-    
-    // Python特有的库
-    const pythonLibs = /\b(?:numpy|pandas|matplotlib|scipy|torch|tensorflow|sklearn|os|sys|re|json|math|random|datetime|collections|itertools|functools)\b/;
-    
-    // Python特有的关键字
-    const pythonKeywords = /\b(?:and|or|not|is|in|None|True|False|pass|continue|break|return|assert|global|nonlocal)\b/;
-
-    // 检查Python特有的缩进块
-    const lines = code.split('\n');
-    let pythonIndentation = false;
-    let colonEndedLine = false;
-    let indentedBlockFollow = false;
-
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-
-        // 空行跳过
-        if (!line) continue;
-
-        // 上一行以冒号结尾，检查下一行是否有缩进
-        if (colonEndedLine && i > 0) {
-            if (lines[i].match(/^\s+/) && lines[i-1].trim().endsWith(':')) {
-                indentedBlockFollow = true;
-            }
-            colonEndedLine = false;
-        }
-
-        // 检查这一行是否以冒号结尾
-        if (line.endsWith(':')) {
-            colonEndedLine = true;
-        }
-
-        // 检查Python特有的控制结构
-        if (line.match(/^(if|elif|else|for|while|try|except|finally|with|def|class)\s+.*:$/)) {
-            // 检查下一行是否有缩进
-            if (i < lines.length - 1 && lines[i+1].match(/^\s+/)) {
-                pythonIndentation = true;
-                break;
-            }
-        }
-    }
-
-    return pythonRegex.test(code) || 
-           pythonFunctions.test(code) || 
-           pythonLibs.test(code) || 
-           pythonKeywords.test(code) || 
-           pythonIndentation || 
-           indentedBlockFollow;
-}
 
 function detectCodeType(code) {
-    // 去除注释和字符串内容，只保留代码结构
     const cleanedCode = code.trim();
     
-    // 显式的语言标记 - 优先考虑显式标记
-    if (cleanedCode.startsWith('```python') || 
-        cleanedCode.startsWith('```py') || 
-        cleanedCode.match(/^#\s*python\b/)) {
+    // 1. 先检查显式标记
+    if (cleanedCode.startsWith('```python') || cleanedCode.startsWith('```py')) {
+        return 'python';
+    }
+    if (cleanedCode.startsWith('```html')) {
+        return 'html';
+    }
+
+    // 2. 检查HTML特征
+    const htmlTagRegex = /<([a-z][a-z0-9]*)(?:\s+[^>]*)?>|<\/[a-z][a-z0-9]*>|<!DOCTYPE\s+html|<html|<head|<body|<div|<p|<span|<img|<a\s|<ul|<li|<table|<script|<style|<link/i;
+    if (htmlTagRegex.test(cleanedCode)) {
+        return 'html';
+    }
+
+    // 3. 检查Python特征
+    const pythonKeywords = /\b(def\s|class\s|import\s|from\s|print\(|lambda\s|async\s|await\s|yield\s|with\s|as\s|try\s|except\s|finally\s|raise\s|elif\s|@\w+)\b/;
+    const pythonIndent = /^\s+(if|elif|else|for|while|try|except|finally|with|def|class)\b.*:\s*$/m;
+    
+    if (pythonKeywords.test(cleanedCode) || pythonIndent.test(cleanedCode)) {
         return 'python';
     }
 
-    if (cleanedCode.startsWith('```html') || 
-        cleanedCode.startsWith('```css') || 
-        cleanedCode.startsWith('```javascript') || 
-        cleanedCode.startsWith('```js')) {
-        return 'html';
-    }
-
-    // 检查HTML标签 - HTML检测优先级提高
-    if (hasHtmlTags(cleanedCode)) {
-        return 'html';
-    }
-
-    // 检查CSS样式
-    if (hasCssStyles(cleanedCode)) {
-        return 'html';
-    }
-
-    // 检查JavaScript代码
-    if (hasJavaScriptCode(cleanedCode)) {
-        return 'html';
-    }
-    
-    // 检查Python特有语法
-    if (hasPythonSpecificSyntax(cleanedCode)) {
-        return 'python';
-    }
-
-    // 如果无法确定，根据启发式判断
-    // 存在缩进、使用#作为注释、没有花括号或分号，更可能是Python
-    const hasPythonHeuristics = cleanedCode.includes('#') && 
-                        !cleanedCode.includes('{') && 
-                        !cleanedCode.includes(';');
-    
-    if (hasPythonHeuristics) {
-        return 'python';
-    }
-    
-    // 更改默认行为：如果代码里包含任何<>字符，视为HTML
-    if (cleanedCode.includes('<') || cleanedCode.includes('>')) {
-        return 'html';
-    }
-    
-    // 最后的默认值改为python，这样纯文本代码会尝试执行Python
-    return 'python';
+    // 4. 默认返回none表示无法确定类型
+    return 'none';
 }
-
     // 动态加载依赖库
     function loadScript(url) {
         return new Promise((resolve, reject) => {
@@ -3880,7 +3762,7 @@ config.fullConversation.push({
     // 总是添加到历史记录，但内容会根据isSummaryTask变化
     const userMsgDiv = document.createElement('div');
     userMsgDiv.className = 'ds-chat-message ds-user-message';
-    userMsgDiv.innerHTML = marked.parse(isSummaryTask ? '正在总结当前网页...' : (message));
+    userMsgDiv.innerHTML = (isSummaryTask ? '正在总结当前网页...' : (message));
     //addCopyButtonsToCodeBlocks(userMsgDiv);
     //Add_codebutton();
 
@@ -4260,7 +4142,8 @@ function addButtonsToPre(preElement) {
     // 2. 添加"运行"按钮 (如果适用)
     try {
         const codeType = detectCodeType(codeText);
-        if (codeType === 'python' || codeType === 'html') {
+
+        if (codeType == 'python' || codeType == 'html') {
             const runBtn = document.createElement('button');
             runBtn.className = 'code-execute-btn'; // 定义你的运行按钮样式
             runBtn.textContent = '运行';
@@ -4356,7 +4239,7 @@ function addButtonsToPre(preElement) {
             const code = pre.textContent;
             const codeType = detectCodeType(code);
             
-            if (codeType === 'python' || codeType === 'html') {
+            if (codeType == 'python' || codeType == 'html') {
                 const runBtn = document.createElement('button');
                 runBtn.className = 'code-hexecute-btn';
                 runBtn.textContent = '运行';
