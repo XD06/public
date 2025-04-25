@@ -352,7 +352,7 @@ function GM_xmlhttpRequest(options) {
             width: fit-content;
             display: block;
             font-weight: 500;
-            max-width: 88%;
+            max-width: -moz-available;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
         .ds-ai-message {
@@ -362,6 +362,8 @@ function GM_xmlhttpRequest(options) {
             color: rgb(0,0,0); /* 修改字体颜色 */
             padding: 5px 20px;
             text-align: left;
+             width: fit-content;
+            max-width: -moz-available;
              font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
     .ds-chat-message img{
@@ -563,7 +565,7 @@ function GM_xmlhttpRequest(options) {
             height: auto;
             width: fit-content;
             display: block;
-		    max-width: 88%;
+		    max-width: -moz-available;
             font-weight: 500;
             font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
@@ -579,6 +581,8 @@ function GM_xmlhttpRequest(options) {
             color: rgb(0,0,0); /* 修改字体颜色 */
             padding: 5px 20px;
             text-align: left;
+            width: fit-content;
+            max-width: -moz-available;
              font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
         .ds-chat-message {
@@ -1160,20 +1164,54 @@ display: none;
     text-align: right;
     margin-right: 5px;
 }
-    .ds-ai-message table{
-    margin-top: 0.1em; /* 列表项内的段落用更小的间距 */
-    margin-bottom: 0.1em;
-    display: inline-grid;
-    }
-       .ds-ai-hmessage table{
-    margin-top: 0.1em; /* 列表项内的段落用更小的间距 */
-    margin-bottom: 0.1em;
-        display: inline-grid;
-    }
+
     .ds-user-message-container{
     margin-left: 5px;}
     .ds-user-hmessage-container{
     margin-left: 5px;}
+    .ds-scroll-to-bottom {
+  position: absolute;
+  right: 45%;
+  bottom: 20%;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2147483646;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.ds-scroll-to-bottom:hover {
+  background-color: rgba(255,255,255,0);
+  animation: none;
+  transform: scale(1.1);
+}
+
+.ds-scroll-to-bottom img {
+  width: 20px;
+  height: 20px;
+}
 `;
 
    
@@ -1916,6 +1954,75 @@ startButton.addEventListener('mouseout', () => {
                 clearBtn.title = '清空聊天历史'; // 添加提示
                 settingsArea.appendChild(clearBtn);
         
+                const scrollToBottomBtn = document.createElement('div');
+                scrollToBottomBtn.className = 'ds-scroll-to-bottom';
+                scrollToBottomBtn.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+ElEQVR4nO2ZQQ6CMBBF34pjqGcR9IgKlxPRC6hrkjEmXUxIXNCGFs1/yWz//Cm/JAwghBBrZwd0wB0YAVu4xtCrBbap5o/AK4Np+1JPoEk5+ZLmzQ2xiRmgcyIXYA9ULE8F1EDv+p9jhO5O4GM+N7XrP8QI+Aub4+SnVJOLPRufw1JYigdbWc2mtGHTAPzRHSiFaQD0BJIwRQhFKAlThFCEkjBFCEUoCVOE+JMI2QpqNqUNmwbgx7/Ixl9fbN0KrxYb1/8aI9A6gT4I5lruHibL3VOM0Dastku/fR6x63XCqT8Lm69JZBMe4ZDxF9MQekafvBBCkIU3HL4pE5WP8IAAAAAASUVORK5CYII=" alt="new-presentation">';
+                
+                scrollToBottomBtn.title = '滚动到底部';
+                chatWindow.appendChild(scrollToBottomBtn);
+                // 监听滚动事件
+        let isUserScrolling = false;
+        let scrollTimeout = null;
+        // 修改滚动检测逻辑，确保更精确判断是否接近底部
+        // 修改滚动检测逻辑，确保按钮能正确显示
+        // 修改滚动检测逻辑，确保更精确判断是否接近底部
+        function checkScrollPosition() {
+            const chatContent = document.querySelector('.ds-chat-content');
+            if (!chatContent) return;
+            if (chatContent) {
+                const computedStyle = getComputedStyle(chatContent);
+                const contentHeight = parseFloat(computedStyle.height) || 0;
+                
+                // 如果内容高度不足100px或者没有足够内容需要滚动
+                if (contentHeight < 100 || chatContent.scrollHeight <= chatContent.clientHeight) {
+                    scrollToBottomBtn.style.display = 'none';
+                    return;
+                }
+            }
+          
+            // 增加滚动阈值到150px，避免过于敏感
+            const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 150;
+            
+            // 确保scrollToBottomBtn已定义
+            if (typeof scrollToBottomBtn !== 'undefined' && scrollToBottomBtn) {
+              scrollToBottomBtn.style.display = (isNearBottom || isUserScrolling) ? 'none' : 'flex';
+            }
+          }
+          
+          // 确保滚动按钮点击事件绑定正确
+          if (scrollToBottomBtn) {
+            scrollToBottomBtn.addEventListener('click', () => {
+              const chatContent = document.querySelector('.ds-chat-content');
+              if (chatContent) {
+                chatContent.scrollTo({
+                  top: chatContent.scrollHeight,
+                  behavior: 'smooth'
+                });
+                
+                // 滚动后强制隐藏按钮
+                setTimeout(() => {
+                  if (scrollToBottomBtn) {
+                    scrollToBottomBtn.style.display = 'none';
+                  }
+                }, 500);
+              }
+            });
+          }
+          
+          // 修改滚动事件监听，增加防抖
+          if (chatContent) {
+            chatContent.addEventListener('scroll', () => {
+              isUserScrolling = true;
+              checkScrollPosition();
+          
+              // 使用更可靠的防抖逻辑
+              clearTimeout(scrollTimeout);
+              scrollTimeout = setTimeout(() => {
+                isUserScrolling = false;
+                checkScrollPosition();
+              }, 300); // 缩短防抖时间到300ms
+            });
+          }
                 // 显示历史消息
                 // ... 已有代码 ...
         
@@ -3849,9 +3956,14 @@ if (message.startsWith('/image ')) {
         // 保存到历史记录
         config.chatHistory.push({
             role: 'assistant',
-            content: `🤖：根据<strong>"${prompt}"</strong>生成的图像:<br>![Generated Image](${imageUrl})`
+            content: `生成的图像:<br>![Generated Image](${imageUrl})`
+        });
+        config.fullConversation.push({
+            role: 'user',
+            content: `生成的图像:<br>![Generated Image](${imageUrl})`
         });
         GM_setValue('chatHistory', config.chatHistory);
+        GM_setValue('fullConversation', config.fullConversation);
     })
     .catch(error => console.error("生成失败:", error));
     setTimeout(() => {
