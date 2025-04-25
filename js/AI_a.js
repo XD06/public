@@ -103,6 +103,14 @@ function GM_xmlhttpRequest(options) {
             0% { transform: scale(1); }
             100% { transform: scale(1.15); }
         }
+ .ds-chat-message table{
+       overflow: auto;
+      display:block;
+      }
+        .ds-chat-hmessage table{
+      overflow: auto;
+      display:block;
+      }
         
         /* 修复按钮图像样式问题 */
         .ds-stop-img, .ds-start-img {
@@ -319,6 +327,7 @@ function GM_xmlhttpRequest(options) {
             background-color: #FFFFFF;
             padding: 5px 5px;
             max-width: 100%;
+            margin-top: 10px;
             border-radius: 10px;
             line-height: 1.2;
             word-wrap: break-word;
@@ -355,6 +364,14 @@ function GM_xmlhttpRequest(options) {
             text-align: left;
              font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
         }
+    .ds-chat-message img{
+    width: 100%;
+    height: auto;
+    }
+        .ds-chat-hmessage img{
+    width: 100%;
+    height: 100%;
+    }
 
         .ds-chat-input-area {
             padding: 10px;
@@ -3709,9 +3726,139 @@ function truncateContext(messages, maxContextTokens) {
     return messages;
 }
 
+
+// ... 其他工具函数 ...
+
+/**
+ * 添加消息到聊天界面
+ * @param {string} role - 'user' 或 'assistant' 或 'system'
+ * @param {string} content - 消息内容
+ */
+function addMessage(role, content) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `ds-chat-message ds-${role}-message`;
+    msgDiv.innerHTML = marked.parse(content);
+    chatContent.appendChild(msgDiv);
+    
+    // 自动滚动到底部
+    const isNearBottom = chatContent.scrollHeight - chatContent.scrollTop - chatContent.clientHeight < 100;
+    if (isNearBottom) {
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+}
+
+// ... 后续是 sendMessage 函数 ...
+//发送图像请求
+// 修改后的图像生成函数
+// 修改后的图像生成函数
+function generateImage(prompt, options = {}, callback) {
+    // 合并默认参数和用户自定义参数
+    const params = {
+      model: "Kwai-Kolors/Kolors",
+      prompt: prompt,
+      image_size: "1024x1024",
+      batch_size: 1,
+      num_inference_steps: 20,
+      guidance_scale: 7.5,
+      ...options
+    };
+  
+    // 请求配置
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer sk-vlyhjprkmppnkatcgirrjckzisxjdrhjtnujzsvibjyncfjw',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    };
+  
+    // 同时支持Promise和Callback两种方式
+    if (typeof callback === 'function') {
+      fetch('https://api.siliconflow.cn/v1/images/generations', requestOptions)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data?.images?.[0]?.url) {
+            callback(null, data.images[0].url);
+          } else {
+            callback(new Error('API返回的数据结构异常'));
+          }
+        })
+        .catch(err => callback(err));
+    } else {
+      return fetch('https://api.siliconflow.cn/v1/images/generations', requestOptions)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data?.images?.[0]?.url) {
+            return data.images[0].url;
+          }
+          throw new Error('API返回的数据结构异常');
+        });
+    }
+  }
 // 发送消息函数
 async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
  startButton.style.display = 'none'; // 隐藏发送按钮
+//图片命令
+if (message.startsWith('/image ')) {
+    const prompt = message.substring(7).trim();
+    if (!prompt) {
+        addMessage('system', '请输入图像描述，例如: /image 美丽的风景');
+        return;
+    }
+
+    // 显示正在生成的消息
+    const thinkingDiv = document.createElement('div');
+    thinkingDiv.className = 'ds-chat-message ds-ai-message';
+    thinkingDiv.innerHTML = `<div class="ds-message-content">正在生成图像: ${prompt}...</div>`;
+    chatContent.appendChild(thinkingDiv);
+    chatContent.scrollTop = chatContent.scrollHeight;
+
+    // 调用图像生成函数
+    console.log('提示词:', prompt);
+    generateImage(prompt)
+    .then(imageUrl => {
+      console.log("生成的图片URL:", imageUrl);
+        if (thinkingDiv.parentNode) {
+            chatContent.removeChild(thinkingDiv);
+        }
+
+        if (!imageUrl) {
+            addMessage('system', `图像生成失败: ${error.message}`);
+            return;
+        }
+
+        // 创建包含图像的div
+        const imageDiv = document.createElement('div');
+        imageDiv.className = 'ds-chat-message ds-ai-message';
+        let imageMarkdown = `🤖：根据<strong>"${prompt}"</strong>生成的图像:<br>![Generated Image](${imageUrl})`;
+        imageDiv.innerHTML = marked.parse(imageMarkdown);
+        chatContent.appendChild(imageDiv);
+       
+
+        // 保存到历史记录
+        config.chatHistory.push({
+            role: 'assistant',
+            content: `🤖：根据<strong>"${prompt}"</strong>生成的图像:<br>![Generated Image](${imageUrl})`
+        });
+        GM_setValue('chatHistory', config.chatHistory);
+    })
+    .catch(error => console.error("生成失败:", error));
+    setTimeout(() => {
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }, 4000);
+    return;
+}
 
     if (!message.trim()) return;
 
@@ -4910,3 +5057,10 @@ show_df(dept_avg)
         executeCode(code, 'python');
     });
 }
+// ... existing code ...
+
+// 图像生成函数
+
+
+
+// ... rest of existing code ...
