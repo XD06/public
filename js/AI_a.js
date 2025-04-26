@@ -1540,7 +1540,7 @@ function detectCodeType(code) {
                 // 创建UI元素 - 只在body元素下添加
                 const icon = document.createElement('div');
                 icon.className = 'ds-chat-icon';
-                icon.innerHTML = `<img src="/img/icon.apng" style="width: 30px; height: 30px; border-radius: 50%;">`;
+                icon.innerHTML = `<img src="/img/icon.png" style="width: 30px; height: 30px; border-radius: 50%;">`;
 
                 // 确保只添加到body元素，而不是其他元素
                 document.body.appendChild(icon);
