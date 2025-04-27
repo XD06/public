@@ -541,7 +541,7 @@ function GM_xmlhttpRequest(options) {
             padding: 5px 5px;
             max-width: 100%;
             margin-top: 10px;
-            padding-bottom: 0px !important;
+            padding-bottom: 4px !important;
             border-radius: 10px;
             line-height: 1.2;
             word-wrap: break-word;
@@ -557,10 +557,10 @@ function GM_xmlhttpRequest(options) {
             background-color: #FFFFFF;
             color: rgb(0,0,0);
             margin-left: auto;
-            padding-bottom: 0px!important;
+            padding-bottom: 15px!important;
             margin-top: 10px;
             //text-align: right;
-            padding: 1px 10px;
+            padding: 15px 10px;
             border-radius: 15px;
             height: auto;
             width: fit-content;
@@ -1212,6 +1212,46 @@ display: none;
   width: 20px;
   height: 20px;
 }
+    /* 消息容器样式 */
+.ds-message-container {
+    position: relative;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+/* 消息选项按钮样式 */
+.ds-message-options-btn {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    background: transparent !important;
+}
+
+.ds-message-options-btn:hover {
+    opacity: 1;
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* 消息选项菜单样式 */
+.ds-message-options-menu {
+    min-width: 120px;
+    z-index: 2147483647;
+}
+
+.ds-message-option {
+    transition: background-color 0.2s;
+}
+
+/* 复制成功提示样式 */
+.copy-success {
+    animation: fadeIn 0.3s, fadeOut 1.5s 0.5s forwards;
+    z-index: 2147483647;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+  
 `;
 
    
@@ -2041,64 +2081,65 @@ startButton.addEventListener('mouseout', () => {
             msgDiv.innerHTML = contentWithLabel;
             }
             // Add code buttons if any pre tags exist
+            
             addCopyButtonsToCodeBlocks(msgDiv);
-
+            const msgsDiv = addMessageOptionsMenu(msgDiv);
             // --- Add Copy Action to History Message ---
-            const historyActionsDiv = document.createElement('div');
-            historyActionsDiv.className = 'ds-message-actions';
+            // const historyActionsDiv = document.createElement('div');
+            // historyActionsDiv.className = 'ds-message-actions';
 
-            const historyTriggerSpan = document.createElement('span');
-            historyTriggerSpan.className = 'ds-actions-trigger';
-            historyTriggerSpan.textContent = '...';
-            historyTriggerSpan.title = '更多操作';
+            // const historyTriggerSpan = document.createElement('span');
+            // historyTriggerSpan.className = 'ds-actions-trigger';
+            // historyTriggerSpan.textContent = '...';
+            // historyTriggerSpan.title = '更多操作';
 
-            const historyCopyMsgButton = document.createElement('button');
-            historyCopyMsgButton.className = 'ds-copy-conversation-btn';
-            historyCopyMsgButton.textContent = 'copy';
-            historyCopyMsgButton.title = 'copy此历史消息内容';
+            // const historyCopyMsgButton = document.createElement('button');
+            // historyCopyMsgButton.className = 'ds-copy-conversation-btn';
+            // historyCopyMsgButton.textContent = 'copy';
+            // historyCopyMsgButton.title = 'copy此历史消息内容';
 
-            historyActionsDiv.appendChild(historyTriggerSpan);
-            historyActionsDiv.appendChild(historyCopyMsgButton);
-            msgDiv.appendChild(historyActionsDiv);
+            // historyActionsDiv.appendChild(historyTriggerSpan);
+            // historyActionsDiv.appendChild(historyCopyMsgButton);
+            // msgDiv.appendChild(historyActionsDiv);
 
-            // Ensure container has styles needed for positioning
-            if (window.getComputedStyle(msgDiv).position === 'static') {
-                msgDiv.style.position = 'relative';
-            }
-            msgDiv.style.paddingBottom = '25px';
+            // // Ensure container has styles needed for positioning
+            // if (window.getComputedStyle(msgDiv).position === 'static') {
+            //     msgDiv.style.position = 'relative';
+            // }
+            // msgDiv.style.paddingBottom = '25px';
 
-            historyTriggerSpan.addEventListener('click', (e) => {
-                e.stopPropagation();
-                //historyTriggerSpan.style.display = 'none';
-                const isVisible = historyCopyMsgButton.style.display !== 'none';
-                historyCopyMsgButton.style.display = isVisible ? 'none' : 'inline-block';
-                //historyTriggerSpan.style.display = 'none';
-            });
+            // historyTriggerSpan.addEventListener('click', (e) => {
+            //     e.stopPropagation();
+            //     //historyTriggerSpan.style.display = 'none';
+            //     const isVisible = historyCopyMsgButton.style.display !== 'none';
+            //     historyCopyMsgButton.style.display = isVisible ? 'none' : 'inline-block';
+            //     //historyTriggerSpan.style.display = 'none';
+            // });
 
-            historyCopyMsgButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // Use the originalContent variable captured earlier
-                navigator.clipboard.writeText(originalContent).then(() => {
-                    historyCopyMsgButton.textContent = '已copy!';
-                    historyCopyMsgButton.style.backgroundColor = '#28a745';
-                    setTimeout(() => {
-                        historyCopyMsgButton.textContent = 'copy';
-                        historyCopyMsgButton.style.backgroundColor = '#666';
-                        historyCopyMsgButton.style.display = 'none';
-                    }, 1500);
-                }).catch(err => {
-                    console.error('copy历史消息失败:', err);
-                    historyCopyMsgButton.textContent = '失败';
-                    setTimeout(() => {
-                        historyCopyMsgButton.textContent = 'copy';
-                        historyCopyMsgButton.style.display = 'none';
-                    }, 1500);
-                });
-            }
-        );
+        //     historyCopyMsgButton.addEventListener('click', (e) => {
+        //         e.stopPropagation();
+        //         // Use the originalContent variable captured earlier
+        //         navigator.clipboard.writeText(originalContent).then(() => {
+        //             historyCopyMsgButton.textContent = '已copy!';
+        //             historyCopyMsgButton.style.backgroundColor = '#28a745';
+        //             setTimeout(() => {
+        //                 historyCopyMsgButton.textContent = 'copy';
+        //                 historyCopyMsgButton.style.backgroundColor = '#666';
+        //                 historyCopyMsgButton.style.display = 'none';
+        //             }, 1500);
+        //         }).catch(err => {
+        //             console.error('copy历史消息失败:', err);
+        //             historyCopyMsgButton.textContent = '失败';
+        //             setTimeout(() => {
+        //                 historyCopyMsgButton.textContent = 'copy';
+        //                 historyCopyMsgButton.style.display = 'none';
+        //             }, 1500);
+        //         });
+        //     }
+        // );
             // --- End Add Copy Action to History Message ---
 if(msg.role != 'user'){
-            chatContent.appendChild(msgDiv);
+            chatContent.appendChild(msgsDiv);
 }
 else{
     const userMessageContainer = document.createElement('div');
@@ -2122,11 +2163,12 @@ else{
     avatar.style.height = "30px"; // 可以根据需要调整高度
 
     // 将用户消息块和头像添加到容器
-    userMessageContainer.appendChild(msgDiv);
+    userMessageContainer.appendChild(msgsDiv);
     userMessageContainer.appendChild(avatar);
 
     // 将容器添加到聊天内容区域
     chatContent.appendChild(userMessageContainer);
+    //addMessageOptionsMenu(userMessageContainer);
 }
         });
         chatContent.scrollTop = chatContent.scrollHeight;
@@ -3676,58 +3718,59 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
                         }
 
                         // --- Add Copy Conversation Button logic ---
-                        const actionsDiv = document.createElement('div');
-                        actionsDiv.className = 'ds-message-actions';
+                        const actionsDiv = copyMessage(accumulatedAiText,"ai");
+                        // const actionsDiv = document.createElement('div');
+                        // actionsDiv.className = 'ds-message-actions';
 
-                        const triggerSpan = document.createElement('span');
-                        triggerSpan.className = 'ds-actions-trigger';
-                        triggerSpan.textContent = '...';
-                        triggerSpan.title = '更多操作';
+                        // const triggerSpan = document.createElement('span');
+                        // triggerSpan.className = 'ds-actions-trigger';
+                        // triggerSpan.textContent = '...';
+                        // triggerSpan.title = '更多操作';
 
-                        const copyConvButton = document.createElement('button');
-                        copyConvButton.className = 'ds-copy-conversation-btn';
-                        copyConvButton.textContent = 'copy';
+                        // const copyConvButton = document.createElement('button');
+                        // copyConvButton.className = 'ds-copy-conversation-btn';
+                        // copyConvButton.textContent = 'copy';
 
-                        actionsDiv.appendChild(triggerSpan);
-                        actionsDiv.appendChild(copyConvButton);
+                        // actionsDiv.appendChild(triggerSpan);
+                        // actionsDiv.appendChild(copyConvButton);
                         aiMsgDiv.appendChild(actionsDiv);
 
-                        triggerSpan.addEventListener('click', (e) => {
-                            e.stopPropagation(); // Prevent triggering other clicks
-                            const isVisible = copyConvButton.style.display !== 'none';
-                            copyConvButton.style.display = isVisible ? 'none' : 'inline-block';
-                        });
+                        // triggerSpan.addEventListener('click', (e) => {
+                        //     e.stopPropagation(); // Prevent triggering other clicks
+                        //     const isVisible = copyConvButton.style.display !== 'none';
+                        //     copyConvButton.style.display = isVisible ? 'none' : 'inline-block';
+                        // });
 
-                        copyConvButton.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            let conversationText = '';
-                            config.fullConversation.forEach(msg => {
-                                const role = 'AI';
-                                const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
+                        // copyConvButton.addEventListener('click', (e) => {
+                        //     e.stopPropagation();
+                        //     let conversationText = '';
+                        //     config.fullConversation.forEach(msg => {
+                        //         const role = 'AI';
+                        //         const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
                                 
-                                if (msg.role === 'assistant' && msg.hasReasoning && msg.reasoningContent) {
-                                    conversationText += `  (Thinking: ${msg.reasoningContent.replace(/\n/g, '\n  ')})\n`;
-                                }
-                                conversationText = `${role} [${time}]:\n`+`${accumulatedAiText}\n\n`;
-                            });
+                        //         if (msg.role === 'assistant' && msg.hasReasoning && msg.reasoningContent) {
+                        //             conversationText += `  (Thinking: ${msg.reasoningContent.replace(/\n/g, '\n  ')})\n`;
+                        //         }
+                        //         conversationText = `${role} [${time}]:\n`+`${accumulatedAiText}\n\n`;
+                        //     });
 
-                            navigator.clipboard.writeText(conversationText.trim()).then(() => {
-                                copyConvButton.textContent = '已copy!';
-                                copyConvButton.style.backgroundColor = '#28a745';
-                                setTimeout(() => {
-                                    copyConvButton.textContent = 'copy';
-                                    copyConvButton.style.backgroundColor = '#666';
-                                    copyConvButton.style.display = 'none'; // Hide after copying
-                                }, 1500);
-                            }).catch(err => {
-                                console.error('copy对话失败:', err);
-                                copyConvButton.textContent = '失败';
-                                setTimeout(() => {
-                                    copyConvButton.textContent = 'copy';
-                                    copyConvButton.style.display = 'none';
-                                }, 1500);
-                            });
-                        });
+                        //     navigator.clipboard.writeText(conversationText.trim()).then(() => {
+                        //         copyConvButton.textContent = '已copy!';
+                        //         copyConvButton.style.backgroundColor = '#28a745';
+                        //         setTimeout(() => {
+                        //             copyConvButton.textContent = 'copy';
+                        //             copyConvButton.style.backgroundColor = '#666';
+                        //             copyConvButton.style.display = 'none'; // Hide after copying
+                        //         }, 1500);
+                        //     }).catch(err => {
+                        //         console.error('copy对话失败:', err);
+                        //         copyConvButton.textContent = '失败';
+                        //         setTimeout(() => {
+                        //             copyConvButton.textContent = 'copy';
+                        //             copyConvButton.style.display = 'none';
+                        //         }, 1500);
+                        //     });
+                        // });
                         // --- End Copy Conversation Button logic ---
 
                     } catch (finalizationError) {
@@ -3913,6 +3956,109 @@ function generateImage(prompt, options = {}, callback) {
         });
     }
   }
+  //消息复制函数
+  function copyMessage(message,roles) {
+    const U_actionsDiv = document.createElement('div');
+    U_actionsDiv.className = 'ds-message-actions';
+    U_actionsDiv.style.position = 'relative'; // Needed for absolute positioning of the popup
+
+    const U_triggerSpan = document.createElement('span');
+    U_triggerSpan.className = 'ds-actions-trigger';
+    U_triggerSpan.textContent = '...';
+    U_triggerSpan.title = '更多操作';
+
+    // Create the popup menu container
+    const actionsPopup = document.createElement('div');
+    actionsPopup.className = 'ds-actions-popup';
+    actionsPopup.style.display = 'none'; // Hidden by default
+    actionsPopup.style.position = 'absolute';
+    actionsPopup.style.right = '0'; // Position relative to U_actionsDiv
+    actionsPopup.style.bottom = '20px'; // Position above the trigger
+    actionsPopup.style.backgroundColor = 'white';
+    actionsPopup.style.border = '1px solid #ccc';
+    actionsPopup.style.borderRadius = '4px';
+    actionsPopup.style.padding = '5px';
+    actionsPopup.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    actionsPopup.style.zIndex = '1001'; // Ensure it's above other elements
+
+    const copyConvButton = document.createElement('button'); // Use button for better semantics
+    copyConvButton.className = 'ds-copy-conversation-btn';
+    copyConvButton.textContent = 'copy';
+    copyConvButton.style.display = 'block'; // Always visible inside the popup
+    copyConvButton.style.border = 'none';
+    copyConvButton.style.background = 'none';
+    copyConvButton.style.padding = '5px 10px';
+    copyConvButton.style.cursor = 'pointer';
+    copyConvButton.style.width = '100%';
+    copyConvButton.style.textAlign = 'left';
+
+    actionsPopup.appendChild(copyConvButton); // Add button to popup
+
+    U_actionsDiv.appendChild(U_triggerSpan);
+    U_actionsDiv.appendChild(actionsPopup); // Add popup to actions div
+
+    U_triggerSpan.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent triggering other clicks, like closing the popup immediately
+        // Toggle popup visibility
+        const isVisible = actionsPopup.style.display !== 'none';
+        actionsPopup.style.display = isVisible ? 'none' : 'block';
+    });
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!U_actionsDiv.contains(e.target)) {
+             actionsPopup.style.display = 'none';
+        }
+    }, true); // Use capture phase to catch clicks early
+
+    // Close popup on mouse leave after a short delay
+    actionsPopup.addEventListener('mouseleave', () => {
+        setTimeout(() => {
+             // Check if mouse hasn't re-entered popup or trigger
+             if (!actionsPopup.matches(':hover') && !U_triggerSpan.matches(':hover')) {
+                 actionsPopup.style.display = 'none';
+             }
+        }, 300); // Adjust delay as needed
+    });
+    // Prevent popup closing immediately if mouse moves briefly to trigger
+    U_triggerSpan.addEventListener('mouseenter', () => {
+         // Optional: Add logic if needed when mouse enters trigger while popup is open
+    });
+
+
+    copyConvButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent the click from bubbling up and closing the popup via the document listener
+        let conversationText = '';
+        // Correctly format the conversation text
+     
+             const role = roles; // Get role from message
+             const time = new Date().toLocaleTimeString();
+             // Append each message correctly
+             conversationText += `${role} [${time}]:${message}`;
+
+
+
+        navigator.clipboard.writeText(conversationText.trim()).then(() => {
+            copyConvButton.textContent = '已copy!';
+            copyConvButton.style.backgroundColor = '#d4edda'; // Light green feedback
+            setTimeout(() => {
+                copyConvButton.textContent = 'copy';
+                copyConvButton.style.backgroundColor = 'transparent'; // Reset background
+                actionsPopup.style.display = 'none'; // Hide popup after copying
+            }, 1500);
+        }).catch(err => {
+            console.error('copy对话失败:', err);
+            copyConvButton.textContent = '失败';
+            copyConvButton.style.backgroundColor = '#f8d7da'; // Light red feedback
+            setTimeout(() => {
+                copyConvButton.textContent = 'copy';
+                copyConvButton.style.backgroundColor = 'transparent'; // Reset background
+                actionsPopup.style.display = 'none'; // Hide popup after failure feedback
+            }, 1500);
+        });
+    });
+    return U_actionsDiv;
+  }
 // 发送消息函数
 async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
  startButton.style.display = 'none'; // 隐藏发送按钮
@@ -4004,22 +4150,46 @@ config.fullConversation.push({
         timestamp: new Date().toISOString()
     });
     GM_setValue('fullConversation', config.fullConversation);
-    const U_actionsDiv = document.createElement('div');
-    U_actionsDiv.className = 'ds-message-actions';
+    // const U_actionsDiv = document.createElement('div');
+    // U_actionsDiv.className = 'ds-message-actions';
+    // U_actionsDiv.style.position = 'relative'; // Needed for absolute positioning of the popup
 
-    const U_triggerSpan = document.createElement('span');
-    U_triggerSpan.className = 'ds-actions-trigger';
-    U_triggerSpan.textContent = '...';
-    U_triggerSpan.title = '更多操作';
+    // const U_triggerSpan = document.createElement('span');
+    // U_triggerSpan.className = 'ds-actions-trigger';
+    // U_triggerSpan.textContent = '...';
+    // U_triggerSpan.title = '更多操作';
 
-    const copyConvButton = document.createElement('button');
-    copyConvButton.className = 'ds-copy-conversation-btn';
-    copyConvButton.textContent = 'copy';
+    // // Create the popup menu container
+    // const actionsPopup = document.createElement('div');
+    // actionsPopup.className = 'ds-actions-popup';
+    // actionsPopup.style.display = 'none'; // Hidden by default
+    // actionsPopup.style.position = 'absolute';
+    // actionsPopup.style.right = '0'; // Position relative to U_actionsDiv
+    // actionsPopup.style.bottom = '20px'; // Position above the trigger
+    // actionsPopup.style.backgroundColor = 'white';
+    // actionsPopup.style.border = '1px solid #ccc';
+    // actionsPopup.style.borderRadius = '4px';
+    // actionsPopup.style.padding = '5px';
+    // actionsPopup.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    // actionsPopup.style.zIndex = '1001'; // Ensure it's above other elements
 
-    U_actionsDiv.appendChild(U_triggerSpan);
-    U_actionsDiv.appendChild(copyConvButton);
-   
-    // 总是添加到历史记录，但内容会根据isSummaryTask变化
+    // const copyConvButton = document.createElement('button'); // Use button for better semantics
+    // copyConvButton.className = 'ds-copy-conversation-btn';
+    // copyConvButton.textContent = 'copy';
+    // copyConvButton.style.display = 'block'; // Always visible inside the popup
+    // copyConvButton.style.border = 'none';
+    // copyConvButton.style.background = 'none';
+    // copyConvButton.style.padding = '5px 10px';
+    // copyConvButton.style.cursor = 'pointer';
+    // copyConvButton.style.width = '100%';
+    // copyConvButton.style.textAlign = 'left';
+
+    // actionsPopup.appendChild(copyConvButton); // Add button to popup
+
+    // U_actionsDiv.appendChild(U_triggerSpan);
+    // U_actionsDiv.appendChild(actionsPopup); // Add popup to actions div
+
+    // Always添加到历史记录，但内容会根据isSummaryTask变化
     const userMsgDiv = document.createElement('div');
     userMsgDiv.className = 'ds-chat-message ds-user-message';
     userMsgDiv.innerHTML = (isSummaryTask ? '正在总结当前网页...' : (message));
@@ -4028,40 +4198,72 @@ config.fullConversation.push({
 
     config.chatHistory.push(userMsg);
     GM_setValue('chatHistory', config.chatHistory);
+    const U_actionsDiv = copyMessage(message,"user");
 
 
-    U_triggerSpan.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent triggering other clicks
-        const isVisible = copyConvButton.style.display !== 'none';
-        copyConvButton.style.display = isVisible ? 'none' : 'inline-block';
-    });
+//     U_triggerSpan.addEventListener('click', (e) => {
+//         e.stopPropagation(); // Prevent triggering other clicks, like closing the popup immediately
+//         // Toggle popup visibility
+//         const isVisible = actionsPopup.style.display !== 'none';
+//         actionsPopup.style.display = isVisible ? 'none' : 'block';
+//     });
 
-    copyConvButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        let conversationText = '';
-        config.fullConversation.forEach(msg => {
-            const role = 'user';
-            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
-            conversationText = `${role} [${time}]:\n`+`${message}\n\n`;
-        });
+//     // Close popup when clicking outside
+//     document.addEventListener('click', (e) => {
+//         if (!U_actionsDiv.contains(e.target)) {
+//              actionsPopup.style.display = 'none';
+//         }
+//     }, true); // Use capture phase to catch clicks early
 
-        navigator.clipboard.writeText(conversationText.trim()).then(() => {
-            copyConvButton.textContent = '已copy!';
-            copyConvButton.style.backgroundColor = '#28a745';
-            setTimeout(() => {
-                copyConvButton.textContent = 'copy';
-                copyConvButton.style.backgroundColor = '#666';
-                copyConvButton.style.display = 'none'; // Hide after copying
-            }, 1500);
-        }).catch(err => {
-            console.error('copy对话失败:', err);
-            copyConvButton.textContent = '失败';
-            setTimeout(() => {
-                copyConvButton.textContent = 'copy';
-                copyConvButton.style.display = 'none';
-            }, 1500);
-        });
-    });
+//     // Close popup on mouse leave after a short delay
+//     actionsPopup.addEventListener('mouseleave', () => {
+//         setTimeout(() => {
+//              // Check if mouse hasn't re-entered popup or trigger
+//              if (!actionsPopup.matches(':hover') && !U_triggerSpan.matches(':hover')) {
+//                  actionsPopup.style.display = 'none';
+//              }
+//         }, 300); // Adjust delay as needed
+//     });
+//     // Prevent popup closing immediately if mouse moves briefly to trigger
+//     U_triggerSpan.addEventListener('mouseenter', () => {
+//          // Optional: Add logic if needed when mouse enters trigger while popup is open
+//     });
+
+
+//     copyConvButton.addEventListener('click', (e) => {
+//         e.stopPropagation(); // Prevent the click from bubbling up and closing the popup via the document listener
+//         let conversationText = '';
+//         // Correctly format the conversation text
+//         config.fullConversation.forEach(msg => {
+//              const role = msg.role === 'user' ? 'User' : 'Assistant'; // Get role from message
+//              const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
+//              // Append each message correctly
+//              conversationText += `${role} [${time}]:
+// ${msg.content}
+
+// `;
+//         });
+
+
+//         navigator.clipboard.writeText(conversationText.trim()).then(() => {
+//             copyConvButton.textContent = '已copy!';
+//             copyConvButton.style.backgroundColor = '#d4edda'; // Light green feedback
+//             setTimeout(() => {
+//                 copyConvButton.textContent = 'copy';
+//                 copyConvButton.style.backgroundColor = 'transparent'; // Reset background
+//                 actionsPopup.style.display = 'none'; // Hide popup after copying
+//             }, 1500);
+//         }).catch(err => {
+//             console.error('copy对话失败:', err);
+//             copyConvButton.textContent = '失败';
+//             copyConvButton.style.backgroundColor = '#f8d7da'; // Light red feedback
+//             setTimeout(() => {
+//                 copyConvButton.textContent = 'copy';
+//                 copyConvButton.style.backgroundColor = 'transparent'; // Reset background
+//                 actionsPopup.style.display = 'none'; // Hide popup after failure feedback
+//             }, 1500);
+//         });
+//     });
     // 总是显示用户消息，但内容会根据isSummaryTask变化
     //chatContent.appendChild(userMsgDiv);
     const userMessageContainer = document.createElement('div');
@@ -4076,9 +4278,7 @@ config.fullConversation.push({
     const avatar = document.createElement('img');
     //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQElEQVR4nO2XQW6DMBBFX1gkh0jgCm2XcAXCrixyhybHbNoVvUpF9o6QBqmqWoUah7HVedLfRBj/DzNkDIZhhCQDCqACaqAV1fJbIddESQ40wOGGGrk2GlbA0wTj3zWsGdaq42N+1KO2+XyG+VE7LfPZxJqf0hOZRoAigPmDaLjX4lQBA5QaAfYBA9QaAdqAAdrUAzxrBEi+hKrUm7gIGCDXCJAFKqNGc0JNepQIMcw9EAErmSr/an5YE8U4PbKb2BP7GMrm1pGy/OFIWUrPRHukNAzDuA8b4AS8ARfA3VkX2esoe89iC3wsYNr9ok48eD95TfPuSwivN3GKwLwTvfgEeI/AuBOdfQL0ERh3oj71AJ//soSOERh3c5p4I58wbfMdsMaTrXKIbs4f2chaXuF5ocbugVfZ0/vJG4ZhsAhXSvn7fc8Yyv8AAAAASUVORK5CYII=";
     avatar.alt = "user";
-    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
-    //avatar.style.marginLeft = "10px"; 
-    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA4UlEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAAElFTkSuQmCC";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAAElFTkSuQmCC";
     avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
     avatar.style.marginTop = "15px"; // 可以根据需要调整头像和消息块的间距
     avatar.style.width = "30px"; // 可以根据需要调整宽度
@@ -4313,8 +4513,130 @@ userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内�
 //             pre.innerHTML = '';
 //             pre.appendChild(code);
 //         }
+//创建copy按钮（新版）
+  // 为消息添加三点菜单和复制功能
+  function addMessageOptionsMenu(messageDiv) {
+    // 创建容器使消息可以相对定位
+    const messageContainer = document.createElement('div');
+    messageContainer.className = 'ds-message-container';
+    messageContainer.style.position = 'relative';
 
-//               // 创建copy按钮
+    // 将消息移动到容器内
+   // messageDiv.parentNode.insertBefore(messageContainer, messageDiv);
+    messageContainer.appendChild(messageDiv);
+
+    // 创建三点菜单按钮
+    const optionsButton = document.createElement('button');
+    optionsButton.className = 'ds-message-options-btn';
+    optionsButton.innerHTML = '⋮';
+    optionsButton.style.position = 'absolute';
+    optionsButton.style.top = '8px';
+    optionsButton.style.right = '5px';
+   // optionsButton.setAttribute('style', 'background: transparent !important;');
+
+    optionsButton.style.border = 'none';
+    optionsButton.style.cursor = 'pointer';
+    optionsButton.style.fontSize = '16px';
+    optionsButton.style.color = 'black';
+    optionsButton.style.padding = '3px 7px';
+    optionsButton.style.borderRadius = '3px';
+    optionsButton.style.display = 'none'; // 默认隐藏
+
+    // 创建选项菜单
+    const optionsMenu = document.createElement('div');
+    optionsMenu.className = 'ds-message-options-menu';
+    optionsMenu.style.position = 'absolute';
+    optionsMenu.style.top = '25px';
+    optionsMenu.style.right = '5px';
+    optionsMenu.style.background = '#fff';
+    optionsMenu.style.border = '1px solid #ddd';
+    optionsMenu.style.borderRadius = '4px';
+    optionsMenu.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    optionsMenu.style.zIndex = '1000';
+    optionsMenu.style.display = 'none';
+
+    // 添加复制选项
+    const copyOption = document.createElement('div');
+    copyOption.className = 'ds-message-option';
+    copyOption.textContent = 'copy';
+    copyOption.style.padding = '8px 12px';
+    copyOption.style.cursor = 'pointer';
+    copyOption.style.whiteSpace = 'nowrap';
+
+    copyOption.addEventListener('mouseover', () => {
+      copyOption.style.backgroundColor = '#f0f0f0';
+    });
+
+    copyOption.addEventListener('mouseout', () => {
+      copyOption.style.backgroundColor = '';
+    });
+
+    copyOption.addEventListener('click', () => {
+      // 获取消息文本内容
+      const text = messageDiv.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        // 显示成功提示
+        const successMessage = document.createElement('span');
+        successMessage.className = 'copy-success';
+        successMessage.textContent = '已复制!';
+        successMessage.style.position = 'absolute';
+        successMessage.style.top = '25px';
+        successMessage.style.right = '5px';
+        successMessage.style.background = 'rgba(0,0,0,0.7)';
+        successMessage.style.color = '#fff';
+        successMessage.style.padding = '3px 8px';
+        successMessage.style.borderRadius = '3px';
+        successMessage.style.fontSize = '12px';
+        messageContainer.appendChild(successMessage);
+
+        // 隐藏菜单
+        optionsMenu.style.display = 'none';
+
+        // 2秒后移除成功提示
+        setTimeout(() => {
+          successMessage.remove();
+        }, 2000);
+      }).catch(err => {
+        console.error('复制失败: ', err);
+      });
+    });
+
+    // 添加选项到菜单
+    optionsMenu.appendChild(copyOption);
+
+    // 添加点击事件切换菜单显示状态
+    optionsButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (optionsMenu.style.display === 'none') {
+        optionsMenu.style.display = 'block';
+      } else {
+        optionsMenu.style.display = 'none';
+      }
+    });
+
+    // 点击其他地方隐藏菜单
+    document.addEventListener('click', () => {
+      optionsMenu.style.display = 'none';
+    });
+
+    // 鼠标悬停在消息上时显示按钮
+    messageContainer.addEventListener('mouseenter', () => {
+      optionsButton.style.display = 'block';
+    });
+
+    messageContainer.addEventListener('mouseleave', () => {
+      optionsButton.style.display = 'none';
+      // 菜单是否应该在鼠标离开时消失取决于用户体验设计，可选
+      // optionsMenu.style.display = 'none';
+    });
+
+    // 将按钮和菜单添加到消息容器
+    messageContainer.appendChild(optionsButton);
+    messageContainer.appendChild(optionsMenu);
+
+    return messageContainer;
+  }
+// 创建copy按钮（旧版）
      
 function addButtonsToPre(preElement) {
     if (!preElement || typeof preElement !== 'object') {
