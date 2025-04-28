@@ -486,7 +486,7 @@ function GM_xmlhttpRequest(options) {
             margin: 10px 0 !important;
             position: relative !important;
             overflow: auto !important;
-            color: #cccccc !important;
+            color: #ffffff !important;
             border: none !important; /* 添加这行移除边框 */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; /* 可选：用阴影替代边框 */
             font-family: 'Fira Code', 'JetBrains Mono', monospace;
@@ -1256,7 +1256,7 @@ display: none;
 
    
     // 异步加载代码高亮样式
-    GM_getResourceText('https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css')
+    GM_getResourceText('https://pictureapi.dskblog.top/css/agate.min.css')
         .then(hljsStyle => {
             GM_addStyle(css + hljsStyle);
         })
