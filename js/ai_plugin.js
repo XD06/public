@@ -2887,7 +2887,7 @@
                     <span class="code-execution-close">&times;</span>
                 </div>
                 <div class="code-execution-body">
-                    <iframe id="code-sandbox"></iframe>
+                    <iframe id="code-sandbox" sandbox="allow-scripts allow-same-origin"></iframe>
                     <div id="code-status-bar">等待执行...</div>
                 </div>
             </div>
@@ -3223,10 +3223,8 @@
             // 清空状态栏
             statusBar.textContent = '';
 
-            // 在iframe中执行代码
-            const doc = sandbox.contentDocument || sandbox.contentWindow.document;
-            doc.open();
-            doc.write(`
+            // 在iframe中通过 srcdoc 执行代码
+            const htmlContent = `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -3239,8 +3237,8 @@
                     ${code}
                 </body>
                 </html>
-            `);
-            doc.close();
+            `;
+            sandbox.srcdoc = htmlContent;
 
             updateStatus(statusBar, '✅执行完成', 'success');
         } catch (e) {
