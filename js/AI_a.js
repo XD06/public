@@ -1251,7 +1251,15 @@ display: none;
     from { opacity: 1; }
     to { opacity: 0; }
 }
-  
+    .history-button{
+    background-color:#f8f8f8!important;
+}
+.cancel-button{
+    background-color:#f8f8f8!important;
+}
+    .save-button{
+    background-color:#4CAF50!important;
+}
 `;
 
 
@@ -1270,6 +1278,7 @@ display: none;
 
     // 初始化配置
     let config = {
+        hidden: false,
         apiKey: GM_getValue('apiKey', ''),
         apiUrl: GM_getValue('apiUrl', 'https://api.deepseek.com/v1/chat/completions'),
         model: GM_getValue('model', 'deepseek'),
@@ -2087,60 +2096,7 @@ startButton.addEventListener('mouseout', () => {
             
             addCopyButtonsToCodeBlocks(msgDiv);
             const msgsDiv = addMessageOptionsMenu(msgDiv);
-            // --- Add Copy Action to History Message ---
-            // const historyActionsDiv = document.createElement('div');
-            // historyActionsDiv.className = 'ds-message-actions';
-
-            // const historyTriggerSpan = document.createElement('span');
-            // historyTriggerSpan.className = 'ds-actions-trigger';
-            // historyTriggerSpan.textContent = '...';
-            // historyTriggerSpan.title = '更多操作';
-
-            // const historyCopyMsgButton = document.createElement('button');
-            // historyCopyMsgButton.className = 'ds-copy-conversation-btn';
-            // historyCopyMsgButton.textContent = 'copy';
-            // historyCopyMsgButton.title = 'copy此历史消息内容';
-
-            // historyActionsDiv.appendChild(historyTriggerSpan);
-            // historyActionsDiv.appendChild(historyCopyMsgButton);
-            // msgDiv.appendChild(historyActionsDiv);
-
-            // // Ensure container has styles needed for positioning
-            // if (window.getComputedStyle(msgDiv).position === 'static') {
-            //     msgDiv.style.position = 'relative';
-            // }
-            // msgDiv.style.paddingBottom = '25px';
-
-            // historyTriggerSpan.addEventListener('click', (e) => {
-            //     e.stopPropagation();
-            //     //historyTriggerSpan.style.display = 'none';
-            //     const isVisible = historyCopyMsgButton.style.display !== 'none';
-            //     historyCopyMsgButton.style.display = isVisible ? 'none' : 'inline-block';
-            //     //historyTriggerSpan.style.display = 'none';
-            // });
-
-        //     historyCopyMsgButton.addEventListener('click', (e) => {
-        //         e.stopPropagation();
-        //         // Use the originalContent variable captured earlier
-        //         navigator.clipboard.writeText(originalContent).then(() => {
-        //             historyCopyMsgButton.textContent = '已copy!';
-        //             historyCopyMsgButton.style.backgroundColor = '#28a745';
-        //             setTimeout(() => {
-        //                 historyCopyMsgButton.textContent = 'copy';
-        //                 historyCopyMsgButton.style.backgroundColor = '#666';
-        //                 historyCopyMsgButton.style.display = 'none';
-        //             }, 1500);
-        //         }).catch(err => {
-        //             console.error('copy历史消息失败:', err);
-        //             historyCopyMsgButton.textContent = '失败';
-        //             setTimeout(() => {
-        //                 historyCopyMsgButton.textContent = 'copy';
-        //                 historyCopyMsgButton.style.display = 'none';
-        //             }, 1500);
-        //         });
-        //     }
-        // );
-            // --- End Add Copy Action to History Message ---
+           
 if(msg.role != 'user'){
             chatContent.appendChild(msgsDiv);
 }
@@ -2157,9 +2113,9 @@ else{
     const avatar = document.createElement('img');
     //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQElEQVR4nO2XQW6DMBBFX1gkh0jgCm2XcAXCrixyhybHbNoVvUpF9o6QBqmqWoUah7HVedLfRBj/DzNkDIZhhCQDCqACaqAV1fJbIddESQ40wOGGGrk2GlbA0wTj3zWsGdaq42N+1KO2+XyG+VE7LfPZxJqf0hOZRoAigPmDaLjX4lQBA5QaAfYBA9QaAdqAAdrUAzxrBEi+hKrUm7gIGCDXCJAFKqNGc0JNepQIMcw9EAErmSr/an5YE8U4PbKb2BP7GMrm1pGy/OFIWUrPRHukNAzDuA8b4AS8ARfA3VkX2esoe89iC3wsYNr9ok48eD95TfPuSwivN3GKwLwTvfgEeI/AuBOdfQL0ERh3oj71AJ//soSOERh3c5p4I58wbfMdsMaTrXKIbs4f2chaXuF5ocbugVfZ0/vJG4ZhsAhXSvn7fc8Yyv8AAAAASUVORK5CYII=";
     avatar.alt = "user";
-    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAElFTkSuQmCC";
     //avatar.style.marginLeft = "10px"; 
-    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA4UlEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAAElFTkSuQmCC";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
     avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
     avatar.style.marginTop = "10px"; // 可以根据需要调整头像和消息块的间距
     avatar.style.width = "30px"; // 可以根据需要调整宽度
@@ -2458,52 +2414,433 @@ else{
                 });
         
                 settingsBtn.addEventListener('click', () => {
-                   /* const newCustomSelectors = prompt('自定义抓取规则(CSS选择器，多个用逗号分隔，留空使用默认):', config.customSelectors);
-            if (newCustomSelectors !== null) {
-                config.customSelectors = newCustomSelectors;
-                GM_setValue('customSelectors', config.customSelectors);
-            }*/
-                    const newApiUrl = prompt('API地址(默认:https://api.deepseek.com/v1/chat/completions):', config.apiUrl);
-                    if (newApiUrl !== null) {
-                        config.apiUrl = newApiUrl;
-                        GM_setValue('apiUrl', config.apiUrl);
+                    config.hidden = !config.hidden;
+                    console.log("config.hidden1:",config.hidden);
+
+                    chatWindow.classList.remove('active');
+                    chatWindow.style.display = 'none';
+                    showSettingsModal();
+                   
+                });
+                function inspect_chatWindow() {
+                    //ai-settings-modal不存在是chatWindow应该存在
+                    const existingModals = document.getElementById('ai-settings-modal');
+                    console.log("config.hidden3:",config.hidden);
+                    if(config.hidden){
+                        console.log("config.hidden2:",config.hidden);
+                    if (!existingModals) {
+                        chatWindow.classList.add('active');
+                        chatWindow.style.display = 'flex';
                     }
-                    const newApiKey = prompt('API密钥:', config.apiKey);
-                    if (newApiKey !== null) {
-                        config.apiKey = newApiKey;
-                        GM_setValue('apiKey', config.apiKey);
                     }
+                    }
+                //检查chatWindow是否存在
+                inspect_chatWindow();
+// 创建设置浮窗
+function showSettingsModal() {
+    // 检查是否已有设置窗口
+    const existingModal = document.getElementById('ai-settings-modal');
+    if (existingModal) {
+        existingModal.style.display = 'block';
+        return;
+    }
+
+    // 创建模态窗口
+    const modal = document.createElement('div');
+    modal.id = 'ai-settings-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.backgroundColor = '#fff';
+    modal.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+    modal.style.borderRadius = '8px';
+    modal.style.padding = '20px';
+    modal.style.zIndex = '10000';
+    modal.style.width = '500px';
+    modal.style.maxHeight = '80vh';
+    modal.style.overflowY = 'auto';
+    modal.style.color = '#333';
+    modal.style.fontFamily = 'Arial, sans-serif';
+
+    // 设置标题
+    const title = document.createElement('h2');
+    title.textContent = 'AI 助手设置';
+    title.style.margin = '0 0 20px 0';
+    title.style.borderBottom = '1px solid #eee';
+    title.style.paddingBottom = '10px';
+    modal.appendChild(title);
+
+    // 设置项容器
+    const settingsContainer = document.createElement('div');
+    settingsContainer.style.display = 'grid';
+    settingsContainer.style.gap = '15px';
+    modal.appendChild(settingsContainer);
+
+    // 创建设置项
+    const settings = [
+        {
+            id: 'apiUrl',
+            label: 'API 地址',
+            value: config.apiUrl,
+            placeholder: 'https://api.deepseek.com/v1/chat/completions',
+            type: 'text',
+            help: '默认: https://api.deepseek.com/v1/chat/completions'
+        },
+        {
+            id: 'apiKey',
+            label: 'API 密钥',
+            value: config.apiKey,
+            placeholder: '输入您的 API 密钥',
+            type: 'password',
+            help: '您的 API 访问密钥'
+        },
+        {
+            id: 'model',
+            label: '模型名称',
+            value: config.model,
+            placeholder: 'deepseek-v3-250324',
+            type: 'text',
+            help: '默认: deepseek-v3-250324'
+        },
+        {
+            id: 'temperature',
+            label: 'Temperature',
+            value: config.temperature,
+            placeholder: '0.5-0.8',
+            type: 'number',
+            min: 0,
+            max: 2,
+            step: 0.1,
+            help: '取值范围 0-2，建议 0.5-0.8，值越高回答越随机'
+        },
+        {
+            id: 'maxTokens',
+            label: '输出 Token 限制',
+            value: config.maxTokens,
+            placeholder: '4096',
+            type: 'number',
+            min: 1,
+            max: 8192,
+            help: '最大不能超过 8192，默认 4096（影响输出文本长度）'
+        },
+        {
+            id: 'maxContextTokens',
+            label: '最大上下文限制',
+            value: config.maxContextTokens,
+            placeholder: '32000',
+            type: 'number',
+            min: 1,
+            max: 128000,
+            help: '最大 128k，默认 32k（越大记忆越好）'
+        },
+        {
+            id: 'personalityPrompt',
+            label: '自定义人格提示词',
+            value: config.personalityPrompt,
+            placeholder: 'AI助手',
+            type: 'text',
+            help: '默认: AI助手'
+        }
+    ];
+
+    // 历史记录存储对象
+    const historyEntries = {};
+    
+    // 初始化历史记录
+    settings.forEach(setting => {
+        const historyKey = `${setting.id}_history`;
+        const savedHistory = GM_getValue(historyKey, []);
+        historyEntries[setting.id] = savedHistory;
         
-                    const newModel = prompt('模型默认(deepseek-chat):', config.model);
-                    if (newModel !== null) {
-                        config.model = newModel;
-                        GM_setValue('model', config.model);
-                    }
+        // 如果当前值不在历史记录中且不为空，添加到历史记录
+        if (setting.value && !savedHistory.includes(setting.value)) {
+            historyEntries[setting.id].push(setting.value);
+            GM_setValue(historyKey, historyEntries[setting.id]);
+        }
+    });
+
+    // 创建每个设置项的 UI
+    settings.forEach(setting => {
+        const settingGroup = document.createElement('div');
+        settingGroup.style.display = 'flex';
+        settingGroup.style.flexDirection = 'column';
         
-                    const newTemp = parseFloat(prompt('Temperature (0-2建议0.5-0.8)', config.temperature));
-                    if (!isNaN(newTemp) && newTemp >= 0 && newTemp <= 2) {
-                        config.temperature = newTemp;
-                        GM_setValue('temperature', config.temperature);
-                    }
+        // 标签
+        const label = document.createElement('label');
+        label.textContent = setting.label;
+        label.style.marginBottom = '5px';
+        label.style.fontWeight = 'bold';
+        settingGroup.appendChild(label);
         
-                    const newMaxTokens = parseInt(prompt('输出Token限制最大不能超过8192默认4096(输出文本):', config.maxTokens));
-                    if (!isNaN(newMaxTokens) && newMaxTokens > 0 && newMaxTokens <= 8192) {
-                        config.maxTokens = newMaxTokens;
-                        GM_setValue('maxTokens', config.maxTokens);
-                    }
+        // 输入容器 (用于包含输入框和下拉按钮)
+        const inputContainer = document.createElement('div');
+        inputContainer.style.position = 'relative';
+        inputContainer.style.display = 'flex';
         
-                    const newMaxContextTokens = parseInt(prompt('最大上下文限制128k默认32k(越大记忆越好):', config.maxContextTokens));
-                    if (!isNaN(newMaxContextTokens) && newMaxContextTokens > 0 && newMaxContextTokens <= 128000) {
-                        config.maxContextTokens = newMaxContextTokens;
-                        GM_setValue('maxContextTokens', config.maxContextTokens);
-                    }
+        // 输入框
+        const input = document.createElement('input');
+        input.type = setting.type;
+        input.id = `setting-${setting.id}`;
+        input.value = setting.value || '';
+        input.placeholder = setting.placeholder || '';
+        input.style.width = '100%';
+        input.style.padding = '8px 12px';
+        input.style.borderRadius = '4px';
+        input.style.border = '1px solid #ddd';
+        input.style.fontSize = '14px';
         
-                    const newPersonalityPrompt = prompt('自定义人格提示词:(AI助手)', config.personalityPrompt);
-                    if (newPersonalityPrompt !== null) {
-                        config.personalityPrompt = newPersonalityPrompt;
-                        GM_setValue('personalityPrompt', config.personalityPrompt);
+        if (setting.type === 'number') {
+            if (setting.min !== undefined) input.min = setting.min;
+            if (setting.max !== undefined) input.max = setting.max;
+            if (setting.step !== undefined) input.step = setting.step;
+        }
+        
+        inputContainer.appendChild(input);
+        
+        // 历史下拉按钮
+        if (historyEntries[setting.id] && historyEntries[setting.id].length > 0) {
+            const historyButton = document.createElement('button');
+            historyButton.className = 'history-button';
+            historyButton.textContent = '▼';
+            historyButton.title = '历史记录';
+            historyButton.style.marginLeft = '5px';
+            historyButton.style.padding = '8px 12px';
+            historyButton.style.borderRadius = '4px';
+            historyButton.style.border = '1px solid #ddd';
+            historyButton.style.cursor = 'pointer';
+            
+            // 下拉菜单
+            const dropdown = document.createElement('div');
+            dropdown.style.display = 'none';
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '100%';
+            dropdown.style.left = '0';
+            dropdown.style.right = '0';
+            dropdown.style.backgroundColor = '#fff';
+            dropdown.style.border = '1px solid #ddd';
+            dropdown.style.borderRadius = '4px';
+            dropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            dropdown.style.zIndex = '1';
+            dropdown.style.maxHeight = '150px';
+            dropdown.style.overflowY = 'auto';
+            dropdown.style.marginTop = '5px';
+            
+            // 添加历史记录项
+            historyEntries[setting.id].forEach(historyValue => {
+                const historyItem = document.createElement('div');
+                historyItem.style.padding = '8px 12px';
+                historyItem.style.cursor = 'pointer';
+                historyItem.style.borderBottom = '1px solid #eee';
+                historyItem.style.display = 'flex';
+                historyItem.style.justifyContent = 'space-between';
+                historyItem.style.alignItems = 'center';
+                
+                // 创建内容容器
+                const contentSpan = document.createElement('span');
+                contentSpan.textContent = historyValue;
+                contentSpan.style.flexGrow = '1';
+                contentSpan.style.overflow = 'hidden';
+                contentSpan.style.textOverflow = 'ellipsis';
+                historyItem.appendChild(contentSpan);
+                
+                // 创建删除按钮
+                const deleteBtn = document.createElement('span');
+                deleteBtn.textContent = '×';
+                deleteBtn.style.marginLeft = '8px';
+                deleteBtn.style.color = '#999';
+                deleteBtn.style.fontWeight = 'bold';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.style.padding = '0 4px';
+                deleteBtn.title = '删除此记录';
+                
+                deleteBtn.addEventListener('mouseenter', () => {
+                    deleteBtn.style.color = '#f44336';
+                });
+                
+                deleteBtn.addEventListener('mouseleave', () => {
+                    deleteBtn.style.color = '#999';
+                });
+                
+                // 删除历史记录的点击事件
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 阻止冒泡，防止触发historyItem的点击事件
+                    
+                    // 从历史记录中删除
+                    const index = historyEntries[setting.id].indexOf(historyValue);
+                    if (index > -1) {
+                        historyEntries[setting.id].splice(index, 1);
+                        GM_setValue(`${setting.id}_history`, historyEntries[setting.id]);
+                        
+                        // 从UI中移除
+                        dropdown.removeChild(historyItem);
+                        
+                        // 如果没有历史记录了，隐藏下拉菜单
+                        if (historyEntries[setting.id].length === 0) {
+                            dropdown.style.display = 'none';
+                            // 移除历史按钮
+                            inputContainer.removeChild(historyButton);
+                            inputContainer.removeChild(dropdown);
+                        }
                     }
                 });
+                
+                historyItem.appendChild(deleteBtn);
+                
+                historyItem.addEventListener('mouseenter', () => {
+                    historyItem.style.backgroundColor = '#f5f5f5';
+                });
+                
+                historyItem.addEventListener('mouseleave', () => {
+                    historyItem.style.backgroundColor = '';
+                });
+                
+                // 点击项目填充输入框
+                contentSpan.addEventListener('click', () => {
+                    input.value = historyValue;
+                    dropdown.style.display = 'none';
+                });
+                
+                dropdown.appendChild(historyItem);
+            });
+            
+            historyButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (dropdown.style.display === 'none') {
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // 点击其他地方关闭下拉菜单
+            document.addEventListener('click', (e) => {
+                if (e.target !== historyButton && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            inputContainer.appendChild(historyButton);
+            inputContainer.appendChild(dropdown);
+        }
+        
+        settingGroup.appendChild(inputContainer);
+        
+        // 帮助文本
+        if (setting.help) {
+            const helpText = document.createElement('small');
+            helpText.textContent = setting.help;
+            helpText.style.marginTop = '4px';
+            helpText.style.color = '#888';
+            helpText.style.fontSize = '12px';
+            settingGroup.appendChild(helpText);
+        }
+        
+        settingsContainer.appendChild(settingGroup);
+    });
+
+    // 按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.marginTop = '20px';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.justifyContent = 'flex-end';
+    buttonContainer.style.gap = '10px';
+    modal.appendChild(buttonContainer);
+
+    // 取消按钮
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = '取消';
+    cancelButton.className = 'cancel-button';
+    cancelButton.style.padding = '8px 16px';
+    cancelButton.style.borderRadius = '4px';
+    cancelButton.style.border = '1px solid #ddd';
+   
+    cancelButton.style.cursor = 'pointer';
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+        config.hidden = true; // 设置为显示聊天窗口
+        inspect_chatWindow(); // 
+    });
+    buttonContainer.appendChild(cancelButton);
+
+    // 保存按钮
+    const saveButton = document.createElement('button');
+    saveButton.textContent = '保存';
+    saveButton.className = 'save-button';
+    saveButton.style.padding = '8px 16px';
+    saveButton.style.borderRadius = '4px';
+    saveButton.style.border = 'none';
+    
+    saveButton.style.cursor = 'pointer';
+    saveButton.addEventListener('click', () => {
+        // 保存所有设置并更新历史记录
+        settings.forEach(setting => {
+            const input = document.getElementById(`setting-${setting.id}`);
+            let value = input.value;
+            
+            // 转换数值类型
+            if (setting.type === 'number') {
+                value = parseFloat(value);
+                
+                // 验证范围
+                if (setting.min !== undefined && value < setting.min) value = setting.min;
+                if (setting.max !== undefined && value > setting.max) value = setting.max;
+            }
+            
+            // 更新配置
+            config[setting.id] = value;
+            GM_setValue(setting.id, value);
+           
+            // 更新历史记录
+            if (value && typeof value === 'string' && value.trim() !== '') {
+                const historyKey = `${setting.id}_history`;
+                let history = GM_getValue(historyKey, []);
+                
+                // 如果不在历史记录中，添加到历史
+                if (!history.includes(value)) {
+                    history.push(value);
+                    // 限制历史记录数量为 10 条
+                    if (history.length > 10) {
+                        history = history.slice(-10);
+                    }
+                    GM_setValue(historyKey, history);
+                }
+            }
+            
+           
+        });
+        
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+        config.hidden = true; // 设置为显示聊天窗口
+        inspect_chatWindow(); // 重新检查是否显示聊天窗口
+    });
+    buttonContainer.appendChild(saveButton);
+
+    // 添加模态窗口背景遮罩
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.position = 'fixed';
+    modalOverlay.style.top = '0';
+    modalOverlay.style.left = '0';
+    modalOverlay.style.right = '0';
+    modalOverlay.style.bottom = '0';
+    modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modalOverlay.style.zIndex = '9999';
+    
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            document.body.removeChild(modalOverlay);
+            document.body.removeChild(modal);
+            config.hidden = true; // 设置为显示聊天窗口
+            inspect_chatWindow(); // 重新检查是否显示聊天窗口
+        }
+    });
+
+    // 添加到文档
+    document.body.appendChild(modalOverlay);
+    document.body.appendChild(modal);
+}
         
                 clearBtn.addEventListener('click', () => {
             if (confirm('确定要清空所有对话记录吗？这将同时清空当前对话和完整历史记录。')) {
@@ -3722,59 +4059,10 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
 
                         // --- Add Copy Conversation Button logic ---
                         const actionsDiv = copyMessage(accumulatedAiText,"ai");
-                        // const actionsDiv = document.createElement('div');
-                        // actionsDiv.className = 'ds-message-actions';
-
-                        // const triggerSpan = document.createElement('span');
-                        // triggerSpan.className = 'ds-actions-trigger';
-                        // triggerSpan.textContent = '...';
-                        // triggerSpan.title = '更多操作';
-
-                        // const copyConvButton = document.createElement('button');
-                        // copyConvButton.className = 'ds-copy-conversation-btn';
-                        // copyConvButton.textContent = 'copy';
-
-                        // actionsDiv.appendChild(triggerSpan);
-                        // actionsDiv.appendChild(copyConvButton);
+                        
                         aiMsgDiv.appendChild(actionsDiv);
 
-                        // triggerSpan.addEventListener('click', (e) => {
-                        //     e.stopPropagation(); // Prevent triggering other clicks
-                        //     const isVisible = copyConvButton.style.display !== 'none';
-                        //     copyConvButton.style.display = isVisible ? 'none' : 'inline-block';
-                        // });
-
-                        // copyConvButton.addEventListener('click', (e) => {
-                        //     e.stopPropagation();
-                        //     let conversationText = '';
-                        //     config.fullConversation.forEach(msg => {
-                        //         const role = 'AI';
-                        //         const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
-                                
-                        //         if (msg.role === 'assistant' && msg.hasReasoning && msg.reasoningContent) {
-                        //             conversationText += `  (Thinking: ${msg.reasoningContent.replace(/\n/g, '\n  ')})\n`;
-                        //         }
-                        //         conversationText = `${role} [${time}]:\n`+`${accumulatedAiText}\n\n`;
-                        //     });
-
-                        //     navigator.clipboard.writeText(conversationText.trim()).then(() => {
-                        //         copyConvButton.textContent = '已copy!';
-                        //         copyConvButton.style.backgroundColor = '#28a745';
-                        //         setTimeout(() => {
-                        //             copyConvButton.textContent = 'copy';
-                        //             copyConvButton.style.backgroundColor = '#666';
-                        //             copyConvButton.style.display = 'none'; // Hide after copying
-                        //         }, 1500);
-                        //     }).catch(err => {
-                        //         console.error('copy对话失败:', err);
-                        //         copyConvButton.textContent = '失败';
-                        //         setTimeout(() => {
-                        //             copyConvButton.textContent = 'copy';
-                        //             copyConvButton.style.display = 'none';
-                        //         }, 1500);
-                        //     });
-                        // });
-                        // --- End Copy Conversation Button logic ---
+                    
 
                     } catch (finalizationError) {
                         console.error("流结束后处理失败:", finalizationError);
@@ -4153,46 +4441,7 @@ config.fullConversation.push({
         timestamp: new Date().toISOString()
     });
     GM_setValue('fullConversation', config.fullConversation);
-    // const U_actionsDiv = document.createElement('div');
-    // U_actionsDiv.className = 'ds-message-actions';
-    // U_actionsDiv.style.position = 'relative'; // Needed for absolute positioning of the popup
-
-    // const U_triggerSpan = document.createElement('span');
-    // U_triggerSpan.className = 'ds-actions-trigger';
-    // U_triggerSpan.textContent = '...';
-    // U_triggerSpan.title = '更多操作';
-
-    // // Create the popup menu container
-    // const actionsPopup = document.createElement('div');
-    // actionsPopup.className = 'ds-actions-popup';
-    // actionsPopup.style.display = 'none'; // Hidden by default
-    // actionsPopup.style.position = 'absolute';
-    // actionsPopup.style.right = '0'; // Position relative to U_actionsDiv
-    // actionsPopup.style.bottom = '20px'; // Position above the trigger
-    // actionsPopup.style.backgroundColor = 'white';
-    // actionsPopup.style.border = '1px solid #ccc';
-    // actionsPopup.style.borderRadius = '4px';
-    // actionsPopup.style.padding = '5px';
-    // actionsPopup.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-    // actionsPopup.style.zIndex = '1001'; // Ensure it's above other elements
-
-    // const copyConvButton = document.createElement('button'); // Use button for better semantics
-    // copyConvButton.className = 'ds-copy-conversation-btn';
-    // copyConvButton.textContent = 'copy';
-    // copyConvButton.style.display = 'block'; // Always visible inside the popup
-    // copyConvButton.style.border = 'none';
-    // copyConvButton.style.background = 'none';
-    // copyConvButton.style.padding = '5px 10px';
-    // copyConvButton.style.cursor = 'pointer';
-    // copyConvButton.style.width = '100%';
-    // copyConvButton.style.textAlign = 'left';
-
-    // actionsPopup.appendChild(copyConvButton); // Add button to popup
-
-    // U_actionsDiv.appendChild(U_triggerSpan);
-    // U_actionsDiv.appendChild(actionsPopup); // Add popup to actions div
-
-    // Always添加到历史记录，但内容会根据isSummaryTask变化
+    
     const userMsgDiv = document.createElement('div');
     userMsgDiv.className = 'ds-chat-message ds-user-message';
     userMsgDiv.innerHTML = (isSummaryTask ? '正在总结当前网页...' : (message));
@@ -4204,69 +4453,6 @@ config.fullConversation.push({
     const U_actionsDiv = copyMessage(message,"user");
 
 
-//     U_triggerSpan.addEventListener('click', (e) => {
-//         e.stopPropagation(); // Prevent triggering other clicks, like closing the popup immediately
-//         // Toggle popup visibility
-//         const isVisible = actionsPopup.style.display !== 'none';
-//         actionsPopup.style.display = isVisible ? 'none' : 'block';
-//     });
-
-//     // Close popup when clicking outside
-//     document.addEventListener('click', (e) => {
-//         if (!U_actionsDiv.contains(e.target)) {
-//              actionsPopup.style.display = 'none';
-//         }
-//     }, true); // Use capture phase to catch clicks early
-
-//     // Close popup on mouse leave after a short delay
-//     actionsPopup.addEventListener('mouseleave', () => {
-//         setTimeout(() => {
-//              // Check if mouse hasn't re-entered popup or trigger
-//              if (!actionsPopup.matches(':hover') && !U_triggerSpan.matches(':hover')) {
-//                  actionsPopup.style.display = 'none';
-//              }
-//         }, 300); // Adjust delay as needed
-//     });
-//     // Prevent popup closing immediately if mouse moves briefly to trigger
-//     U_triggerSpan.addEventListener('mouseenter', () => {
-//          // Optional: Add logic if needed when mouse enters trigger while popup is open
-//     });
-
-
-//     copyConvButton.addEventListener('click', (e) => {
-//         e.stopPropagation(); // Prevent the click from bubbling up and closing the popup via the document listener
-//         let conversationText = '';
-//         // Correctly format the conversation text
-//         config.fullConversation.forEach(msg => {
-//              const role = msg.role === 'user' ? 'User' : 'Assistant'; // Get role from message
-//              const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
-//              // Append each message correctly
-//              conversationText += `${role} [${time}]:
-// ${msg.content}
-
-// `;
-//         });
-
-
-//         navigator.clipboard.writeText(conversationText.trim()).then(() => {
-//             copyConvButton.textContent = '已copy!';
-//             copyConvButton.style.backgroundColor = '#d4edda'; // Light green feedback
-//             setTimeout(() => {
-//                 copyConvButton.textContent = 'copy';
-//                 copyConvButton.style.backgroundColor = 'transparent'; // Reset background
-//                 actionsPopup.style.display = 'none'; // Hide popup after copying
-//             }, 1500);
-//         }).catch(err => {
-//             console.error('copy对话失败:', err);
-//             copyConvButton.textContent = '失败';
-//             copyConvButton.style.backgroundColor = '#f8d7da'; // Light red feedback
-//             setTimeout(() => {
-//                 copyConvButton.textContent = 'copy';
-//                 copyConvButton.style.backgroundColor = 'transparent'; // Reset background
-//                 actionsPopup.style.display = 'none'; // Hide popup after failure feedback
-//             }, 1500);
-//         });
-//     });
     // 总是显示用户消息，但内容会根据isSummaryTask变化
     //chatContent.appendChild(userMsgDiv);
     const userMessageContainer = document.createElement('div');
@@ -4281,7 +4467,8 @@ config.fullConversation.push({
     const avatar = document.createElement('img');
     //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQElEQVR4nO2XQW6DMBBFX1gkh0jgCm2XcAXCrixyhybHbNoVvUpF9o6QBqmqWoUah7HVedLfRBj/DzNkDIZhhCQDCqACaqAV1fJbIddESQ40wOGGGrk2GlbA0wTj3zWsGdaq42N+1KO2+XyG+VE7LfPZxJqf0hOZRoAigPmDaLjX4lQBA5QaAfYBA9QaAdqAAdrUAzxrBEi+hKrUm7gIGCDXCJAFKqNGc0JNepQIMcw9EAErmSr/an5YE8U4PbKb2BP7GMrm1pGy/OFIWUrPRHukNAzDuA8b4AS8ARfA3VkX2esoe89iC3wsYNr9ok48eD95TfPuSwivN3GKwLwTvfgEeI/AuBOdfQL0ERh3oj71AJ//soSOERh3c5p4I58wbfMdsMaTrXKIbs4f2chaXuF5ocbugVfZ0/vJG4ZhsAhXSvn7fc8Yyv8AAAAASUVORK5CYII=";
     avatar.alt = "user";
-    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAAElFTkSuQmCC";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAElFTkSuQmCC";
     avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
     avatar.style.marginTop = "15px"; // 可以根据需要调整头像和消息块的间距
     avatar.style.width = "30px"; // 可以根据需要调整宽度
@@ -5325,7 +5512,6 @@ function setupTokenCounter() {
     }
 }
 
-//
 //displayHistory();
 //颜色变化适配
 
@@ -5495,8 +5681,6 @@ show_df(dept_avg)
     });
 }
 // ... existing code ...
-
-// 图像生成函数
 
 
 
