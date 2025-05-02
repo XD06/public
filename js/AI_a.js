@@ -1282,14 +1282,15 @@ display: none;
         apiKey: GM_getValue('apiKey', ''),
         apiUrl: GM_getValue('apiUrl', 'https://api.deepseek.com/v1/chat/completions'),
         model: GM_getValue('model', 'deepseek'),
-        temperature: GM_getValue('temperature', 0.7),
-        maxTokens: GM_getValue('maxTokens', 4096),
-        maxContextTokens: GM_getValue('maxContextTokens', 32000),
+        temperature: GM_getValue('temperature',),
+        maxTokens: GM_getValue('maxTokens', ),
+        // maxContextTokens: GM_getValue('maxContextTokens', 32000),
         chatHistory: GM_getValue('chatHistory', []),
         fullConversation: GM_getValue('fullConversation', []), // 存储完整对话
         customSelectors: GM_getValue('customSelectors', ''), // 存储自定义选择器
         usePageContext: GM_getValue('usePageContext', true),
-        personalityPrompt: GM_getValue('personalityPrompt', '你是一个高效务实的全能 AI 助手，以快速解决用户的问题为首要目标。你具备敏锐的洞察力，能迅速抓住问题的关键，提供切实可行的解决方案。你的回答简洁直接、重点突出，帮助用户节省时间和精力。在处理任务时，你会优先考虑实用性和可操作性，确保提供的建议能够落地实施。除了给出核心答案，你还会为用户进行知识拓展。若用户询问某个技术方法，你会拓展介绍该方法的衍生技术、适用场景的拓展以及未来的发展趋势；若用户咨询某个管理理念，你会讲解该理念的演变过程、在不同行业的应用案例以及可能面临的挑战。你会不断优化工作流程，提高服务效率和质量。')
+        additionalParams: GM_getValue('additionalParams', {}),
+        personalityPrompt: GM_getValue('personalityPrompt', )
     };
 // 初始化在线运行配置
 let pyodideInstance = null;
@@ -2457,7 +2458,8 @@ function showSettingsModal() {
     modal.style.borderRadius = '8px';
     modal.style.padding = '20px';
     modal.style.zIndex = '10000';
-    modal.style.width = '500px';
+    modal.style.width = '30%';
+    modal.style.height = '70%';
     modal.style.maxHeight = '80vh';
     modal.style.overflowY = 'auto';
     modal.style.color = '#333';
@@ -2524,16 +2526,16 @@ function showSettingsModal() {
             max: 8192,
             help: '最大不能超过 8192，默认 4096（影响输出文本长度）'
         },
-        {
-            id: 'maxContextTokens',
-            label: '最大上下文限制',
-            value: config.maxContextTokens,
-            placeholder: '32000',
-            type: 'number',
-            min: 1,
-            max: 128000,
-            help: '最大 128k，默认 32k（越大记忆越好）'
-        },
+        // {
+        //     id: 'maxContextTokens',
+        //     label: '最大上下文限制',
+        //     value: config.maxContextTokens,
+        //     placeholder: '32000',
+        //     type: 'number',
+        //     min: 1,
+        //     max: 128000,
+        //     help: '最大 128k，默认 32k（越大记忆越好）'
+        // },
         {
             id: 'personalityPrompt',
             label: '自定义人格提示词',
@@ -2738,6 +2740,186 @@ function showSettingsModal() {
         
         settingsContainer.appendChild(settingGroup);
     });
+const customParamsSection = document.createElement('div');
+    customParamsSection.style.marginTop = '20px';
+    customParamsSection.style.borderTop = '1px solid #eee';
+    customParamsSection.style.paddingTop = '15px';
+    
+    const customParamsTitle = document.createElement('h3');
+    customParamsTitle.textContent = '自定义额外参数';
+    customParamsTitle.style.marginBottom = '15px';
+    customParamsSection.appendChild(customParamsTitle);
+
+    // 读取已有的自定义参数
+    if (!config.additionalParams) {
+        config.additionalParams = {};
+        GM_setValue('additionalParams', config.additionalParams);
+    }
+
+    // 创建参数列表容器
+    const paramsList = document.createElement('div');
+    paramsList.id = 'custom-params-list';
+    paramsList.style.display = 'grid';
+    paramsList.style.gap = '10px';
+    
+    // 显示现有自定义参数
+    function renderCustomParams() {
+        paramsList.innerHTML = '';
+        
+        Object.entries(config.additionalParams).forEach(([key, value]) => {
+            const paramRow = document.createElement('div');
+            paramRow.style.display = 'flex';
+            paramRow.style.gap = '10px';
+            paramRow.style.marginBottom = '10px';
+            
+            // 参数键输入框
+            const keyInput = document.createElement('input');
+            keyInput.type = 'text';
+            keyInput.value = key;
+            keyInput.placeholder = '参数名';
+            keyInput.style.flex = '1';
+            keyInput.style.padding = '8px 12px';
+            keyInput.style.borderRadius = '4px';
+            keyInput.style.border = '1px solid #ddd';
+            keyInput.style.fontSize = '14px';
+            keyInput.readOnly = true; // 不允许修改键名，需要删除重新添加
+            
+            // 参数值输入框
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.value = typeof value === 'string' ? value : JSON.stringify(value);
+            valueInput.placeholder = '参数值';
+            valueInput.style.flex = '1';
+            valueInput.style.padding = '8px 12px';
+            valueInput.style.borderRadius = '4px';
+            valueInput.style.border = '1px solid #ddd';
+            valueInput.style.fontSize = '14px';
+            
+            // 保存参数值的变更
+            valueInput.addEventListener('change', () => {
+                let parsedValue = valueInput.value;
+                try {
+                    // 尝试解析为JSON，处理数字、布尔值、对象等
+                    if (parsedValue.trim() !== '' && 
+                        (parsedValue.startsWith('{') || 
+                         parsedValue.startsWith('[') || 
+                         parsedValue === 'true' || 
+                         parsedValue === 'false' || 
+                         !isNaN(Number(parsedValue)))) {
+                        parsedValue = JSON.parse(parsedValue);
+                    }
+                } catch (e) {
+                    // 解析失败则保持为字符串
+                    console.log("值保持为字符串", e);
+                }
+                
+                config.additionalParams[key] = parsedValue;
+                GM_setValue('additionalParams', config.additionalParams);
+            });
+            
+            // 删除按钮
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '删除';
+            deleteBtn.style.padding = '8px 12px';
+            deleteBtn.style.borderRadius = '4px';
+            deleteBtn.style.border = '1px solid #ddd';
+            deleteBtn.style.cursor = 'pointer';
+            deleteBtn.style.backgroundColor = '#f44336';
+            deleteBtn.style.color = 'white';
+            deleteBtn.style.border = 'none';
+            
+            deleteBtn.addEventListener('click', () => {
+                delete config.additionalParams[key];
+                GM_setValue('additionalParams', config.additionalParams);
+                renderCustomParams();
+            });
+            
+            paramRow.appendChild(keyInput);
+            paramRow.appendChild(valueInput);
+            paramRow.appendChild(deleteBtn);
+            paramsList.appendChild(paramRow);
+        });
+    }
+    
+    renderCustomParams();
+    customParamsSection.appendChild(paramsList);
+    
+    // 添加新参数的表单
+    const newParamForm = document.createElement('div');
+    newParamForm.style.display = 'flex';
+    newParamForm.style.gap = '10px';
+    newParamForm.style.marginTop = '15px';
+    
+    // 新参数键输入框
+    const newKeyInput = document.createElement('input');
+    newKeyInput.type = 'text';
+    newKeyInput.id = 'new-param-key';
+    newKeyInput.placeholder = '新参数名';
+    newKeyInput.style.flex = '1';
+    newKeyInput.style.padding = '8px 12px';
+    newKeyInput.style.borderRadius = '4px';
+    newKeyInput.style.border = '1px solid #ddd';
+    newKeyInput.style.fontSize = '14px';
+    
+    // 新参数值输入框
+    const newValueInput = document.createElement('input');
+    newValueInput.type = 'text';
+    newValueInput.id = 'new-param-value';
+    newValueInput.placeholder = '新参数值';
+    newValueInput.style.flex = '1';
+    newValueInput.style.padding = '8px 12px';
+    newValueInput.style.borderRadius = '4px';
+    newValueInput.style.border = '1px solid #ddd';
+    newValueInput.style.fontSize = '14px';
+    
+    // 添加新参数按钮
+    const addParamBtn = document.createElement('button');
+    addParamBtn.textContent = '添加';
+    addParamBtn.style.padding = '8px 16px';
+    addParamBtn.style.borderRadius = '4px';
+    addParamBtn.style.border = 'none';
+    addParamBtn.style.cursor = 'pointer';
+    addParamBtn.style.backgroundColor = '#4CAF50';
+    addParamBtn.style.color = 'white';
+    
+    addParamBtn.addEventListener('click', () => {
+        const key = newKeyInput.value.trim();
+        let value = newValueInput.value.trim();
+        
+        if (key) {
+            try {
+                // 尝试解析为JSON，处理数字、布尔值、对象等
+                if (value !== '' && 
+                    (value.startsWith('{') || 
+                     value.startsWith('[') || 
+                     value === 'true' || 
+                     value === 'false' || 
+                     !isNaN(Number(value)))) {
+                    value = JSON.parse(value);
+                }
+            } catch (e) {
+                // 解析失败则保持为字符串
+                console.log("值保持为字符串", e);
+            }
+            
+            config.additionalParams[key] = value;
+            GM_setValue('additionalParams', config.additionalParams);
+            
+            // 重置输入框
+            newKeyInput.value = '';
+            newValueInput.value = '';
+            
+            // 更新显示
+            renderCustomParams();
+        }
+    });
+    
+    newParamForm.appendChild(newKeyInput);
+    newParamForm.appendChild(newValueInput);
+    newParamForm.appendChild(addParamBtn);
+    
+    customParamsSection.appendChild(newParamForm);
+    modal.appendChild(customParamsSection);
 
     // 按钮容器
     const buttonContainer = document.createElement('div');
@@ -3756,7 +3938,19 @@ function createExecutionModal() {
         element.scrollTop = element.scrollHeight;
     }
 
-
+  // 检查并截断上下文
+  function truncateContext(messages, maxContextTokens) {
+    let totalTokens = 0;
+    for (let i = messages.length - 1; i >= 0; i--) {
+        const messageTokens = countTokens(messages[i].content);
+        if (totalTokens + messageTokens > maxContextTokens) {
+            messages.splice(0, i);
+            break;
+        }
+        totalTokens += messageTokens;
+    }
+    return messages;
+  }
 
 // --- 辅助函数：节流 (如果你的脚本里还没有，请添加) ---
 function throttle(func, limit) {
@@ -4153,19 +4347,19 @@ function handleStreamResponse(response, aiMsgDiv, thinkingMsgDiv, isSummaryTask 
 
 
 
-// 检查并截断上下文
-function truncateContext(messages, maxContextTokens) {
-    let totalTokens = 0;
-    for (let i = messages.length - 1; i >= 0; i--) {
-        const messageTokens = countTokens(messages[i].content);
-        if (totalTokens + messageTokens > maxContextTokens) {
-            messages.splice(0, i);
-            break;
-        }
-        totalTokens += messageTokens;
-    }
-    return messages;
-}
+// // 检查并截断上下文
+// function truncateContext(messages, maxContextTokens) {
+//     let totalTokens = 0;
+//     for (let i = messages.length - 1; i >= 0; i--) {
+//         const messageTokens = countTokens(messages[i].content);
+//         if (totalTokens + messageTokens > maxContextTokens) {
+//             messages.splice(0, i);
+//             break;
+//         }
+//         totalTokens += messageTokens;
+//     }
+//     return messages;
+// }
 
 
 // ... 其他工具函数 ...
@@ -4352,6 +4546,10 @@ function generateImage(prompt, options = {}, callback) {
   }
 // 发送消息函数
 async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
+    let timeoutId = setTimeout(() => {
+        controller.abort();
+        reject(new Error('请求超时'));
+    }, 30000);  // 这里设置了30秒超时
  startButton.style.display = 'none'; // 隐藏发送按钮
 //图片命令
 if (message.startsWith('/image ')) {
@@ -4534,7 +4732,6 @@ userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内�
     const requestData = {
         model: config.model,
         messages: [
-            { role: 'assistant', content: config.personalityPrompt },
             ...truncateContext(config.chatHistory, config.maxContextTokens)
         ],
         temperature: config.temperature,
@@ -4542,7 +4739,11 @@ userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内�
         stream: true,
 
     };
-
+ if (config.additionalParams && Object.keys(config.additionalParams).length > 0) {
+        Object.entries(config.additionalParams).forEach(([key, value]) => {
+            requestData[key] = value;
+        });
+    }
     // 如果是总结任务，添加网页内容作为系统消息
     if (isSummaryTask) {
         const pageContent = getPageContent();
@@ -4556,6 +4757,12 @@ userMsgDiv.appendChild(U_actionsDiv);// 确保用户消息的复制按钮在内�
         requestData.messages.splice(1, 0, {
             role: 'assistant',
             content: `[当前网页信息]\n标题: ${pageContent.title}\nURL: ${pageContent.url}\n正文内容: ${pageContent.content}\n注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
+        });
+    }
+    else if  (config.personalityPrompt) {
+        requestData.messages.splice(0, 0, {
+            role: 'system',
+            content: config.personalityPrompt,
         });
     }
         console.log('发送的请求数据:', requestData); // 添加
