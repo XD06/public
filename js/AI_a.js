@@ -2458,7 +2458,7 @@ function showSettingsModal() {
     modal.style.borderRadius = '8px';
     modal.style.padding = '20px';
     modal.style.zIndex = '10000';
-    modal.style.width = '30%';
+    modal.style.width = '70%';
     modal.style.height = '70%';
     modal.style.maxHeight = '80vh';
     modal.style.overflowY = 'auto';
