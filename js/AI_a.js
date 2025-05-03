@@ -1279,6 +1279,7 @@ display: none;
     // 初始化配置
     let config = {
         hidden: false,
+        picture_model: false,
         apiKey: GM_getValue('apiKey', ''),
         apiUrl: GM_getValue('apiUrl', 'https://api.deepseek.com/v1/chat/completions'),
         model: GM_getValue('model', 'deepseek'),
@@ -1971,10 +1972,247 @@ startButton.addEventListener('mouseout', () => {
         
                 const inputBox = document.createElement('textarea');
                 inputBox.className = 'ds-chat-input';
-                inputBox.placeholder = '请输入...';
+                inputBox.placeholder = '请输入/查看指令....';
                 inputBox.rows = 2;
                 inputBox.style.padding = '8px 10px';
                 inputArea.appendChild(inputBox);
+                    // 等待你的输入框创建完成后再执行
+                    const cmdConfig = { // <--- 使用 cmdConfig 避免冲突
+                        triggerChar: '/',
+                        commands: [
+                            {name: 'image', desc: '生图'},
+                            {name: 'video', desc: '插入视频'},
+                            {name: 'link', desc: '插入链接'},
+                            {name: 'header', desc: '插入标题'}
+                            // Add more commands as needed
+                        ]
+                    };
+            
+                    // 创建提示框
+                    const suggestions = document.createElement('div');
+                    suggestions.className = 'ds-cmd-suggestions';
+                    // !! 重要：添加到 document.body，而不是 inputBox !!
+                    document.body.appendChild(suggestions);
+            
+                    // 添加样式 (如果你的主CSS里没有，就保留；如果主CSS里已经定义了 .ds-cmd-suggestions 等样式，这里可以省略)
+                    // 确保 CSS 中 .ds-cmd-suggestions 有 position: absolute; 和 z-index: 2147483647;
+                    if (!document.getElementById('ds-cmd-styles')) {
+                        const style = document.createElement('style');
+                        style.id = 'ds-cmd-styles';
+                        style.textContent = `
+                            .ds-cmd-suggestions {
+                                display: none;
+                                position: absolute; /* 必须是 absolute */
+                                background: white;
+                                border: 1px solid #ddd;
+                                border-radius: 4px;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                z-index: 2147483647; /* 确保在最顶层 */
+                                max-height: 150px;
+                                overflow-y: auto;
+                                font-family: inherit;
+                                min-width: 150px;
+                            }
+                            .ds-cmd-suggestion {
+                                padding: 6px 10px;
+                                cursor: pointer;
+                                font-size: 13px;
+                                white-space: nowrap;
+                            }
+                            .ds-cmd-suggestion:hover,
+                            .ds-cmd-suggestion.highlight {
+                                background-color: #eee;
+                            }
+                            .ds-cmd-suggestion small {
+                                color: #777;
+                                margin-left: 8px;
+                                font-size: 11px;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+            
+                    let activeSuggestionIndex = -1;
+            
+                    // 显示/隐藏函数
+                    function showSuggestions(filter = '') {
+                        // !! 使用 cmdConfig !!
+                        const filtered = filter
+                            ? cmdConfig.commands.filter(cmd => cmd.name.toLowerCase().startsWith(filter.toLowerCase()))
+                            : cmdConfig.commands;
+            
+                        if (filtered.length === 0) {
+                            hideSuggestions();
+                            return;
+                        }
+            
+                        // !! 使用正确的 inputBox 变量 !!
+                        const rect = inputBox.getBoundingClientRect();
+                        suggestions.style.display = 'block';
+                        // !! 计算准确的位置，考虑页面滚动 !!
+                        suggestions.style.left = `${rect.left + window.scrollX}px`;
+                        suggestions.style.top = `${rect.bottom + window.scrollY}px`;
+                        suggestions.style.minWidth = `${rect.width}px`;
+            
+                        suggestions.innerHTML = filtered.map((cmd, index) => `
+                            <div class="ds-cmd-suggestion" data-cmd="${cmd.name}" data-index="${index}">
+                                ${cmdConfig.triggerChar}${cmd.name} <small>${cmd.desc}</small>
+                            </div>
+                        `).join('');
+            
+                        activeSuggestionIndex = -1;
+            
+                        suggestions.querySelectorAll('.ds-cmd-suggestion').forEach(item => {
+                            item.addEventListener('click', () => {
+                                insertCommand(item.dataset.cmd);
+                            });
+                        });
+                    }
+            
+                    function hideSuggestions() {
+                        if (suggestions.style.display !== 'none') {
+                            suggestions.style.display = 'none';
+                            suggestions.innerHTML = '';
+                            activeSuggestionIndex = -1;
+                        }
+                    }
+            
+                     function updateHighlight() {
+                         const items = suggestions.querySelectorAll('.ds-cmd-suggestion');
+                         items.forEach((item, index) => {
+                             if (index === activeSuggestionIndex) {
+                                 item.classList.add('highlight');
+                                 item.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+                             } else {
+                                 item.classList.remove('highlight');
+                             }
+                         });
+                    }
+            
+                    function insertCommand(cmd) {
+                        // !! 使用正确的 inputBox 和 cmdConfig !!
+                        const currentValue = inputBox.value;
+                        const cursorPos = inputBox.selectionStart;
+                        const textBeforeCursor = currentValue.substring(0, cursorPos);
+                        const triggerPos = textBeforeCursor.lastIndexOf(cmdConfig.triggerChar);
+            
+                        if (triggerPos === -1) {
+                             hideSuggestions();
+                             return;
+                        }
+            
+                        const prefix = currentValue.substring(0, triggerPos);
+                        const suffix = currentValue.substring(cursorPos);
+            
+                        inputBox.value = prefix + cmdConfig.triggerChar + cmd + ' ' + suffix;
+            
+                        const newCursorPos = prefix.length + cmdConfig.triggerChar.length + cmd.length + 1;
+                        inputBox.focus();
+                        inputBox.setSelectionRange(newCursorPos, newCursorPos);
+            
+                        hideSuggestions();
+                    }
+            
+                    // 事件监听
+                    // !! 确保所有监听器都绑定到正确的 inputBox !!
+                    inputBox.addEventListener('input', function(e) {
+                        const val = e.target.value;
+                        const cursorPos = e.target.selectionStart;
+                        const textBeforeCursor = val.substring(0, cursorPos);
+                         // !! 使用 cmdConfig !!
+                        const lastTriggerPos = textBeforeCursor.lastIndexOf(cmdConfig.triggerChar);
+            
+                        if (lastTriggerPos !== -1) {
+                             const textAfterTrigger = textBeforeCursor.substring(lastTriggerPos + 1);
+                            if (!/\s/.test(textAfterTrigger)) {
+                                showSuggestions(textAfterTrigger);
+                             } else {
+                                 hideSuggestions();
+                             }
+                        } else {
+                             hideSuggestions();
+                        }
+                    });
+            
+                    // !! 替换掉你原来的两个 inputBox keydown 监听器 !!
+    inputBox.addEventListener('keydown', function(e) {
+        const suggestionsVisible = suggestions.style.display === 'block';
+        const items = suggestionsVisible ? suggestions.querySelectorAll('.ds-cmd-suggestion') : [];
+        let handled = false; // 标记事件是否已被处理
+
+        // --- 优先处理命令提示的逻辑 ---
+        if (suggestionsVisible && items.length > 0) {
+            switch (e.key) {
+                case 'ArrowDown':
+                    activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
+                    updateHighlight();
+                    handled = true;
+                    break;
+                case 'ArrowUp':
+                    activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
+                    updateHighlight();
+                    handled = true;
+                    break;
+                case 'Enter':
+                case 'Tab': // Tab 也用于选择
+                     if (activeSuggestionIndex > -1) { // 有高亮项
+                        insertCommand(items[activeSuggestionIndex].dataset.cmd);
+                        handled = true; // 事件被命令选择处理了
+                    } else if (e.key === 'Enter') {
+                        // 如果提示框可见，但没有选中项，按 Enter 通常不应发送消息，只隐藏提示
+                        hideSuggestions();
+                        handled = true; // 阻止 Enter 的默认行为（如换行）和发送消息
+                    }
+                    // 如果是 Tab 且无选中项，则不处理，让 Tab 键默认行为发生（切换焦点）
+                    break;
+                case 'Escape':
+                    hideSuggestions();
+                    handled = true;
+                    break;
+            }
+        }
+
+        // --- 如果事件已被命令提示处理，则阻止后续行为 ---
+        if (handled) {
+            e.preventDefault();
+            e.stopPropagation(); // 确保万无一失，阻止其他监听器
+            return; // 不再执行下面的发送逻辑
+        }
+
+        // --- 如果事件未被处理，并且是 Enter 键（非 Shift+Enter），则执行发送逻辑 ---
+        if (e.key === 'Enter' && !e.shiftKey) {
+            // 阻止 Enter 的默认行为（如换行）
+            e.preventDefault();
+
+            const message = inputBox.value.trim();
+            if (message) {
+                // 隐藏发送按钮（如果需要立即隐藏）
+                if (typeof startButton !== 'undefined' && startButton) { // 检查 startButton 是否定义
+                   // startButton.style.display = 'none'; // 这行可以去掉，sendMessage 里似乎会处理
+                }
+                sendMessage(message); // 调用发送函数
+                inputBox.value = ''; // 清空输入框
+                 // 注意：这里不需要再调用 stopPropagation，因为我们希望这是 Enter 的最终行为
+            }
+        }
+
+        // 对于其他按键（非 Enter, ArrowUp/Down, Tab, Escape），不阻止默认行为，允许输入
+    });
+                    document.addEventListener('click', function(e) {
+                         // !! 使用正确的 inputBox !!
+                         if (!inputBox.contains(e.target) && !suggestions.contains(e.target)) {
+                             hideSuggestions();
+                         }
+                    });
+            
+                     inputBox.addEventListener('blur', function(e) {
+                         setTimeout(() => {
+                             if (!suggestions.contains(document.activeElement)) {
+                                 hideSuggestions();
+                             }
+                         }, 100);
+                     });
+                
         
                 const settingsArea = document.createElement('div');
                 settingsArea.className = 'ds-chat-settings';
@@ -2013,6 +2251,16 @@ startButton.addEventListener('mouseout', () => {
                 
                 scrollToBottomBtn.title = '滚动到底部';
                 chatWindow.appendChild(scrollToBottomBtn);
+
+
+// ============== 在创建inputBox后插入这部分代码 ==============
+// 放在创建textarea之后的代码中（确保inputBox已存在）
+
+// ============== 代码结束 ==============
+
+
+
+
                 // 监听滚动事件
         let isUserScrolling = false;
         let scrollTimeout = null;
@@ -2543,6 +2791,14 @@ function showSettingsModal() {
             placeholder: 'AI助手',
             type: 'text',
             help: '默认: AI助手'
+        },
+        {
+            id: '生图模式',
+            label: '生图模式',
+            value: config.picture_model,
+            placeholder: true,
+            type: 'bool',
+            help: '默认: false or true(响应数据类型为data.image[0].url)'
         }
     ];
 
@@ -3068,30 +3324,30 @@ const customParamsSection = document.createElement('div');
            alert("发送消息不能为空！");
            }
 });
-        inputBox.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                startButton.style.display = 'none';
-                e.preventDefault();
-                const message = inputBox.value.trim();
-                if (message) {
-                    sendMessage(message);
-                    inputBox.value = '';
-                   // startButton.style.display = 'flex';
-                }
-            }
-        });
+        // inputBox.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Enter' && !e.shiftKey&& signs) {
+        //         startButton.style.display = 'none';
+        //         e.preventDefault();
+        //         const message = inputBox.value.trim();
+        //         if (message) {
+        //             sendMessage(message);
+        //             inputBox.value = '';
+        //            // startButton.style.display = 'flex';
+        //         }
+        //     }
+        // });
         //隐藏默认配置
                 // 输入框事件
-                inputBox.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        const message = inputBox.value.trim();
-                        if (message) {
-                            sendMessage(message);
-                            inputBox.value = '';
-                        }
-                    }
-                });
+                // inputBox.addEventListener('keydown', (e) => {
+                //     if (e.key === 'Enter' && !e.shiftKey) {
+                //         e.preventDefault();
+                //         const message = inputBox.value.trim();
+                //         if (message) {
+                //             sendMessage(message);
+                //             inputBox.value = '';
+                //         }
+                //     }
+                // });
 
                  /**
  * 获取网页主要内容
@@ -4382,11 +4638,10 @@ function addMessage(role, content) {
     }
 }
 
-// ... 后续是 sendMessage 函数 ...
-//发送图像请求
-// 修改后的图像生成函数
+
 // 修改后的图像生成函数
 function generateImage(prompt, options = {}, callback) {
+    if(config.picture_model){
     // 合并默认参数和用户自定义参数
     const params = {
       model: "Kwai-Kolors/Kolors",
@@ -4397,7 +4652,7 @@ function generateImage(prompt, options = {}, callback) {
       guidance_scale: 7.5,
       ...options
     };
-  
+
     // 请求配置
     const requestOptions = {
       method: 'POST',
@@ -4440,7 +4695,72 @@ function generateImage(prompt, options = {}, callback) {
           throw new Error('API返回的数据结构异常');
         });
     }
-  }
+}
+else{
+    const params = {
+        model: "sdxl-turbo",
+        prompt: prompt,
+        provider: "ImageLabs"
+      };
+  
+      // 请求配置
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer secret',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      };
+    
+      // 同时支持Promise和Callback两种方式
+      if (typeof callback === 'function') {
+        fetch('https://ypy.dskblog.top/v1/images/generate', requestOptions)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data?.[0]?.url) {
+              callback(null, data[0].url);
+            } else {
+              callback(new Error('API返回的数据结构异常'));
+            }
+          })
+          .catch(err => callback(err));
+      } else {
+        return fetch('https://ypy.dskblog.top/v1/images/generate', requestOptions)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.data[0].url) {
+              return data.data[0].url;
+            }
+            console.log(data.data);
+            throw new Error('API返回的数据结构异常');
+          });
+      }
+
+}
+
+}
+// {
+//     "data": [
+//         {
+//             "url": "http://ypy.dskblog.top/media/1746284599_naked_girl_f2fa63bb53afd47f.jpg?url=https%3A//pornlabstaskstore.s3-accelerate.amazonaws.com/81f0125cde2a442383d7467ae64de1ca.jpg",
+//             "revised_prompt": "naked girl"
+//         }
+//     ],
+//     "model": "sdxl-turbo",
+//     "provider": "ImageLabs",
+//     "created": 1746284599
+// }
   //消息复制函数
   function copyMessage(message,roles) {
     const U_actionsDiv = document.createElement('div');
@@ -4545,11 +4865,10 @@ function generateImage(prompt, options = {}, callback) {
     return U_actionsDiv;
   }
 // 发送消息函数
-async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
+async function sendMessage(message, retryCount = 1, isSummaryTask = false) {
     let timeoutId = setTimeout(() => {
-        controller.abort();
-        reject(new Error('请求超时'));
-    }, 30000);  // 这里设置了30秒超时
+        console.error('Request timeout');
+    }, 60000);
  startButton.style.display = 'none'; // 隐藏发送按钮
 //图片命令
 if (message.startsWith('/image ')) {
@@ -4603,7 +4922,7 @@ if (message.startsWith('/image ')) {
     .catch(error => console.error("生成失败:", error));
     setTimeout(() => {
         chatContent.scrollTop = chatContent.scrollHeight;
-    }, 4000);
+    }, 6000);
     return;
 }
 
@@ -4665,7 +4984,7 @@ config.fullConversation.push({
     const avatar = document.createElement('img');
     //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQElEQVR4nO2XQW6DMBBFX1gkh0jgCm2XcAXCrixyhybHbNoVvUpF9o6QBqmqWoUah7HVedLfRBj/DzNkDIZhhCQDCqACaqAV1fJbIddESQ40wOGGGrk2GlbA0wTj3zWsGdaq42N+1KO2+XyG+VE7LfPZxJqf0hOZRoAigPmDaLjX4lQBA5QaAfYBA9QaAdqAAdrUAzxrBEi+hKrUm7gIGCDXCJAFKqNGc0JNepQIMcw9EAErmSr/an5YE8U4PbKb2BP7GMrm1pGy/OFIWUrPRHukNAzDuA8b4AS8ARfA3VkX2esoe89iC3wsYNr9ok48eD95TfPuSwivN3GKwLwTvfgEeI/AuBOdfQL0ERh3oj71AJ//soSOERh3c5p4I58wbfMdsMaTrXKIbs4f2chaXuF5ocbugVfZ0/vJG4ZhsAhXSvn7fc8Yyv8AAAAASUVORK5CYII=";
     avatar.alt = "user";
-    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
+    //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2Xy0pcQRCGv8jozjF5CU0UXUgWyQMEVCTBvVkJPoAIIuYNdJwJKkQUX0NCHiIEb1mPd8ULExeK4gkNNYsUfdQ5l1gD/UHBcKam6q+equ4+EAgEsqYHKAObwJWY+zwPdGOYNmABuAOiGHPfVYBWDIr/8YBwbd+tFbHQgPi6uX/CTM/rttkCPgLtYp+AbeVzC7zBAGWP+KLHrwPYUb4lDLClRLnVjmNE+W5ggJoS5VomjqLyrWEAPZxZ++dO0xdQa/YW2mz2IZ5XorZly9S4Z7+V7xwG6PYcZDuy2kWxEY94d5C9xgiVBFcJE4dYnVa5oD1V/Lq1yxwiqCKtESf8VmbGnHg9EyXZYf6IbcjAmun5QCDw7/vwILAKHD9hC3U+K8CA/PbZeAl8AU4THGJ1OwFmYq4eueH28GngMoVwbRfAFFDIW/xb4FeGwiNlP4H+vMSPAzcxic+Bb8CHR1axID7LsuqRx66BsSyFvwC+xiQ7AiYeeYmJw91SJx8Y/LLkTkULsOYJfg8syiCn5RWwJDF1npW0RZQ8Qc+AIbJnWFpR55tNGvCzJ9gh0Et+9Elb6ryjSYIdqCD7QCf50+XJvZckkF6Fd/w/3nvyN0zqACmJsi7gua1hmr6AXQOiI7FqkgIGjRRRlat3IBAIYI+/ScbW2EutvLQAAAAASUVORK5CYII=";
     //avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB9ElEQVR4nO2SPQ4BQQCFPxqVhoRi6VDsAdxCxVWo9w5OIRsVEhGXoNiGVkdi6ShWJnkSETshRjT7kte8vJ/dmYEMjlADQuAkjoGmy/IDkDzRaJ6LgVCFExUaTqWNXAycVPb4tXVpRxcDscpqvxoYq2yqEcOZNHN8X6MF7FMuuYEjeLrQWAxdlmdIRR5oAwGwBCLgLEbSAnmM920UgAGwe/Fy0mi8fWWtqALrh+AWGAIdwAeKoi9tKM/dvwIqtoGFjBugC+Te+GPj6SljsnOb+SpTic9RVvZiMyWO+L+BDDzjBhltb91A/g4cAAAAElFTkSuQmCC";
     avatar.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABkElEQVR4nO2YSyuEURyHH8rwLdx2blFSNprktmEhG5+C2JKkZMEnsDZKZOdSysIHkEQuIx8AK7J0dOq8NZ0yY857zPm/Ok/9NjN1+j2dOe/7PwORSKboBlaAU+Da5MR81kUGaAMOAVUmX8AB0IpQhoG3ChKleQXyCKMP+KhCIskn0I8QmoBnB4kkRaARASymkEgyjwDuPIjchJZo9yCRJOhTbNyjyGhIkVmPInqtYIx5FBkJKfJvzojm1oOEnsWCs+BBZA4hb/anFBKPQA4h9DrOWu9AD8LIm4n2txIvwBBCaQH2zZ3jJwH93R7QTAboBJaB45Ib4hGwBHSELheJRCLZIwdMAdvABfBgxhMfuTdr6rUngYa/kpgx/3ioGqUITPsUqAe2aiigrGyaDqnZCCihTNbTSkwIkFBmPtPXaif0dl4JkFAml0Cdi8iggPLKyoCLyJqA4srKqovIroDiysqOi8iZgOLKiu5UNecCiisrulMUUQJ2QsUdIZ4R4k+LeEbKU/B4+/OVQoXOkQie+QY59KcNhbK46gAAAABJRU5ErkJggg==";
     avatar.style.marginTop = "15px"; // 可以根据需要调整头像和消息块的间距
