@@ -15,7 +15,7 @@
 // @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
 // @require      https://pictureapi.dskblog.top/js/highlight.min.js
 // @require      https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js
-// @resource     hljsStyle https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css
+// @resource     hljsStyle https://pictureapi.dskblog.top/css/agate.min.css
 // ==/UserScript==
 
 
@@ -66,7 +66,9 @@
         .ds-message-container {
             position: relative;
             margin-bottom: 5px;
-            width: 100%;
+            width: auto;
+            margin-left:5px;
+            margin-right: 5px;
         }
 
         /* 消息选项按钮样式 */
@@ -341,8 +343,8 @@
             word-wrap: break-word;
             font-size: 14px; /* 减小用户消息字体大小 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            margin-left: 5px;
-            margin-right: 5px;
+           //margin-left: 5px;
+            //margin-right: 5px;
             text-align: left;
         }
         .ds-user-message {
@@ -372,6 +374,7 @@
     max-width: -moz-available;
 
         }
+
 
         .ds-chat-message table{
 
@@ -527,6 +530,11 @@
             font-style: oblique;
             font-size: 13px; /* 字体大小比父元素小 10% */
         }
+         .ds-ai-message think {
+            color: #e87be4;
+            font-style: oblique;
+            font-size: 13px; /* 字体大小比父元素小 10% */
+        }
 
         .ds-reasoning-title {
             color: #666;
@@ -554,8 +562,8 @@
             word-wrap: break-word;
             font-size: 14px; /* 减小用户消息字体大小 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            margin-left: 5px;
-            margin-right: 5px;
+            //margin-left: 5px;
+            //margin-right: 5px;
             text-align: left;
               font-weight: 500;
     font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
@@ -580,7 +588,7 @@
             background-color: #FFFFFF;
             line-height: 1.2; /* 调整行高 */
             color: rgb(0,0,0); /* 修改字体颜色 */
-            padding: 5px 20px;
+            padding: 10px 20px;
             text-align: left;
             width: fit-content;
             max-width: -moz-available;
@@ -1009,6 +1017,15 @@
       width: 100%;
       height: 100%;
       }
+          .history-button{
+    background-color:#f8f8f8!important;
+}
+.cancel-button{
+    background-color:#f8f8f8!important;
+}
+    .save-button{
+    background-color:#4CAF50!important;
+}
 
     `);
 
@@ -1019,12 +1036,12 @@
         model: GM_getValue('model', 'gpt-3.5'),
         temperature: GM_getValue('temperature', 0.7),
         maxTokens: GM_getValue('maxTokens', 4096),
-        maxContextTokens: GM_getValue('maxContextTokens', 32000),
         streamOutput : true,
         error_sign : true,
         chatHistory: GM_getValue('chatHistory', []),
         fullConversation: GM_getValue('fullConversation', []), // 存储完整对话
         customSelectors: GM_getValue('customSelectors', ''), // 存储自定义选择器
+          additionalParams: GM_getValue('additionalParams', {}),//自定义请求参数
         usePageContext: GM_getValue('usePageContext', true),
         personalityPrompt: GM_getValue('personalityPrompt', '我是一个高效务实的全能 AI 助手，以快速解决用户的问题为首要目标。我具备敏锐的洞察力，能迅速抓住问题的关键，提供切实可行的解决方案。我的回答简洁直接、重点突出，帮助用户节省时间和精力。在处理任务时，我会优先考虑实用性和可操作性，确保提供的建议能够落地实施。除了给出核心答案，我还会为用户进行知识拓展。若用户询问某个技术方法，我会拓展介绍该方法的衍生技术、适用场景的拓展以及未来的发展趋势；若用户咨询某个管理理念，我会讲解该理念的演变过程、在不同行业的应用案例以及可能面临的挑战。我会不断优化工作流程，提高服务效率和质量。')
     };
@@ -2353,54 +2370,613 @@
             GM_setValue('usePageContext', config.usePageContext);
         });
 
-        settingsBtn.addEventListener('click', () => {
-           /* const newCustomSelectors = prompt('自定义抓取规则(CSS选择器，多个用逗号分隔，留空使用默认):', config.customSelectors);
-    if (newCustomSelectors !== null) {
-        config.customSelectors = newCustomSelectors;
-        GM_setValue('customSelectors', config.customSelectors);
-    }*/
-            const newApiUrl = prompt('API地址(默认:https://api.deepseek.com/v1/chat/completions):', config.apiUrl);
-            if (newApiUrl !== null) {
-                config.apiUrl = newApiUrl;
-                GM_setValue('apiUrl', config.apiUrl);
-            }
-            const newApiKey = prompt('API密钥:', config.apiKey);
-            if (newApiKey !== null) {
-                config.apiKey = newApiKey;
-                GM_setValue('apiKey', config.apiKey);
+                     settingsBtn.addEventListener('click', () => {
+                    config.hidden = !config.hidden;
+                    console.log("config.hidden1:",config.hidden);
+
+                    chatWindow.classList.remove('active');
+                    chatWindow.style.display = 'none';
+                    showSettingsModal();
+
+                });
+                function inspect_chatWindow() {
+                    //ai-settings-modal不存在是chatWindow应该存在
+                    const existingModals = document.getElementById('ai-settings-modal');
+                    console.log("config.hidden3:",config.hidden);
+                    if(config.hidden){
+                        console.log("config.hidden2:",config.hidden);
+                    if (!existingModals) {
+                        chatWindow.classList.add('active');
+                        chatWindow.style.display = 'flex';
+                    }
+                    }
+                    }
+                //检查chatWindow是否存在
+                inspect_chatWindow();
+// 创建设置浮窗
+function showSettingsModal() {
+    // 检查是否已有设置窗口
+    const existingModal = document.getElementById('ai-settings-modal');
+    if (existingModal) {
+        existingModal.style.display = 'block';
+        return;
+    }
+
+    // 创建模态窗口
+    const modal = document.createElement('div');
+    modal.id = 'ai-settings-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.backgroundColor = '#fff';
+    modal.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+    modal.style.borderRadius = '8px';
+    modal.style.padding = '20px';
+    modal.style.zIndex = '10000';
+    modal.style.width = '30%';
+    modal.style.height = '70%';
+    modal.style.maxHeight = '80vh';
+    modal.style.overflowY = 'auto';
+    modal.style.color = '#333';
+    modal.style.fontFamily = 'Arial, sans-serif';
+
+    // 设置标题
+    const title = document.createElement('h2');
+    title.textContent = 'AI 助手设置';
+    title.style.margin = '0 0 20px 0';
+    title.style.borderBottom = '1px solid #eee';
+    title.style.paddingBottom = '10px';
+    modal.appendChild(title);
+
+    // 设置项容器
+    const settingsContainer = document.createElement('div');
+    settingsContainer.style.display = 'grid';
+    settingsContainer.style.gap = '15px';
+    modal.appendChild(settingsContainer);
+
+    // 创建设置项
+    const settings = [
+        {
+            id: 'apiUrl',
+            label: 'API 地址',
+            value: config.apiUrl,
+            placeholder: 'https://api.deepseek.com/v1/chat/completions',
+            type: 'text',
+            help: '默认: https://api.deepseek.com/v1/chat/completions'
+        },
+        {
+            id: 'apiKey',
+            label: 'API 密钥',
+            value: config.apiKey,
+            placeholder: '输入您的 API 密钥',
+            type: 'password',
+            help: '您的 API 访问密钥'
+        },
+        {
+            id: 'model',
+            label: '模型名称',
+            value: config.model,
+            placeholder: 'deepseek-v3-250324',
+            type: 'text',
+            help: '默认: deepseek-v3-250324'
+        },
+        {
+            id: 'temperature',
+            label: 'Temperature',
+            value: config.temperature,
+            placeholder: '0.5-0.8',
+            type: 'number',
+            min: 0,
+            max: 2,
+            step: 0.1,
+            help: '取值范围 0-2，建议 0.5-0.8，值越高回答越随机'
+        },
+        {
+            id: 'maxTokens',
+            label: '输出 Token 限制',
+            value: config.maxTokens,
+            placeholder: '4096',
+            type: 'number',
+            min: 1,
+            max: 8192,
+            help: '最大不能超过 8192，默认 4096（影响输出文本长度）'
+        },
+        {
+            id: 'personalityPrompt',
+            label: '自定义人格提示词',
+            value: config.personalityPrompt,
+            placeholder: 'AI助手',
+            type: 'text',
+            help: '默认: AI助手'
+        }
+    ];
+
+    // 历史记录存储对象
+    const historyEntries = {};
+
+    // 初始化历史记录
+    settings.forEach(setting => {
+        const historyKey = `${setting.id}_history`;
+        const savedHistory = GM_getValue(historyKey, []);
+        historyEntries[setting.id] = savedHistory;
+
+        // 如果当前值不在历史记录中且不为空，添加到历史记录
+        if (setting.value && !savedHistory.includes(setting.value)) {
+            historyEntries[setting.id].push(setting.value);
+            GM_setValue(historyKey, historyEntries[setting.id]);
+        }
+    });
+
+    // 创建每个设置项的 UI
+    settings.forEach(setting => {
+        const settingGroup = document.createElement('div');
+        settingGroup.style.display = 'flex';
+        settingGroup.style.flexDirection = 'column';
+
+        // 标签
+        const label = document.createElement('label');
+        label.textContent = setting.label;
+        label.style.marginBottom = '5px';
+        label.style.fontWeight = 'bold';
+        settingGroup.appendChild(label);
+
+        // 输入容器 (用于包含输入框和下拉按钮)
+        const inputContainer = document.createElement('div');
+        inputContainer.style.position = 'relative';
+        inputContainer.style.display = 'flex';
+
+        // 输入框
+        const input = document.createElement('input');
+        input.type = setting.type;
+        input.id = `setting-${setting.id}`;
+        input.value = setting.value || '';
+        input.placeholder = setting.placeholder || '';
+        input.style.width = '100%';
+        input.style.padding = '8px 12px';
+        input.style.borderRadius = '4px';
+        input.style.border = '1px solid #ddd';
+        input.style.fontSize = '14px';
+
+        if (setting.type === 'number') {
+            if (setting.min !== undefined) input.min = setting.min;
+            if (setting.max !== undefined) input.max = setting.max;
+            if (setting.step !== undefined) input.step = setting.step;
+        }
+
+        inputContainer.appendChild(input);
+
+        // 历史下拉按钮
+        if (historyEntries[setting.id] && historyEntries[setting.id].length > 0) {
+            const historyButton = document.createElement('button');
+            historyButton.className = 'history-button';
+            historyButton.textContent = '▼';
+            historyButton.title = '历史记录';
+            historyButton.style.marginLeft = '5px';
+            historyButton.style.padding = '8px 12px';
+            historyButton.style.borderRadius = '4px';
+            historyButton.style.border = '1px solid #ddd';
+            historyButton.style.cursor = 'pointer';
+
+            // 下拉菜单
+            const dropdown = document.createElement('div');
+            dropdown.style.display = 'none';
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '100%';
+            dropdown.style.left = '0';
+            dropdown.style.right = '0';
+            dropdown.style.backgroundColor = '#fff';
+            dropdown.style.border = '1px solid #ddd';
+            dropdown.style.borderRadius = '4px';
+            dropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            dropdown.style.zIndex = '1';
+            dropdown.style.maxHeight = '150px';
+            dropdown.style.overflowY = 'auto';
+            dropdown.style.marginTop = '5px';
+
+            // 添加历史记录项
+            historyEntries[setting.id].forEach(historyValue => {
+                const historyItem = document.createElement('div');
+                historyItem.style.padding = '8px 12px';
+                historyItem.style.cursor = 'pointer';
+                historyItem.style.borderBottom = '1px solid #eee';
+                historyItem.style.display = 'flex';
+                historyItem.style.justifyContent = 'space-between';
+                historyItem.style.alignItems = 'center';
+
+                // 创建内容容器
+                const contentSpan = document.createElement('span');
+                contentSpan.textContent = historyValue;
+                contentSpan.style.flexGrow = '1';
+                contentSpan.style.overflow = 'hidden';
+                contentSpan.style.textOverflow = 'ellipsis';
+                historyItem.appendChild(contentSpan);
+
+                // 创建删除按钮
+                const deleteBtn = document.createElement('span');
+                deleteBtn.textContent = '×';
+                deleteBtn.style.marginLeft = '8px';
+                deleteBtn.style.color = '#999';
+                deleteBtn.style.fontWeight = 'bold';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.style.padding = '0 4px';
+                deleteBtn.title = '删除此记录';
+
+                deleteBtn.addEventListener('mouseenter', () => {
+                    deleteBtn.style.color = '#f44336';
+                });
+
+                deleteBtn.addEventListener('mouseleave', () => {
+                    deleteBtn.style.color = '#999';
+                });
+
+                // 删除历史记录的点击事件
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 阻止冒泡，防止触发historyItem的点击事件
+
+                    // 从历史记录中删除
+                    const index = historyEntries[setting.id].indexOf(historyValue);
+                    if (index > -1) {
+                        historyEntries[setting.id].splice(index, 1);
+                        GM_setValue(`${setting.id}_history`, historyEntries[setting.id]);
+
+                        // 从UI中移除
+                        dropdown.removeChild(historyItem);
+
+                        // 如果没有历史记录了，隐藏下拉菜单
+                        if (historyEntries[setting.id].length === 0) {
+                            dropdown.style.display = 'none';
+                            // 移除历史按钮
+                            inputContainer.removeChild(historyButton);
+                            inputContainer.removeChild(dropdown);
+                        }
+                    }
+                });
+
+                historyItem.appendChild(deleteBtn);
+
+                historyItem.addEventListener('mouseenter', () => {
+                    historyItem.style.backgroundColor = '#f5f5f5';
+                });
+
+                historyItem.addEventListener('mouseleave', () => {
+                    historyItem.style.backgroundColor = '';
+                });
+
+                // 点击项目填充输入框
+                contentSpan.addEventListener('click', () => {
+                    input.value = historyValue;
+                    dropdown.style.display = 'none';
+                });
+
+                dropdown.appendChild(historyItem);
+            });
+
+            historyButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (dropdown.style.display === 'none') {
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            // 点击其他地方关闭下拉菜单
+            document.addEventListener('click', (e) => {
+                if (e.target !== historyButton && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            inputContainer.appendChild(historyButton);
+            inputContainer.appendChild(dropdown);
+        }
+
+        settingGroup.appendChild(inputContainer);
+
+        // 帮助文本
+        if (setting.help) {
+            const helpText = document.createElement('small');
+            helpText.textContent = setting.help;
+            helpText.style.marginTop = '4px';
+            helpText.style.color = '#888';
+            helpText.style.fontSize = '12px';
+            settingGroup.appendChild(helpText);
+        }
+
+        settingsContainer.appendChild(settingGroup);
+    });
+const customParamsSection = document.createElement('div');
+    customParamsSection.style.marginTop = '20px';
+    customParamsSection.style.borderTop = '1px solid #eee';
+    customParamsSection.style.paddingTop = '15px';
+
+    const customParamsTitle = document.createElement('h3');
+    customParamsTitle.textContent = '自定义额外参数';
+    customParamsTitle.style.marginBottom = '15px';
+    customParamsSection.appendChild(customParamsTitle);
+
+    // 读取已有的自定义参数
+    if (!config.additionalParams) {
+        config.additionalParams = {}; // Initialize if doesn't exist
+        // Attempt to load from storage, defaulting to an empty object
+        config.additionalParams = GM_getValue('additionalParams', {});
+        // Ensure it's always an object even if GM_getValue returns null/undefined somehow
+        if (typeof config.additionalParams !== 'object' || config.additionalParams === null) {
+             config.additionalParams = {};
+        }
+        // No GM_setValue needed here, just loading
+    }
+
+    // 创建参数列表容器
+    const paramsList = document.createElement('div');
+    paramsList.id = 'custom-params-list';
+    paramsList.style.display = 'grid';
+    paramsList.style.gap = '10px';
+
+    // 显示现有自定义参数
+    function renderCustomParams() {
+        paramsList.innerHTML = '';
+
+        Object.entries(config.additionalParams).forEach(([key, value]) => {
+            const paramRow = document.createElement('div');
+            paramRow.style.display = 'flex';
+            paramRow.style.gap = '10px';
+            paramRow.style.marginBottom = '10px';
+
+            // 参数键输入框
+            const keyInput = document.createElement('input');
+            keyInput.type = 'text';
+            keyInput.value = key;
+            keyInput.placeholder = '参数名';
+            keyInput.style.flex = '1';
+            keyInput.style.padding = '8px 12px';
+            keyInput.style.borderRadius = '4px';
+            keyInput.style.border = '1px solid #ddd';
+            keyInput.style.width = '50px';
+            keyInput.style.fontSize = '14px';
+            keyInput.readOnly = true; // 不允许修改键名，需要删除重新添加
+
+            // 参数值输入框
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.value = typeof value === 'string' ? value : JSON.stringify(value);
+            valueInput.placeholder = '参数值';
+            valueInput.style.flex = '1';
+            valueInput.style.padding = '8px 12px';
+            valueInput.style.borderRadius = '4px';
+            valueInput.style.width = '50px';
+            valueInput.style.border = '1px solid #ddd';
+            valueInput.style.fontSize = '14px';
+
+            // 保存参数值的变更
+            valueInput.addEventListener('change', () => {
+                let parsedValue = valueInput.value;
+                try {
+                    // 尝试解析为JSON，处理数字、布尔值、对象等
+                    if (parsedValue.trim() !== '' &&
+                        (parsedValue.startsWith('{') ||
+                         parsedValue.startsWith('[') ||
+                         parsedValue === 'true' ||
+                         parsedValue === 'false' ||
+                         !isNaN(Number(parsedValue)))) {
+                        parsedValue = JSON.parse(parsedValue);
+                    }
+                } catch (e) {
+                    // 解析失败则保持为字符串
+                    console.log("值保持为字符串", e);
+                }
+
+                config.additionalParams[key] = parsedValue;
+                GM_setValue('additionalParams', config.additionalParams);
+            });
+
+            // 删除按钮
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '删除';
+            deleteBtn.style.padding = '8px 12px';
+            deleteBtn.style.borderRadius = '4px';
+            deleteBtn.style.border = '1px solid #ddd';
+            deleteBtn.style.cursor = 'pointer';
+            deleteBtn.style.backgroundColor = '#f44336';
+            deleteBtn.style.color = 'white';
+            deleteBtn.style.border = 'none';
+
+            deleteBtn.addEventListener('click', () => {
+                delete config.additionalParams[key];
+                GM_setValue('additionalParams', config.additionalParams);
+                renderCustomParams();
+            });
+
+            paramRow.appendChild(keyInput);
+            paramRow.appendChild(valueInput);
+            paramRow.appendChild(deleteBtn);
+            paramsList.appendChild(paramRow);
+        });
+    }
+
+    renderCustomParams();
+    customParamsSection.appendChild(paramsList);
+
+    // 添加新参数的表单
+    const newParamForm = document.createElement('div');
+    newParamForm.style.display = 'flex';
+    newParamForm.style.gap = '10px';
+    newParamForm.style.marginTop = '15px';
+
+    // 新参数键输入框
+    const newKeyInput = document.createElement('input');
+    newKeyInput.type = 'text';
+    newKeyInput.id = 'new-param-key';
+    newKeyInput.placeholder = '新参数名';
+    newKeyInput.style.flex = '1';
+    newKeyInput.style.padding = '8px 12px';
+    newKeyInput.style.borderRadius = '4px';
+    newKeyInput.style.border = '1px solid #ddd';
+    newKeyInput.style.fontSize = '14px';
+
+    // 新参数值输入框
+    const newValueInput = document.createElement('input');
+    newValueInput.type = 'text';
+    newValueInput.id = 'new-param-value';
+    newValueInput.placeholder = '新参数值';
+    newValueInput.style.flex = '1';
+    newValueInput.style.padding = '8px 12px';
+    newValueInput.style.borderRadius = '4px';
+    newValueInput.style.border = '1px solid #ddd';
+    newValueInput.style.fontSize = '14px';
+
+    // 添加新参数按钮
+    const addParamBtn = document.createElement('button');
+    addParamBtn.textContent = '添加';
+    addParamBtn.style.padding = '8px 16px';
+    addParamBtn.style.borderRadius = '4px';
+    addParamBtn.style.border = 'none';
+    addParamBtn.style.cursor = 'pointer';
+    addParamBtn.style.backgroundColor = '#4CAF50';
+    addParamBtn.style.color = 'white';
+
+    addParamBtn.addEventListener('click', () => {
+        const key = newKeyInput.value.trim();
+        let value = newValueInput.value.trim();
+
+        if (key) {
+            try {
+                // 尝试解析为JSON，处理数字、布尔值、对象等
+                if (value !== '' &&
+                    (value.startsWith('{') ||
+                     value.startsWith('[') ||
+                     value === 'true' ||
+                     value === 'false' ||
+                     !isNaN(Number(value)))) {
+                    value = JSON.parse(value);
+                }
+            } catch (e) {
+                // 解析失败则保持为字符串
+                console.log("值保持为字符串", e);
             }
 
-            const newModel = prompt('模型默认(deepseek-chat):', config.model);
-            if (newModel !== null) {
-                config.model = newModel;
-                GM_setValue('model', config.model);
+            config.additionalParams[key] = value;
+            GM_setValue('additionalParams', config.additionalParams);
+
+            // 重置输入框
+            newKeyInput.value = '';
+            newValueInput.value = '';
+
+            // 更新显示
+            renderCustomParams();
+        }
+    });
+
+    newParamForm.appendChild(newKeyInput);
+    newParamForm.appendChild(newValueInput);
+    newParamForm.appendChild(addParamBtn);
+
+    customParamsSection.appendChild(newParamForm);
+    modal.appendChild(customParamsSection);
+
+    // 按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.marginTop = '20px';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.justifyContent = 'flex-end';
+    buttonContainer.style.gap = '10px';
+    modal.appendChild(buttonContainer);
+
+    // 取消按钮
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = '取消';
+    cancelButton.className = 'cancel-button';
+    cancelButton.style.padding = '8px 16px';
+    cancelButton.style.borderRadius = '4px';
+    cancelButton.style.border = '1px solid #ddd';
+
+    cancelButton.style.cursor = 'pointer';
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+        config.hidden = true; // 设置为显示聊天窗口
+        inspect_chatWindow(); //
+    });
+    buttonContainer.appendChild(cancelButton);
+
+    // 保存按钮
+    const saveButton = document.createElement('button');
+    saveButton.textContent = '保存';
+    saveButton.className = 'save-button';
+    saveButton.style.padding = '8px 16px';
+    saveButton.style.borderRadius = '4px';
+    saveButton.style.border = 'none';
+
+    saveButton.style.cursor = 'pointer';
+    saveButton.addEventListener('click', () => {
+        // 保存所有设置并更新历史记录
+        settings.forEach(setting => {
+            const input = document.getElementById(`setting-${setting.id}`);
+            let value = input.value;
+
+            // 转换数值类型
+            if (setting.type === 'number') {
+                value = parseFloat(value);
+
+                // 验证范围
+                if (setting.min !== undefined && value < setting.min) value = setting.min;
+                if (setting.max !== undefined && value > setting.max) value = setting.max;
             }
 
-            const newTemp = parseFloat(prompt('Temperature (0-2建议0.5-0.8)', config.temperature));
-            if (!isNaN(newTemp) && newTemp >= 0 && newTemp <= 2) {
-                config.temperature = newTemp;
-                GM_setValue('temperature', config.temperature);
+            // 更新配置
+            config[setting.id] = value;
+            GM_setValue(setting.id, value);
+
+            // 更新历史记录
+            if (value && typeof value === 'string' && value.trim() !== '') {
+                const historyKey = `${setting.id}_history`;
+                let history = GM_getValue(historyKey, []);
+
+                // 如果不在历史记录中，添加到历史
+                if (!history.includes(value)) {
+                    history.push(value);
+                    // 限制历史记录数量为 10 条
+                    if (history.length > 10) {
+                        history = history.slice(-10);
+                    }
+                    GM_setValue(historyKey, history);
+                }
             }
 
-            const newMaxTokens = parseInt(prompt('输出Token限制最大不能超过8192默认4096(输出文本):', config.maxTokens));
-            if (!isNaN(newMaxTokens) && newMaxTokens > 0 && newMaxTokens <= 8192) {
-                config.maxTokens = newMaxTokens;
-                GM_setValue('maxTokens', config.maxTokens);
-            }
 
-            const newMaxContextTokens = parseInt(prompt('最大上下文限制128k默认32k(越大记忆越好):', config.maxContextTokens));
-            if (!isNaN(newMaxContextTokens) && newMaxContextTokens > 0 && newMaxContextTokens <= 128000) {
-                config.maxContextTokens = newMaxContextTokens;
-                GM_setValue('maxContextTokens', config.maxContextTokens);
-            }
-
-            const newPersonalityPrompt = prompt('自定义人格提示词:(AI助手)', config.personalityPrompt);
-            if (newPersonalityPrompt !== null) {
-                config.personalityPrompt = newPersonalityPrompt;
-                GM_setValue('personalityPrompt', config.personalityPrompt);
-            }
         });
 
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+        config.hidden = true; // 设置为显示聊天窗口
+        inspect_chatWindow(); // 重新检查是否显示聊天窗口
+    });
+    buttonContainer.appendChild(saveButton);
+
+    // 添加模态窗口背景遮罩
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.position = 'fixed';
+    modalOverlay.style.top = '0';
+    modalOverlay.style.left = '0';
+    modalOverlay.style.right = '0';
+    modalOverlay.style.bottom = '0';
+    modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modalOverlay.style.zIndex = '9999';
+
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            document.body.removeChild(modalOverlay);
+            document.body.removeChild(modal);
+            config.hidden = true; // 设置为显示聊天窗口
+            inspect_chatWindow(); // 重新检查是否显示聊天窗口
+        }
+    });
+
+    // 添加到文档
+    document.body.appendChild(modalOverlay);
+    document.body.appendChild(modal);
+}
         clearBtn.addEventListener('click', () => {
     if (confirm('确定要清空所有对话记录吗？这将同时清空当前对话和完整历史记录。')) {
         config.chatHistory = [];
@@ -2887,7 +3463,7 @@
                     <span class="code-execution-close">&times;</span>
                 </div>
                 <div class="code-execution-body">
-                    <iframe id="code-sandbox" sandbox="allow-scripts allow-same-origin"></iframe>
+               <iframe id="code-sandbox" sandbox="allow-scripts allow-same-origin"></iframe>
                     <div id="code-status-bar">等待执行...</div>
                 </div>
             </div>
@@ -3245,7 +3821,6 @@
             appendStatus(statusBar, `❌执行错误: ${e}`, 'error');
         }
     }
-
     // 更新状态
     function updateStatus(element, message, type) {
         element.textContent = message;
@@ -3429,13 +4004,17 @@
 
                     try{
 
-                    if(config.error_sign &&!buffer.startsWith('data: ')){
+                    if(config.error_sign ){
+                        console.log("a",buffer);
+                         config.error_sign = false;
+                        if(!buffer.startsWith('data: ')){
                         console.log(buffer);
                         const errorDiv = document.createElement('div'); // 用于主内容
                         errorDiv.innerHTML = buffer;
                         errorDiv.style.color = "red";
                         aiMsgDiv.appendChild(errorDiv);
-                        config.error_sign = false;
+
+                        }
                         //return;
                    // throw new Error("数据流解析失败！"); // 抛出异常，结束外部函数
                     }
@@ -3454,8 +4033,9 @@
                 buffer = lines.pop() || '';
 
                 for (const line of lines) {
-                   //console.log(line);
+                
                     if(config.error_sign){
+                        console.log("line",line);
                          config.error_sign = false;
                     if(!inspect_error(line,aiMsgDiv)){
                         console.log("进入异常");
@@ -3534,15 +4114,59 @@
         readStream();
     });
   }
+//随机头
+        /**
+ * 生成随机请求头对象，可通过属性直接访问各字段
+ * @returns {Object} - 包含随机请求头的对象，如 { userAgent, acceptLanguage, referer, ... }
+ */
+function getRandomHeaders() {
+    // 可扩展的 User-Agent 列表
+    const userAgents = [
+        // Chrome
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        // Firefox
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
+        // Safari
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15",
+    ];
 
+    // 随机 Accept-Language 列表
+    const acceptLanguages = [
+        "en-US,en;q=0.9",
+        "zh-CN,zh;q=0.9,en;q=0.8",
+        "ja-JP,ja;q=0.9,en;q=0.8",
+    ];
 
-  // ==========================================================
-  // ... 已有代码 ...
-  // 计算消息的 token 数量（简单估算）
-  function countTokens(text) {
-    return Math.ceil(text.length / 2);
-  }
+    // 随机 Referer 列表
+    const referers = [
+        "https://www.google.com/",
+        "https://www.bing.com/",
+        "https://www.youtube.com/",
+    ];
 
+    // 随机选择
+    const userAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+    const acceptLanguage = acceptLanguages[Math.floor(Math.random() * acceptLanguages.length)];
+    const referer = referers[Math.floor(Math.random() * referers.length)];
+
+    // 返回对象（支持属性直接访问）
+    return {
+        userAgent,
+        acceptLanguage,
+        referer,
+        origin: new URL(referer).origin,
+        headers: {
+            'User-Agent': userAgent,
+            'Accept-Language': acceptLanguage,
+            'Referer': referer,
+            'Origin': new URL(referer).origin,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+        }
+    };
+}
   // 检查并截断上下文
   function truncateContext(messages, maxContextTokens) {
     let totalTokens = 0;
@@ -3556,6 +4180,13 @@
     }
     return messages;
   }
+  // ==========================================================
+  // ... 已有代码 ...
+  // 计算消息的 token 数量（简单估算）
+  function countTokens(text) {
+    return Math.ceil(text.length / 2);
+  }
+
 
 
   async function sendMessage(message, retryCount = 0, isSummaryTask = false) {
@@ -3621,37 +4252,44 @@
     }
 
     // 构建请求数据
+ // 构建请求数据 - 总是发送完整消息给AI
     const requestData = {
         model: config.model,
         messages: [
-            { role: 'system', content: config.personalityPrompt },
             ...truncateContext(config.chatHistory, config.maxContextTokens)
         ],
         temperature: config.temperature,
-        max_tokens: config.maxTokens
+        max_tokens: config.maxTokens,
+        stream: true,
+
     };
-
-    // 只在流式模式下添加stream参数
-    if (config.streamOutput !== false) {
-        requestData.stream = true;
+ if (config.additionalParams && Object.keys(config.additionalParams).length > 0) {
+        Object.entries(config.additionalParams).forEach(([key, value]) => {
+            requestData[key] = value;
+        });
     }
-
-    // 添加网页上下文
+    // 如果是总结任务，添加网页内容作为系统消息
     if (isSummaryTask) {
         const pageContent = getPageContent();
         requestData.messages.splice(1, 0, {
-            role: 'assistant',
+            role: 'user',
             content: message,
         });
     } else if (config.usePageContext) {
+        // 普通对话的网页上下文
         const pageContent = getPageContent();
         requestData.messages.splice(1, 0, {
             role: 'assistant',
             content: `[当前网页信息]\n标题: ${pageContent.title}\nURL: ${pageContent.url}\n正文内容: ${pageContent.content}\n注意：基于以上网页内容，回答问题，如果问题不相关则仅作为上下文扩充参考`
         });
     }
-
-    console.log('发送的请求数据:', requestData);
+    else if (config.personalityPrompt) {
+        requestData.messages.splice(0, 0, {
+            role: 'system',
+            content: config.personalityPrompt,
+        });
+    }
+        console.log('发送的请求数据:', requestData); // 添加
 
     try {
         return new Promise((resolve, reject) => {
@@ -3665,15 +4303,18 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${config.apiKey}`,
+                    'User-Agent': getRandomHeaders().userAgent,
+                    'Accept-Language': getRandomHeaders().acceptLanguage,
                     'Accept': config.streamOutput !== false ? 'text/event-stream' : 'application/json'
                 },
                 responseType: config.streamOutput !== false ? 'stream' : 'json',
                 data: JSON.stringify(requestData),
+
                 onload: config.streamOutput !== false ? undefined : function(response) {
                     clearTimeout(timeoutId);
                     try {
                         const data = JSON.parse(response.responseText);
-                        console.log(data);
+                        //console.log(data);
                         handleNonStreamResponse(data, aiMsgDiv, thinkingMsgDiv, isSummaryTask)
                             .then(resolve)
                             .catch(reject);
@@ -3681,6 +4322,7 @@
                         reject(error);
                     }
                 },
+
                 onloadstart: config.streamOutput !== false ? function(responseInfo) {
                     try {
                         handleStreamResponse(responseInfo.response, aiMsgDiv, thinkingMsgDiv, isSummaryTask)
@@ -3693,6 +4335,7 @@
                         reject(error);
                     }
                 } : undefined,
+
                 onerror: (error) => {
                     clearTimeout(timeoutId);
                     chatContent.removeChild(thinkingMsgDiv);
@@ -3707,7 +4350,10 @@
                     chatContent.removeChild(thinkingMsgDiv);
                     reject(new Error('请求超时'));
                 }
-            });
+            }
+
+            );
+
         });
     } catch (error) {
         const existingStopButton = document.querySelector('.ds-stop-button');
@@ -4186,7 +4832,7 @@
     optionsButton.innerHTML = '⋮';
     optionsButton.style.position = 'absolute';
     optionsButton.style.top = '0px';
-    optionsButton.style.right = '5px';
+    optionsButton.style.right = '0px';
     optionsButton.style.background = 'transparent';
     optionsButton.style.border = 'none';
     optionsButton.style.cursor = 'pointer';

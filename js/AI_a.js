@@ -69,6 +69,13 @@ function GM_xmlhttpRequest(options) {
 
     // 添加CSS样式
     const css = `
+    #new-param-key{
+width:10%;
+}
+#new-param-value{
+width:10%;
+}
+
        @keyframes fadeInOut {
             0% {
                 opacity: 0;
