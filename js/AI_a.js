@@ -3044,7 +3044,8 @@ const customParamsSection = document.createElement('div');
             keyInput.style.padding = '8px 12px';
             keyInput.style.borderRadius = '4px';
             keyInput.style.border = '1px solid #ddd';
-            keyInput.style.fontSize = '14px';
+            keyInput.style.width = "10%";
+            keyInput.style.fontSize = '12px';
             keyInput.readOnly = true; // 不允许修改键名，需要删除重新添加
             
             // 参数值输入框
@@ -3055,8 +3056,9 @@ const customParamsSection = document.createElement('div');
             valueInput.style.flex = '1';
             valueInput.style.padding = '8px 12px';
             valueInput.style.borderRadius = '4px';
+            valueInput.style.width = "10%";
             valueInput.style.border = '1px solid #ddd';
-            valueInput.style.fontSize = '14px';
+            valueInput.style.fontSize = '12px';
             
             // 保存参数值的变更
             valueInput.addEventListener('change', () => {
@@ -3122,7 +3124,7 @@ const customParamsSection = document.createElement('div');
     newKeyInput.style.padding = '8px 12px';
     newKeyInput.style.borderRadius = '4px';
     newKeyInput.style.border = '1px solid #ddd';
-    newKeyInput.style.fontSize = '14px';
+    newKeyInput.style.fontSize = '12px';
     
     // 新参数值输入框
     const newValueInput = document.createElement('input');
@@ -3133,7 +3135,7 @@ const customParamsSection = document.createElement('div');
     newValueInput.style.padding = '8px 12px';
     newValueInput.style.borderRadius = '4px';
     newValueInput.style.border = '1px solid #ddd';
-    newValueInput.style.fontSize = '14px';
+    newValueInput.style.fontSize = '12px';
     
     // 添加新参数按钮
     const addParamBtn = document.createElement('button');

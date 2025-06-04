@@ -6,8 +6,8 @@
     top: 0;
     left: 0;
     z-index: -999;
-    background-size: cover;  /* 关键：保持图片比例并覆盖容器 */
-    background-position: center;
+    background-size: cover!important;  /* 关键：保持图片比例并覆盖容器 */
+    background-position: center!important;
 }
 button{
 background: black !important;
