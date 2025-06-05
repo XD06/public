@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Docker核心技术解析与最佳实践</title>
+      <link href="/posts/30621cc0.html"/>
+      <url>/posts/30621cc0.html</url>
+      
+        <content type="html"><![CDATA[<span id="more"></span><div class="mermaid-wrap"><pre class="mermaid-src" hidden>    graph TD    A[开发者编写Dockerfile] --&gt; B[构建镜像]    B --&gt; C[推送至Registry]    C --&gt; D[部署到生产环境]    D --&gt; E{运行容器}    E --&gt;|成功| F[服务上线]    E --&gt;|失败| G[回滚镜像]  </pre></div><div class="note modern blue flat"><p><strong>学习路径建议</strong>：本教程包含以下知识模块，推荐按顺序阅读：</p><ol><li>容器基础原理 → 2. 镜像构建 → 3. 编排部署 → 4. 安全加固</li></ol></div><h2 id="一、Docker核心架构原理">一、Docker核心架构原理</h2><h3 id="1-容器化执行流程">1. 容器化执行流程</h3><div class="mermaid-wrap"><pre class="mermaid-src" hidden>    sequenceDiagram    participant User    participant Docker_Engine    participant Host_OS      User-&gt;&gt;Docker_Engine: docker run命令    Docker_Engine-&gt;&gt;Host_OS: 调用cgroups&#x2F;namespaces    Host_OS--&gt;&gt;Docker_Engine: 创建隔离进程    Docker_Engine--&gt;&gt;User: 容器启动完成  </pre></div><div class="gallery-container" data-type="data" data-button="true" data-limit="10" data-first="10">    <div class="gallery-items">[{"url":"https://example.com/docker-arch1.png","alt":"","title":""},{"url":"https://example.com/docker-arch2.png","alt":"","title":""}]</div>  </div><h2 id="二、镜像构建最佳实践">二、镜像构建最佳实践</h2><h3 id="1-分层构建原理">1. 分层构建原理</h3><div class="mermaid-wrap"><pre class="mermaid-src" hidden>    pie title 镜像层构成    &quot;基础镜像&quot; : 45    &quot;系统工具&quot; : 20    &quot;应用代码&quot; : 25    &quot;配置文件&quot; : 10  </pre></div><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 优化后的Dockerfile示例</span></span><br><span class="line"><span class="keyword">FROM</span> alpine:<span class="number">3.14</span> AS builder</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apk add --no-cache build-base</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> alpine:<span class="number">3.14</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=builder /usr/bin /opt</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/opt/myapp&quot;</span>]</span></span><br></pre></td></tr></table></figure><div class="note warning flat"><p><strong>常见误区</strong>：</p><ul><li>避免在单个RUN指令中执行apt-get update &amp;&amp; install</li><li>多阶段构建可显著减小镜像体积</li></ul></div><h2 id="三、容器编排实战">三、容器编排实战</h2><h3 id="1-服务部署流程">1. 服务部署流程</h3><div class="mermaid-wrap"><pre class="mermaid-src" hidden>    journey    title 微服务部署流程    section 开发阶段      代码提交: 5: Developer      CI构建: 3: Jenkins    section 测试阶段      镜像扫描: 4: Trivy      部署测试: 4: Kubernetes    section 生产阶段      蓝绿发布: 5: ArgoCD      监控告警: 4: Prometheus  </pre></div><div class="tabs"><div class="nav-tabs"><button type="button" class="tab active">Docker Compose</button><button type="button" class="tab">Kubernetes</button></div><div class="tab-contents"><div class="tab-item-content active"><p>适用场景：</p><ul><li>单机开发环境</li><li>快速原型验证</li></ul><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:alpine</span></span><br><span class="line">    <span class="attr">ports:</span> [<span class="string">&quot;80:80&quot;</span>]</span><br></pre></td></tr></table></figure></div><div class="tab-item-content"><p>企业级特性：</p><ul><li>自动扩缩容</li><li>服务发现</li><li>滚动更新</li></ul></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div><h2 id="四、安全防护体系">四、安全防护体系</h2><div class="mermaid-wrap"><pre class="mermaid-src" hidden>    flowchart LR    A[镜像安全] --&gt; B[运行时防护]    B --&gt; C[网络隔离]    C --&gt; D[审计日志]    style A fill:#f9f,stroke:#333    style D fill:#bbf,stroke:#f66  </pre></div><details class="toggle" ><summary class="toggle-button" style="">安全配置示例</summary><div class="toggle-content"><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 容器运行时保护</span></span><br><span class="line">docker run --read-only \</span><br><span class="line">           --security-opt no-new-privileges \</span><br><span class="line">           --memory 512m \</span><br><span class="line">           myapp:latest</span><br></pre></td></tr></table></figure></div></details><h2 id="五、扩展学习资源">五、扩展学习资源</h2><a class="btn-beautify block larger" href="https://kubernetes.io/" title="K8s官方文档"><i class="fas fa-book"></i><span>K8s官方文档</span></a><a class="btn-beautify block blue larger" href="https://awesome-docker.com/" title="Docker资源大全"><i class="far fa-star"></i><span>Docker资源大全</span></a><div class="note success flat"><p><strong>实践建议</strong>：所有流程图均可右键另存为图片，推荐结合本机Docker环境实操验证</p></div>]]></content>
+      
+      
+      <categories>
+          
+          <category> 云原生技术 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Docker </tag>
+            
+            <tag> 容器编排 </tag>
+            
+            <tag> CI/CD </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>【每日早报】-2025-06-05 - 星期四</title>
       <link href="/posts/68a36c37.html"/>
       <url>/posts/68a36c37.html</url>

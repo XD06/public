@@ -9,9 +9,9 @@
     background-size: cover!important;  /* 关键：保持图片比例并覆盖容器 */
     background-position: center!important;
 }
-button{
-background: black !important;
-}
+/* button{
+background: black;
+} */
 
 /* 适配暗黑模式下的网页背景 */
 [data-theme='dark'] #web_bg {

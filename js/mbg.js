@@ -131,9 +131,9 @@ function createWinbox() {
         </select>
         </div>
     </div>
-    <p><button onclick="localStorage.removeItem('blogbg');location.reload();" style="background:#5fcdff;display:block;width:100%;padding: 15px 0;border-radius:6px;color:white;"><i class="fa-solid fa-arrows-rotate"></i> 点我恢复默认背景</button></p>
+    <p><button onclick="localStorage.removeItem('blogbg');location.reload();" style="background:black;display:block;width:100%;padding: 15px 0;border-radius:6px;color:white;"><i class="fa-solid fa-arrows-rotate"></i> 点我恢复默认背景</button></p>
     <h2 id="图片（手机）"><a href="#图片（手机）" class="headerlink" title="图片（手机）"></a>图片（手机）</h2>
-    <div class="bgbox">
+    <div class="bgbox">s
     <a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://pic1.imgdb.cn/item/67bf4fd8d0e0a243d4065cd7.png)" class="pimgbox" onclick="changeBg('url(https\\://pic1.imgdb.cn/item/67bf4fd8d0e0a243d4065cd7.png)')"></a>
     <a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://pic1.imgdb.cn/item/67bf4fd8d0e0a243d4065cd8.jpg)" class="pimgbox" onclick="changeBg('url(https\\://pic1.imgdb.cn/item/67bf4fd8d0e0a243d4065cd8.jpg)')"></a>
     <a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://pic1.imgdb.cn/item/67bf4fd9d0e0a243d4065cd9.jpg)" class="pimgbox" onclick="changeBg('url(https\\://pic1.imgdb.cn/item/67bf4fd9d0e0a243d4065cd9.jpg)')"></a>
