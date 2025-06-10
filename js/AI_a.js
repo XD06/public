@@ -1318,7 +1318,7 @@ let pyodideInstance = null;
                     // 动态加载Pyodide脚本
                     await new Promise((resolve, reject) => {
                         const script = document.createElement('script');
-                        script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js";
+                        script.src = "https://pictureapi.dskblog.top/js/pyodide.js";
                         script.onload = resolve;
                         script.onerror = () => reject(new Error("无法加载Pyodide脚本"));
                         document.head.appendChild(script);
@@ -1574,8 +1574,8 @@ function detectCodeType(code) {
     }
 
     Promise.all([
-            loadScript('https://cdn.jsdelivr.net/npm/marked/marked.min.js'),
-            loadScript('https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js')
+            loadScript('https://pictureapi.dskblog.top/js/marked.min.js'),
+            loadScript('https://pictureapi.dskblog.top/js/highlight.min.js')
         ])
         .then(() => {
 

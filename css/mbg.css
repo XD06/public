@@ -8,6 +8,7 @@
     z-index: -999;
     background-size: cover!important;  /* 关键：保持图片比例并覆盖容器 */
     background-position: center!important;
+    background-image:url(https://pic1.imgdb.cn/item/67bf4f65d0e0a243d4065cbc.jpg);
 }
 /* button{
 background: black;
