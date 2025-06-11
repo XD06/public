@@ -2271,7 +2271,7 @@ figure.highlight pre .javascript .function {
   overflow: hidden;
   margin: 15px 7px;
   width: calc(100% / 3 - 15px);
-  height: 90px;
+  height: 100px;
   line-height: 17px;
   -webkit-transform: translateZ(0);
   border-radius: 8px;
@@ -2327,7 +2327,6 @@ figure.highlight pre .javascript .function {
   float: left;
   overflow: hidden;
   margin: 15px 10px;
-  width: 60px;
   height: 60px;
   border-radius: 7px;
   -webkit-transition: width 0.3s ease-out;
@@ -2359,6 +2358,7 @@ figure.highlight pre .javascript .function {
   padding: 16px 10px 16px 0;
   height: 50px;
   font-size: 0.93em;
+  white-space: break-spaces;
 }
 .container .flink .flink-name {
   margin-bottom: 5px;
@@ -3432,7 +3432,7 @@ figure.highlight pre .javascript .function {
   transition: all 0.5s;
 }
 #page-header.full_page {
-  height: 100vh;
+  height: 400px;
   background-attachment: fixed;
 }
 #page-header.full_page #site-info {
