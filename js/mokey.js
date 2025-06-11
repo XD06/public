@@ -13,7 +13,7 @@
 // @resource     icon https://tc.qdqqd.com/2xv3Ht.apng
 // @grant        GM_getResourceURL
 // @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
-// @require      https://pictureapi.dskblog.top/js/highlight.min.js
+// @require      https://cloudfile-1363155149.cos.ap-singapore.myqcloud.com/js/highlight.min.js
 // @require      https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js
 // @resource     hljsStyle https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css
 // ==/UserScript==
